@@ -24,7 +24,7 @@ public class DbInitializer
               CREATE TABLE IF NOT EXISTS products (
                 id TEXT NOT NULL PRIMARY KEY ,
                 name TEXT NOT NULL,
-                yearpublished TEXT NOT NULL, 
+                yearpublished INTEGER NOT NULL, 
                 rank REAL NOT NULL,
                 price REAL 
             );";
@@ -89,8 +89,9 @@ public class DbInitializer
                 {
 
                     csvParser.SetDelimiters(new string[] { "," });
-                    csvParser.HasFieldsEnclosedInQuotes = false;
-
+                    csvParser.HasFieldsEnclosedInQuotes = true;
+                    csvParser.CommentTokens = ["#"];
+                    
                     // skip titles line
                     csvParser.ReadLine();
 
@@ -101,10 +102,10 @@ public class DbInitializer
                         i++;
                         string[] fields = csvParser.ReadFields();
                         insert_command.Parameters.Clear();
-                        insert_command.Parameters.AddWithValue("$Id", fields[0]);
+                        insert_command.Parameters.AddWithValue("$Id", Guid.NewGuid());
                         insert_command.Parameters.AddWithValue("$Name", fields[1]);
-                        insert_command.Parameters.AddWithValue("$Year", float.Parse(fields[3]));
-                        insert_command.Parameters.AddWithValue("$Rank", float.Parse(fields[2]));
+                        insert_command.Parameters.AddWithValue("$Year", int.Parse(fields[2]));
+                        insert_command.Parameters.AddWithValue("$Rank", float.Parse(fields[3]));
                         insert_command.ExecuteNonQuery();
 
                     }
