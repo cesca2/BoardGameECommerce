@@ -1,9 +1,9 @@
 using Microsoft.Data.Sqlite;
-public class CommerceService : ICommerceService
+public class ProductService : IProductService
 {
     private readonly IDbConnectionFactory _dbContext;
 
-    public CommerceService(IDbConnectionFactory dbContext)
+    public ProductService(IDbConnectionFactory dbContext)
     {
         _dbContext = dbContext;
 
@@ -47,6 +47,47 @@ public class CommerceService : ICommerceService
             throw new ApplicationException("Database operation failed");
         }
         return rows;
+    }
+
+    public Product? GetProduct(Guid id)
+    {
+
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT id, name, yearpublished, price FROM products
+            WHERE id = $id;
+        """;
+        command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
+
+        try{
+            using var datareader = command.ExecuteReader();
+
+        if (!datareader.HasRows) return null;
+        else
+        {
+            while (datareader.Read())
+            {
+                {
+
+                    var product = new Product{Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price= float.Parse(datareader.GetString(3))};
+                    product.Id = datareader.GetGuid(0);
+                    return product;
+                }
+            }
+        }
+        return null;
+        }
+        catch (SqliteException ex)
+        {
+            var message = "SQLite Error" + ex.Message;
+            Console.WriteLine(message);
+            throw new ApplicationException("Database operation failed");
+        }     
+
+
     }
         
 
