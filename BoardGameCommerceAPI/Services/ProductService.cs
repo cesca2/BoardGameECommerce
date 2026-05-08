@@ -54,38 +54,47 @@ public class ProductService : IProductService
 
         using var connection = _dbContext.CreateConnection();
         connection.Open();
-
+        Console.WriteLine(id);
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, yearpublished, price FROM products
-            WHERE id = $id;
+            SELECT id, name, yearpublished, price FROM products WHERE id = UPPER(@id);
         """;
-        command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
+        var sql_id = id.ToString();
+        Console.WriteLine(sql_id);
+        command.Parameters.AddWithValue("@id", sql_id);
+        Console.WriteLine(command.CommandText);
+        foreach (SqliteParameter param in command.Parameters)
+        {
+            Console.WriteLine(param.ParameterName);
+            Console.WriteLine(param.Value.ToString());
+        }
 
         try{
             using var datareader = command.ExecuteReader();
 
-        if (!datareader.HasRows) return null;
-        else
-        {
             while (datareader.Read())
             {
-                {
+                Console.WriteLine("here");
+                
 
                     var product = new Product{Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price= float.Parse(datareader.GetString(3))};
                     product.Id = datareader.GetGuid(0);
-                    Console.WriteLine(product);
+                    
                     return product;
-                }
+                
             }
+            return null;
+            
+        
+
         }
-        return null;
-        }
+
         catch (SqliteException ex)
         {
             var message = "SQLite Error" + ex.Message;
             Console.WriteLine(message);
             throw new ApplicationException("Database operation failed");
+
         }     
 
 
