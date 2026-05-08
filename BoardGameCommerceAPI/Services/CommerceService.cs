@@ -19,7 +19,7 @@ public class CommerceService : ICommerceService
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, yearpublished FROM products
+            SELECT id, name, yearpublished, price FROM products
         """;
         try
         {
@@ -32,7 +32,7 @@ public class CommerceService : ICommerceService
             while (datareader.Read())
             {
                 {
-                    rows.Add(new Product{Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2))});
+                    rows.Add(new Product{Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price= float.Parse(datareader.GetString(3))});
                     rows[i].Id = datareader.GetGuid(0);
                     i++;
                 }

@@ -26,7 +26,7 @@ public class DbInitializer
                 name TEXT NOT NULL,
                 yearpublished INTEGER NOT NULL, 
                 rank REAL NOT NULL,
-                price REAL 
+                price REAL NOT NULL
             );";
 
         command.ExecuteNonQuery();
@@ -71,16 +71,17 @@ public class DbInitializer
 
             if (reInitialize)
             {
-                var path = "boardgames_ranks.csv";
+                var path = "BoardGameData/boardgames_data.csv";
                 var insert_command = connection.CreateCommand();
                 insert_command.CommandText =
                      @"
-                INSERT INTO products(id, name, yearpublished, rank)
+                INSERT INTO products(id, name, yearpublished, rank, price)
                 VALUES 
                 ( $Id,
                   $Name, 
                   $Year, 
-                  $Rank)
+                  $Rank,
+                  $Price)
                 ;
                 ";
 
@@ -97,15 +98,17 @@ public class DbInitializer
 
                     int i = 0;
 
-                    while (!csvParser.EndOfData & i < 100) // remove limit later
+                    while (!csvParser.EndOfData)
                     {
                         i++;
                         string[] fields = csvParser.ReadFields();
                         insert_command.Parameters.Clear();
                         insert_command.Parameters.AddWithValue("$Id", Guid.NewGuid());
-                        insert_command.Parameters.AddWithValue("$Name", fields[1]);
-                        insert_command.Parameters.AddWithValue("$Year", int.Parse(fields[2]));
-                        insert_command.Parameters.AddWithValue("$Rank", float.Parse(fields[3]));
+                        insert_command.Parameters.AddWithValue("$Name", fields[0]);
+                        insert_command.Parameters.AddWithValue("$Year", int.Parse(fields[1]));
+                        insert_command.Parameters.AddWithValue("$Rank", float.Parse(fields[2]));
+                        insert_command.Parameters.AddWithValue("$Price", float.Parse(fields[3]));
+
                         insert_command.ExecuteNonQuery();
 
                     }
