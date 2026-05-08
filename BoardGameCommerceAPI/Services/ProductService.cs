@@ -74,6 +74,7 @@ public class ProductService : IProductService
 
                     var product = new Product{Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price= float.Parse(datareader.GetString(3))};
                     product.Id = datareader.GetGuid(0);
+                    Console.WriteLine(product);
                     return product;
                 }
             }

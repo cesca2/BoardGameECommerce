@@ -45,11 +45,11 @@ In progress
 ### Get products
 
 ```http
-  GET /api/Transactions
+  GET /api/Products
 ```
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `id`      | `string` | **optional**. Id of item to fetch , equate to Guid|
+| `id`      | `string` | **optional**. Id of item to fetch , must be valid Guid|
 
 
 ## Data info
