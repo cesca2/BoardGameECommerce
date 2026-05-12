@@ -1,3 +1,4 @@
+using CommerceAPI.Controllers;
 using Microsoft.Data.Sqlite;
 using System.Globalization;
 
@@ -11,39 +12,103 @@ public class SaleService : ISaleService
         _dbContext = dbContext;
 
     }
-    /*
-    public List<Sale>? GetAllSales()
-    {
+    
 
-        List<Sale> rows = new ();
+     public Sale? GetSale(Guid id)
+    {
 
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT sales.id, customer_id FROM sales JOIN sales_products ON
+        SELECT sales.id, customer_id, product_id, quantity 
+        FROM sales JOIN sales_products ON sales.id = sales_products.sale_id
+        WHERE sales.id = $id;
+        """;
+        command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
+
+        try{
+            using var datareader = command.ExecuteReader();
+
+        if (!datareader.HasRows) return null;
+        else
+        {
+            
+            Sale? sale = null;
+            while (datareader.Read())
+            {
+                Guid Id = datareader.GetGuid(0);
+                
+                if (sale == null)
+                {
+                    sale = new Sale
+                        {
+                            Customer_Id = datareader.GetString(1),
+                            QuantitiesByProductID = new(),
+                            Id = datareader.GetGuid(0)
+                        };
+                    
+
+                }
+                sale.QuantitiesByProductID[datareader.GetGuid(2)] = datareader.GetInt32(3);
+                
+            }
+            return sale;
+        }
+
+        }
+        catch (SqliteException ex)
+        {
+            var message = "SQLite Error" + ex.Message;
+            Console.WriteLine(message);
+            throw new ApplicationException("Database operation failed");
+        }     
+
+
+    }
+
+    
+
+    public List<Sale>? GetAllSales()
+    {
+
+        List<Sale> rows = new ();
+
+
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+        SELECT sales.id, customer_id, product_id, quantity 
+        FROM sales JOIN sales_products ON sales.id = sales_products.sale_id ;
         """;
         try
         {
-        using var datareader = command.ExecuteReader();
-        var i = 0;
+               using var datareader = command.ExecuteReader();
+
+
 
         if (!datareader.HasRows) return rows;
         else
         {
             while (datareader.Read())
             {
+                Guid Id = datareader.GetGuid(0);
+                var sale = rows.FirstOrDefault( i => i.Id == Id);
+                if (sale == null)
                 {
-                    rows.Add(new Sale
+                    sale = new Sale
                         {
-                            Name = datareader.GetString(1),
-                            Email = datareader.GetString(2),
+                            Customer_Id = datareader.GetString(1),
+                            QuantitiesByProductID = new(),
                             Id = datareader.GetGuid(0)
-                        });
-                    rows[i].Id = datareader.GetGuid(0);
-                    i++;
+                        };
+                    rows.Add(sale);
+
                 }
+                sale.QuantitiesByProductID[datareader.GetGuid(2)] = datareader.GetInt32(3);
             }
         }
 
@@ -57,51 +122,6 @@ public class SaleService : ISaleService
         return rows;
     }
 
-    public Sale? GetSale(Guid id)
-    {
-
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = """
-            SELECT id, name, email FROM Sales 
-            WHERE id = $id;
-        """;
-        command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
-
-        try{
-            using var datareader = command.ExecuteReader();
-
-        if (!datareader.HasRows) return null;
-        else
-        {
-            while (datareader.Read())
-            {
-                {
-
-                        var sale = new Sale
-                        {
-                            Name = datareader.GetString(1),
-                            Email = datareader.GetString(2),
-                            Id = datareader.GetGuid(0)
-                        };
-                        return sale;
-                }
-            }
-        }
-        return null;
-        }
-        catch (SqliteException ex)
-        {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
-            throw new ApplicationException("Database operation failed");
-        }     
-
-
-    }
-    */
     
     public Sale CreateSale(Sale newSale)
     {

@@ -10,7 +10,32 @@ namespace CommerceAPI.Controllers
     {
         private readonly ISaleService _saleService = saleService;
 
+            [HttpGet]
+        public ActionResult<List<Sale>> GetAllSales()
+        {
+            try{return Ok(_saleService.GetAllSales());}
+            catch(ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }}
+        
+        [HttpGet("{id}")]
+        public ActionResult<Sale> GetSaleById(Guid id)
+        {
+        try{
+            var result = _saleService.GetSale(id);
 
+        if (result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+        }
+        catch(ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+        }}
         [HttpPost]
         public ActionResult<Sale> CreateSale(Sale sale)
         {
