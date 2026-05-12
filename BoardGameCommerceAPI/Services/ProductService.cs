@@ -57,7 +57,7 @@ public class ProductService : IProductService
         Console.WriteLine(id);
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, yearpublished, price FROM products WHERE id = UPPER(@id);
+            SELECT id, name, yearpublished, price FROM products WHERE id = @id;
         """;
         var sql_id = id.ToString();
         Console.WriteLine(sql_id);

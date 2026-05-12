@@ -103,7 +103,7 @@ public class DbInitializer
                         i++;
                         string[] fields = csvParser.ReadFields();
                         insert_command.Parameters.Clear();
-                        insert_command.Parameters.AddWithValue("$Id", Guid.NewGuid());
+                        insert_command.Parameters.AddWithValue("$Id", Guid.NewGuid().ToString());
                         insert_command.Parameters.AddWithValue("$Name", fields[0]);
                         insert_command.Parameters.AddWithValue("$Year", int.Parse(fields[1]));
                         insert_command.Parameters.AddWithValue("$Rank", float.Parse(fields[2]));
