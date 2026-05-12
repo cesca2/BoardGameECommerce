@@ -12,6 +12,7 @@ builder.Services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>(ser
             dataSource: "Default"));
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 
