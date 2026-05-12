@@ -40,7 +40,7 @@ namespace CommerceAPI.Controllers
         }}
 
                 [HttpPost]
-        public ActionResult<Customer> CreateSession(Customer customer)
+        public ActionResult<Customer> CreateCustomer(Customer customer)
         {
             var newcustomer = _customerService.CreateCustomer(customer);
             try
@@ -55,7 +55,7 @@ namespace CommerceAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Customer> DeleteSession(Guid id)
+        public ActionResult<Customer> DeleteCustomer(Guid id)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace CommerceAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Customer> UpdateSession(Guid id, [FromBody] Customer updatedCustomer)
+        public ActionResult<Customer> UpdateCustomer(Guid id, [FromBody] Customer updatedCustomer)
         {
   
             try
@@ -88,7 +88,7 @@ namespace CommerceAPI.Controllers
                     {
                         errors = new[]
                         {
-                        "Id is invalid, must match value in new Session"
+                        "Id is invalid, must match value in new Customer"
                     }
                     });
                 }

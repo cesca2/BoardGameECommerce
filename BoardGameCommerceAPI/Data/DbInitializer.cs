@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Data.Sqlite;
 using Microsoft.VisualBasic.FileIO;
-// id, name, yearpublished ,rank, bayesaverage, usersrated
+
 public class DbInitializer
 {
-    public static void Initialize(SqliteConnection connection, bool reInitialize = true)
+    public static void Initialize(SqliteConnection connection, bool reInitialize = false)
     {
         if (reInitialize)
         {
-            var lst = new List<string> { "products", "sales", "customers", "sales_products" };
+            var lst = new List<string> {  "sales_products", "sales", "products",  "customers",};
 
             foreach (string table in lst)
             {
@@ -47,7 +47,7 @@ public class DbInitializer
                 id TEXT NOT NULL PRIMARY KEY ,
                 customer_id INTEGERNOT NULL,
                 FOREIGN KEY (customer_id) 
-                    REFERENCES customers (id) 
+                    REFERENCES customers (id) ON DELETE CASCADE
             );";
 
         command3.ExecuteNonQuery();
@@ -58,8 +58,9 @@ public class DbInitializer
                 id TEXT NOT NULL PRIMARY KEY ,
                 product_id TEXT NOT NULL,
                 sale_id TEXT NOT NULL,
+                quantity INTEGER NOT NULL,
                 FOREIGN KEY (sale_id) 
-                    REFERENCES sales (id),
+                    REFERENCES sales (id) ON DELETE CASCADE,
                 FOREIGN KEY (product_id)
                     REFERENCES products (id)
             );";
