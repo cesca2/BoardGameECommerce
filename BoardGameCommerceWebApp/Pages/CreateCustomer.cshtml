@@ -1,0 +1,23 @@
+﻿@page
+@model CreateCustomerModel
+
+
+<h1>Add Customer</h1>
+
+<form method="post">
+<div>
+    <label>Email:</label>
+    <input type="text", asp-for="Email" />
+</div>
+<div>
+    <label>Name:</label>
+    <input type="text", asp-for="Name" />
+</div>
+@{ if (!@Model.ValidModelEntry) {
+        <p class="invalid_input">Invalid input</p>
+    }
+}
+<div>
+    <button type="submit" class="icon-btn send material-icons">send</button>
+</div>
+</form>

@@ -1,0 +1,25 @@
+﻿@page
+@model ProductModel
+
+<h1>Products</h1>
+
+<table class="records" class="text-center">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Year</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var product in Model.Products)
+    {
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.YearPublished</td>
+            <td>@product.Price</td>
+        </tr>
+    }
+    </tbody>
+</table>
