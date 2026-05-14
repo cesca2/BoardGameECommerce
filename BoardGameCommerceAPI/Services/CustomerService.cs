@@ -57,7 +57,7 @@ public class CustomerService : ICustomerService
         return rows;
     }
 
-    public Customer? GetCustomer(Guid id)
+    public Customer? GetCustomerById(Guid id)
     {
 
         using var connection = _dbContext.CreateConnection();
@@ -69,6 +69,50 @@ public class CustomerService : ICustomerService
             WHERE id = $id;
         """;
         command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
+
+        try{
+            using var datareader = command.ExecuteReader();
+
+        if (!datareader.HasRows) return null;
+        else
+        {
+            while (datareader.Read())
+            {
+                {
+
+                        var customer = new Customer
+                        {
+                            Name = datareader.GetString(1),
+                            Email = datareader.GetString(2),
+                            Id = datareader.GetGuid(0)
+                        };
+                        return customer;
+                }
+            }
+        }
+        return null;
+        }
+        catch (SqliteException ex)
+        {
+            var message = "SQLite Error" + ex.Message;
+            Console.WriteLine(message);
+            throw new ApplicationException("Database operation failed");
+        }     
+
+
+    }
+    public Customer? GetCustomerByEmail(string email)
+    {
+
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT id, name, email FROM Customers 
+            WHERE email = $email;
+        """;
+        command.Parameters.Add(new SqliteParameter("$email", email));
 
         try{
             using var datareader = command.ExecuteReader();

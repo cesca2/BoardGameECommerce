@@ -1,3 +1,5 @@
+using System.Net;
+
 public class CustomersApiClient
 {
     private readonly HttpClient _httpClient;
@@ -25,5 +27,18 @@ public class CustomersApiClient
         }
 
 
-}
-}
+    }
+
+    public async Task<GetCustomerResponse?> GetCustomerByEmail(string email)
+    {
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/Customers/lookup/{email}");
+        if (response.IsSuccessStatusCode){
+        return await _httpClient
+            .GetFromJsonAsync<GetCustomerResponse>($"api/Customers/lookup/{email}");
+    }
+    else
+        {
+            return null;
+        }
+    
+}}

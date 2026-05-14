@@ -25,7 +25,25 @@ namespace CommerceAPI.Controllers
         public ActionResult<Product> GetCustomerById(Guid id)
         {
         try{
-            var result = _customerService.GetCustomer(id);
+            var result = _customerService.GetCustomerById(id);
+
+        if (result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+        }
+        catch(ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+        }}
+
+        [HttpGet("lookup/{email}")]
+        public ActionResult<Product> GetCustomerByEmail(string email)
+        {
+        try{
+            var result = _customerService.GetCustomerByEmail(email);
 
         if (result == null)
         {

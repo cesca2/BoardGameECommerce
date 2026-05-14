@@ -1,0 +1,20 @@
+﻿@page
+@model LoginModel
+
+
+<h1>Customer Login</h1>
+
+<form method="post">
+<div>
+    <label>Email:</label>
+    <input type="text", asp-for="Email" />
+</div>
+
+@{ if (!@Model.ValidModelEntry) {
+        <p class="invalid_input">User not found with this email</p>
+    }
+}
+<div>
+    <button type="submit" class="icon-btn send material-icons">send</button>
+</div>
+</form>
