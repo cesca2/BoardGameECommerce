@@ -75,6 +75,10 @@ a {
     text-decoration: none;          /* normal */
 }
 
+a:hover {
+    color: blue
+}
+
 .icon {
   vertical-align: middle;
 }

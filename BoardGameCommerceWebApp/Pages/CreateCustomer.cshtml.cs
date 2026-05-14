@@ -34,6 +34,8 @@ public class CreateCustomerModel : PageModel
         else
         {
             _customersApi.CreateCustomer(customer);
+            HttpContext.Session.SetString("UserName", customer.Name);
+
         }
 
         return RedirectToPage("./Index");
