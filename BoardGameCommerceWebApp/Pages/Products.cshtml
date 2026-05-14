@@ -1,6 +1,7 @@
 ﻿@page
 @model ProductModel
 
+<script></script>
 <h1>Products</h1>
 
 <table class="records" class="text-center">
@@ -9,6 +10,8 @@
             <th>Name</th>
             <th>Year</th>
             <th>Price</th>
+            <th>Add</th>
+            <th>Quantity</th>
         </tr>
     </thead>
 
@@ -19,6 +22,8 @@
             <td>@product.Name</td>
             <td>@product.YearPublished</td>
             <td>@product.Price</td>
+            <td><button onclick="addToBasket('@product.Id')">Add</button></td>
+            <td class = "quantity" data-id="@product.Id"></td>
         </tr>
     }
     </tbody>

@@ -27,11 +27,11 @@ public class ProductsApiClient
         }).ToList() ?? [];
     }
 
-    /*
-    public async Task<Product?> GetProductAsync(int id)
+    
+    public async Task<Product?> GetProductAsync(string id)
     {
         return await _httpClient
             .GetFromJsonAsync<Product>($"api/Products/{id}");
     }
-    */
+    
 }
