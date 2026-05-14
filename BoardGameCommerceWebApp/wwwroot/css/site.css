@@ -88,3 +88,7 @@ a {
 .icon:hover {
     color: blue
 }
+
+.navbar-brand{
+  font-size: 30pt;
+}
