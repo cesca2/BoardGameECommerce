@@ -1,0 +1,65 @@
+﻿@page
+@model CheckoutModel
+<h1>Checkout summary</h1>
+
+@{double total = 0.0;}
+<form method="post" id="autoForm" asp-page-handler="Basket">
+    <input type="hidden" name="Basket" id="Basket" />
+</form>
+
+
+<script>
+
+    window.addEventListener("load", function () {
+        if (sessionStorage.getItem("submitted") == "true")
+            return;
+        // Read from localStorage
+        const basket = JSON.parse(localStorage.getItem("basket"));
+
+        console.log(basket);
+        basket.forEach(entry => {
+            console.log(entry.productId);
+            console.log(entry.quantity);
+        });
+        document.getElementById("Basket").value = JSON.stringify(basket);
+        document.getElementById("autoForm").submit();
+        sessionStorage.setItem("submitted", "true");
+
+        
+    });
+    window.addEventListener("beforeunload", function () {
+
+    sessionStorage.removeItem("submitted");
+});
+</script>
+
+<div class="page">
+<table class="records" class="text-center">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+
+
+        </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var product in Model.Products)
+    {
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.Quantity</td>
+            <td>@(product.Price * product.Quantity)</td>
+
+        </tr>
+        total += product.Price * product.Quantity;
+    }
+    </tbody>
+</table>
+</div>
+<h2>Total cost: £@total.ToString("0.00")</h2>
+<form asp-page-handler="Checkout">
+<button type="submit" class="icon-btn send material-icons">send</button>
+</form>
