@@ -4,7 +4,7 @@
 
 <h1>Customer Login</h1>
 
-
+<div class="spacer"></div>
 
 <form method="post">
 <div>
@@ -16,9 +16,10 @@
         <p class="invalid_input">User not found with this email</p>
     }
 }
+<div class="spacer"></div>
 <div>
     <button type="submit" class="icon-btn send material-icons">send</button>
 </div>
 </form>
-
-<a asp-page="./CreateCustomer", type="submit", class="link_icon confirm", id="new_record"><i class="material-icons icon">person_add</i>  </a><span>New customer? Register here</span>
+<div class="spacer"></div>
+<a style="font-size: 20px;" asp-page="./CreateCustomer", type="submit", class="link_icon confirm", id="new_record"><i class="material-icons icon">person_add</i> New customer? Register here </a>
