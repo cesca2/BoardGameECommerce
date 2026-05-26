@@ -31,14 +31,7 @@ body {
 }
 
 
-.records {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 12pt;
-    font-family: sans-serif;
-    min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
+
 
 button {
     background-color: #009879;
@@ -49,39 +42,49 @@ button {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-
-.records thead tr {
-    background-color: #009879;
-    color: #ffffff;
-    text-align: left;
+.records {
+    border-collapse: separate; 
+    border-spacing: 0 10px;   
+    margin: 25px 0;
+    font-size: 12pt;
+    font-family: sans-serif;
+    min-width: 400px;
 }
+
+
+.records tbody tr {
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    transition: all 0.2s ease;
+}
+
+
+.records tbody tr:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+}
+
 
 .records th,
 .records td {
     padding: 12px 15px;
-    font-size: 15px 12px;
+    font-size: 15px;
+    background: transparent;
 }
 
-.records tbody tr {
-    border-bottom: 1px solid #dddddd;
+.records thead tr {
+    background-color: #009879;
+    color: white;
 }
 
 .records tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
 
-.records tbody tr:last-of-type {
-    border-bottom: 2px solid #009879;
-}
-
-.records tbody tr.active-row {
-    font-weight: bold;
-    color: #009879;
-}
 
 a {
     color: black;
-    text-decoration: none;          /* normal */
+    text-decoration: none;      
 }
 
 a:hover {
@@ -98,9 +101,6 @@ a:hover {
   gap: 20px;
 }
 
-.icon:hover {
-    color: blue
-}
 
 .navbar-brand{
   font-size: 30pt;
@@ -109,3 +109,21 @@ a:hover {
 .spacer {
   height: 30px;
 }
+
+.invalid_input {
+  color: red;
+}
+
+button {
+    border-radius: 0.75rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+

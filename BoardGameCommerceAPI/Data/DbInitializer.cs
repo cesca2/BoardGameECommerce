@@ -45,7 +45,7 @@ public class DbInitializer
         command3.CommandText = @"
               CREATE TABLE IF NOT EXISTS sales (
                 id TEXT NOT NULL PRIMARY KEY ,
-                customer_id INTEGERNOT NULL,
+                customer_id INTEGER NOT NULL,
                 FOREIGN KEY (customer_id) 
                     REFERENCES customers (id) ON DELETE CASCADE
             );";
