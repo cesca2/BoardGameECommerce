@@ -40,6 +40,15 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
+button {
+    background-color: #009879;
+    color: white;
+    border-collapse: collapse;
+    font-size: 12pt;
+    font-family: sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
 
 .records thead tr {
     background-color: #009879;
@@ -95,4 +104,8 @@ a:hover {
 
 .navbar-brand{
   font-size: 30pt;
+}
+
+.spacer {
+  height: 30px;
 }

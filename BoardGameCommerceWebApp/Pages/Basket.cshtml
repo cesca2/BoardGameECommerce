@@ -31,7 +31,7 @@
 });
 </script>
 
-
+<div class="page">
 <h1>Basket</h1>
 <table class="records" class="text-center">
     <thead>
@@ -51,7 +51,7 @@
             <td>@product.Name</td>
             <td>@product.Quantity</td>
             <td>@(product.Price * product.Quantity)</td>
-            <td><button onclick="removeFromBasket('@product.Id')">Remove</button></td>
+            <td><form method="get" asp-page="./Basket"><button onclick="removeFromBasket('@product.Id')">Remove from basket</button></form></td>
 
         </tr>
         total += product.Price * product.Quantity;
@@ -60,5 +60,9 @@
 </table>
 
 <h2>Total cost: £@total.ToString("0.00")</h2>
-<a asp-page="./Checkout, type="submit", class="link_icon confirm", id="storefront"><i class="material-icons icon">shopping_cart_checkout</i></a> <span>Checkout</span>
+<div class="spacer"></div>
 
+<form method="get" asp-page="./Checkout",>
+<button style="font-size: 40px;"  type="submit", class="link_icon confirm", id="storefront"><i class="material-icons icon">shopping_cart_checkout</i> Checkout</button>
+</form>
+ <div class="page">

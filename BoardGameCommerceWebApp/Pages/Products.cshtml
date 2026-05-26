@@ -10,8 +10,8 @@
             <th>Name</th>
             <th>Year</th>
             <th>Price</th>
-            <th>Add</th>
-            <th>Quantity</th>
+            <th></th>
+            <th>In basket</th>
         </tr>
     </thead>
 
@@ -22,7 +22,7 @@
             <td>@product.Name</td>
             <td>@product.YearPublished</td>
             <td>@product.Price</td>
-            <td><button onclick="addToBasket('@product.Id')">Add</button></td>
+            <td><button onclick="addToBasket('@product.Id')">Add to basket</button></td>
             <td class = "quantity" data-id="@product.Id"></td>
         </tr>
     }
