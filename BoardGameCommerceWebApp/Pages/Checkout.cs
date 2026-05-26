@@ -7,8 +7,8 @@ namespace BoardGameCommerce.Pages;
 
 public class CheckoutModel : PageModel
 {
+    private readonly SalesApiClient _salesApi;
     private readonly ProductsApiClient _productsApi;
-
      public List<Product> Products { get; set; } = [];
 
     [BindProperty]
@@ -22,9 +22,12 @@ public class CheckoutModel : PageModel
     public int quantity {get; set;}
     }
 
+    public Dictionary<string, int> BasketQuantitiesByProductId = new Dictionary<string, int>();
 
-    public CheckoutModel(ProductsApiClient productsApi)
+
+    public CheckoutModel(SalesApiClient salesApi, ProductsApiClient productsApi)
     {
+        _salesApi = salesApi;
         _productsApi = productsApi;
     }
 
@@ -52,11 +55,34 @@ public class CheckoutModel : PageModel
             Products.Add(product);
 
         }
+
+        HttpContext.Session.SetString(
+        "BasketProducts",
+        JsonSerializer.Serialize(Products)
+);
         
         
     }
     public async Task<IActionResult> OnPostCheckoutAsync()
     {
+
+        var  customerId = HttpContext.Session.GetString("UserId");
+
+        var  products_json = HttpContext.Session.GetString("BasketProducts");
+        var products =
+            JsonSerializer.Deserialize<List<Product>>(products_json);
+        
+        foreach (var product in products)
+        {
+            BasketQuantitiesByProductId[product.Id.ToString()] = product.Quantity;
+
+            
+        }
+        Console.WriteLine(BasketQuantitiesByProductId);
+        var sale = new CreateSaleRequest{customer_Id=customerId, quantitiesByProductID=BasketQuantitiesByProductId};
+        
+        await _salesApi.CreateSale(sale);
+        
         return RedirectToPage("./Index");
     }
 }

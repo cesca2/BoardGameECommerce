@@ -34,6 +34,10 @@ public class LoginModel : PageModel
         if (customer is not null)
             {
                 HttpContext.Session.SetString("UserName", customer.Name);
+                HttpContext.Session.SetString("UserEmail", customer.Email);
+                HttpContext.Session.SetString("UserId", customer.Id.ToString());
+
+
                 return RedirectToPage("./Index");}
         else
         {

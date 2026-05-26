@@ -4,6 +4,14 @@ let basket = JSON.parse(localStorage.getItem("basket")) || []
 
 function saveBasket() {
     localStorage.setItem("basket", JSON.stringify(basket));
+    let total = getBasketTotal();
+    localStorage.setItem("basketTotal", total.toString());
+
+
+}
+
+function clearBasket() {
+    localStorage.setItem("basket", JSON.stringify([]));
 }
 
 function addToBasket(productId) {
@@ -64,11 +72,21 @@ function getBasketQuantity(productId) {
     return result;
 }
 
+function getBasketTotal(){
+    var total = 0
+    basket.forEach(entry => {
+            console.log(entry.productId);
+            total+=entry.quantity;
+        });
+    return total;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".quantity").forEach(td => {
         const id = td.dataset.id;
         console.log(td.dataset.id);
         td.textContent = getBasketQuantity(id);
+        
     });
+    saveBasket();
 });
