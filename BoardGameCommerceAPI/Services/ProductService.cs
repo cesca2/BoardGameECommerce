@@ -49,7 +49,7 @@ public class ProductService : IProductService
         return rows;
     }
 
-    public Product? GetProduct(Guid id)
+    public Product? GetProductById(Guid id)
     {
 
         using var connection = _dbContext.CreateConnection();
@@ -100,6 +100,6 @@ public class ProductService : IProductService
 
     }
         
-
+   
 
     }

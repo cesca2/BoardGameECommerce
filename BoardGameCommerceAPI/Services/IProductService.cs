@@ -2,5 +2,5 @@
 public interface IProductService
 {
     public List<Product>? GetAllProducts();
-    public Product? GetProduct(Guid id);
+    public Product? GetProductById(Guid id);
 }

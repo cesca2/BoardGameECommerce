@@ -11,9 +11,17 @@ namespace CommerceAPI.Controllers
         private readonly IProductService _productService = productService;
 
         [HttpGet]
-        public ActionResult<List<Product>> GetAllProducts()
+        public ActionResult<List<Product>> GetAllProducts([FromQuery] PaginationParams paginationParams)
         {
-            try{return Ok(_productService.GetAllProducts());}
+
+            try{
+                var products = _productService.GetAllProducts();
+                if (!string.IsNullOrEmpty(paginationParams.SearchTerm))
+                {
+                    products = products.Where(x=>x.Name.ToLower().Contains(paginationParams.SearchTerm.ToLower())).ToList();
+                }
+                return Ok(products);
+                }
             catch(ApplicationException ex)
             {
                 return StatusCode(500, new { error = ex.Message });
@@ -25,7 +33,7 @@ namespace CommerceAPI.Controllers
         public ActionResult<Product> GetProductById(Guid id)
         {
         try{
-            var result = _productService.GetProduct(id);
+            var result = _productService.GetProductById(id);
 
         if (result == null)
         {
@@ -38,4 +46,5 @@ namespace CommerceAPI.Controllers
             {
                 return StatusCode(500, new { error = ex.Message });
         }}
+        
 }}
