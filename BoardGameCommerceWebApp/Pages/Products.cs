@@ -5,6 +5,9 @@ namespace BoardGameCommerce.Pages;
 
 public class ProductModel : PageModel
 {
+    [BindProperty(SupportsGet = true)]
+    public string? Query { get; set; }
+
     private readonly ProductsApiClient _productsApi;
 
     public List<Product> Products { get; set; } = [];
@@ -15,7 +18,11 @@ public class ProductModel : PageModel
     }
 
     public async Task OnGetAsync()
+
     {
-        Products = await _productsApi.GetProductsAsync();
+        Console.WriteLine("SEARCH"+Query);
+   
+        Products = await _productsApi.GetProductsAsync(Query);
+
     }
 }

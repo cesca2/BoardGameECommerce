@@ -7,10 +7,17 @@ public class ProductsApiClient
         _httpClient = httpClient;
     }
 
-    public async Task<List<Product>> GetProductsAsync()
+    public async Task<List<Product>> GetProductsAsync(string searchTerm)
     {
-        var response = await _httpClient.GetAsync("api/Products");
+        HttpResponseMessage response;
+        if (string.IsNullOrEmpty(searchTerm)){
+            response = await _httpClient.GetAsync($"api/Products");
+        }   
+        else
+        {
+            response = await _httpClient.GetAsync($"api/Products?SearchTerm={searchTerm}");
 
+        }
         response.EnsureSuccessStatusCode();
 
         var products = await response.Content
