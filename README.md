@@ -1,6 +1,6 @@
 # Board Game eCommerce 
 
-C# .NET web API designed to be a eCommerce engine to support a mock board game retail business. 
+C# .NET Razor Pages project utilising a web API designed to be an eCommerce engine to support a mock board game retail business. 
 
 ## Features
 
@@ -8,7 +8,10 @@ C# .NET web API designed to be a eCommerce engine to support a mock board game r
     * Products
     * Sales
     * Customers
-
+* Provide User-Interface with Razor Pages ASP.NET Core, including:
+    * User Registration & Login with POST/GET
+    * Basket & Checkout to complete a sale with POST request
+    * Complete product catalogue display with search capability (GET)
 
 ## Pre-requsites 
 
@@ -31,10 +34,11 @@ Go to the project directory
   cd BoardGameECommerce
 ```
 
-Run the application
+Run the applications
 
 ```bash
   dotnet run --project BoardGameCommerceAPI
+  dotnet run --project BoardGameCommerceApp
 ```
 
 
@@ -50,6 +54,64 @@ In progress
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `string` | **optional**. Id of item to fetch , must be valid Guid|
+| Query Parameters | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `SearchTerm`      | `string` | **Optional**. Key term to filter product name  |
+
+
+### Get customer
+
+```http
+  GET /api/Customers
+```
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **optional**. Id of item to fetch , must be valid Guid|
+
+### Create Customer
+
+```http
+  POST /api/Customers
+```
+
+EXAMPLE INPUT:
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name": "Jane Doe",
+  "email": "jdoe@email.com"
+}
+```
+| Field      | Type    | Required | Description                           |
+| ---------- | ------- | -------- | ----------------------------------    |
+| `id`     | string  | Optional     | Must be valid Guid  |
+| `name`    | string  | Yes      | Name of customer |
+| `email` | string  | Yes      | Customer email. **must be unique** |
+
+### Create Sale
+
+```http
+  POST /api/Sales
+```
+
+EXAMPLE INPUT:
+```json
+{
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "customer_Id": "3fa85f64-5717-4562-b3fc-2c963f66afa8",
+    "quantitiesByProductID": {
+      "3fa85f64-5717-4562-b3fc-2c963f66afa2": 1,
+      "3fa85f64-5717-4562-b3fc-2c963f66afa1": 2,
+      "3fa85f64-5717-4562-b3fc-2c963f66afa4": 3
+    }
+}
+```
+| Field      | Type    | Required | Description                           |
+| ---------- | ------- | -------- | ----------------------------------    |
+| `id`     | string  | Optional     | Must be valid Guid  |
+| `customer_id`    | string  | Yes      | Must be valid Guid. Customer Id as in /Customers endpoint |
+| `quantitiesByProductID` | Dictionary | Yes      | Product Ids as in /Products endpoint with associated quantity included in the sale.|
+
 
 
 ## Data info
