@@ -1,7 +1,9 @@
 ﻿@page
 @model CheckoutModel
-<h1>Checkout summary</h1>
 
+<div class="d-flex justify-content-center mt-5">
+<h1>Checkout summary</h1>
+</div>
 @{double total = 0.0;}
 <form method="post" id="autoForm" asp-page-handler="Basket">
     <input type="hidden" name="Basket" id="Basket" />
@@ -33,8 +35,8 @@
 });
 </script>
 
-<div class="page">
-<table class="records" class="text-center">
+<div class="d-flex justify-content-center mt-5">
+    <table class="records" class="text-center">
     <thead>
         <tr>
             <th>Name</th>
@@ -59,7 +61,11 @@
     </tbody>
 </table>
 </div>
+<div class="d-flex justify-content-center mt-5">
 <h2>Total cost: £@total.ToString("0.00")</h2>
+</div>
+<div class="d-flex justify-content-center mt-5">
 <form asp-page-handler="Checkout">
-<button type="submit" class="icon-btn send material-icons">send</button>
+<button type="submit" > Place Order <i class="icon send material-icons">send</i></button>
 </form>
+</div>

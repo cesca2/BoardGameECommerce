@@ -1,25 +1,27 @@
 ﻿@page
 @model CreateCustomerModel
 
-
-<h1>Add Customer</h1>
-<div class="spacer"></div>
-
+<div class="d-flex justify-content-center mt-5">
+<h1>Create Customer</h1>
+</div>
+<div class="d-flex justify-content-center mt-5">
 <form method="post">
 <div>
-    <label>Email:</label>
-    <input type="text", asp-for="Email" />
+    <label>Email: </label>
+    <input class="rounded-pill" type="text", asp-for="Email" />
 </div>
-<div>
-    <label>Name:</label>
-    <input type="text", asp-for="Name" />
+<div class="spacer"></div>
+<div >
+    <label>Name: </label>
+    <input class="rounded-pill" type="text", asp-for="Name" />
 </div>
 @{ if (!@Model.ValidModelEntry) {
+        <div class="d-flex justify-content-center mt-5">
         <p class="invalid_input">Invalid input</p>
+        </div>
     }
 }
-<div class="spacer"></div>
-<div>
+<div class="d-flex justify-content-center mt-5">
     <button type="submit" class="icon-btn send material-icons">send</button>
 </div>
 </form>
