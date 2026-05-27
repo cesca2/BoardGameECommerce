@@ -81,7 +81,7 @@ public class SaleService : ISaleService
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-        SELECT sales.id, customer_id, product_id, quantity 
+        SELECT sales.id, customer_id, product_id, quantity, date, time 
         FROM sales JOIN sales_products ON sales.id = sales_products.sale_id ;
         """;
         try
@@ -103,7 +103,9 @@ public class SaleService : ISaleService
                         {
                             Customer_Id = datareader.GetString(1),
                             QuantitiesByProductID = new(),
-                            Id = datareader.GetGuid(0)
+                            Id = datareader.GetGuid(0),
+                            Date = DateOnly.Parse(datareader.GetString(4)),
+                            Time = TimeOnly.Parse(datareader.GetString(5))
                         };
                     rows.Add(sale);
 
@@ -138,15 +140,19 @@ public class SaleService : ISaleService
         using var sales_command = connection.CreateCommand();
         sales_command.CommandText =
         """
-                INSERT INTO sales(id, customer_id) 
+                INSERT INTO sales(id, customer_id, date, time) 
                 VALUES 
                 ( $Id,
-                  $Customer_Id )
+                  $Customer_Id,
+                  $Date,
+                  $Time )
                 ;
             """;
         
         sales_command.Parameters.AddWithValue("$Id", newSale.Id.ToString());
         sales_command.Parameters.AddWithValue("$Customer_Id", newSale.Customer_Id);
+        sales_command.Parameters.AddWithValue("$Time", newSale.Time.ToString());
+        sales_command.Parameters.AddWithValue("$Date", newSale.Date.ToString());
         
         int sales_rowsAffected = sales_command.ExecuteNonQuery();
 

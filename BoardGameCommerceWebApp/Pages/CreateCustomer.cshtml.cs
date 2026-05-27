@@ -12,6 +12,8 @@ public class CreateCustomerModel : PageModel
     [BindProperty] 
     public string Email {get; set;}
     public bool ValidModelEntry = true;
+    public bool CustomerExists = false;
+
 
     public CreateCustomerModel(CustomersApiClient customersApi)
     {
@@ -30,7 +32,7 @@ public class CreateCustomerModel : PageModel
         var customerExists = await _customersApi.GetCustomerByEmail(Email);
         if (customerExists is not null)
         {
-            ValidModelEntry=false;
+            CustomerExists=true;
             return Page();
             
         }

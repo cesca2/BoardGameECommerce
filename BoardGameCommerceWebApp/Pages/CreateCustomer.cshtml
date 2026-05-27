@@ -17,6 +17,12 @@
 </div>
 @{ if (!@Model.ValidModelEntry) {
         <div class="d-flex justify-content-center mt-5">
+        <p class="invalid_input">Invalid input</p>
+        </div>
+    }
+}
+@{ if (@Model.CustomerExists) {
+        <div class="d-flex justify-content-center mt-5">
         <p class="invalid_input">Customer already registered with entered email</p>
         </div>
     }
@@ -25,3 +31,4 @@
     <button type="submit" class="icon-btn send material-icons">send</button>
 </div>
 </form>
+</div>

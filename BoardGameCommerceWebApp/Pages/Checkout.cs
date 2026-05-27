@@ -82,7 +82,7 @@ public class CheckoutModel : PageModel
             
         }
         Console.WriteLine(BasketQuantitiesByProductId);
-        var sale = new CreateSaleRequest{customer_Id=customerId, quantitiesByProductID=BasketQuantitiesByProductId};
+        var sale = new CreateSaleRequest{customer_Id=customerId, quantitiesByProductID=BasketQuantitiesByProductId, Date= DateOnly.FromDateTime(DateTime.Now), Time=TimeOnly.FromDateTime(DateTime.Now)};
         
         await _salesApi.CreateSale(sale);
         
