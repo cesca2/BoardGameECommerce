@@ -7,7 +7,7 @@
 @{if (Model.Products.Count > 0)
 {
 
-<h1 class="d-flex justify-content-center mt-5">Board Games (@Model.Products.Count)</h1>
+<h1 class="d-flex justify-content-center mt-5">@Model.Query Board Games (@Model.Products.Count)</h1>
 <div class="d-flex justify-content-center mt-5">
 <form class="input-group w-50" method="get" asp-page="./Products" class="d-flex gap-2">
     <input class="form-control rounded-pill"" type="search" name="query" placeholder="Search Our Range..." />
