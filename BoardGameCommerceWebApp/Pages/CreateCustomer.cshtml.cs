@@ -26,6 +26,16 @@ public class CreateCustomerModel : PageModel
             Email = Email
         };
 
+        // Check for existing customer with same email
+        var customerExists = await _customersApi.GetCustomerByEmail(Email);
+        if (customerExists is not null)
+        {
+            ValidModelEntry=false;
+            return Page();
+            
+        }
+
+
         if (!ModelState.IsValid){
                 ValidModelEntry=false;
                 return Page();
