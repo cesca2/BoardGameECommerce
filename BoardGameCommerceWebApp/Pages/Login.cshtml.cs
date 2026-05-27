@@ -29,7 +29,7 @@ public class LoginModel : PageModel
 
     
 
-        RedirectToPage("./Index");
+        //RedirectToPage("./Index");
         
         if (customer is not null)
             {
@@ -37,8 +37,14 @@ public class LoginModel : PageModel
                 HttpContext.Session.SetString("UserEmail", customer.Email);
                 HttpContext.Session.SetString("UserId", customer.Id.ToString());
 
-
-                return RedirectToPage("./Index");}
+                if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
+                    { return RedirectToPage("./Checkout");
+                        
+                    }
+                else {
+                    return RedirectToPage("./Index");
+                }
+            }
         else
         {
             ValidModelEntry=false;

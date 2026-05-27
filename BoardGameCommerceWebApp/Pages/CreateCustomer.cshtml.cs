@@ -18,7 +18,7 @@ public class CreateCustomerModel : PageModel
         _customersApi = customersApi;
     }
 
-    public  IActionResult OnPost()
+    public  async Task<IActionResult> OnPostAsync()
     {
         CreateCustomerRequest customer = new CreateCustomerRequest
         {
@@ -33,12 +33,21 @@ public class CreateCustomerModel : PageModel
         
         else
         {
-            _customersApi.CreateCustomer(customer);
-            HttpContext.Session.SetString("UserName", customer.Name);
+            await _customersApi.CreateCustomer(customer);
+            var customerAPI = await _customersApi.GetCustomerByEmail(Email);
+            HttpContext.Session.SetString("UserName", customerAPI.Name);
+            HttpContext.Session.SetString("UserEmail", customerAPI.Email);
+            HttpContext.Session.SetString("UserId", customerAPI.Id.ToString());
 
         }
 
+        if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
+                    { return RedirectToPage("./Checkout");
+                        
+                    }
+        else {
         return RedirectToPage("./Index");
+        }
     }
 
 

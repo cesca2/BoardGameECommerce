@@ -36,7 +36,10 @@ public class CheckoutModel : PageModel
         var  username = HttpContext.Session.GetString("UserName");
         Console.WriteLine(username);
 
-        if(string.IsNullOrWhiteSpace(username)){return RedirectToPage("./Login");}
+        if(string.IsNullOrWhiteSpace(username)){
+            HttpContext.Session.SetInt32("CheckoutRequested", 1); 
+            return RedirectToPage("./Login");}
+        
         else {return Page();}
     }
 
