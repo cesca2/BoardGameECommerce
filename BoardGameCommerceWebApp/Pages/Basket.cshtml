@@ -55,7 +55,7 @@
         <tr>
             <td>@product.Name</td>
             <td>@product.Quantity</td>
-            <td>@(product.Price * product.Quantity)</td>
+            <td>£@((product.Price * product.Quantity).ToString("0.00"))</td>
             <td><form method="get" asp-page="./Basket"><button onclick="removeFromBasket('@product.Id')">Remove from basket</button></form></td>
 
         </tr>

@@ -32,7 +32,7 @@
         <tr>
             <td>@product.Name</td>
             <td>@product.YearPublished</td>
-            <td>@product.Price</td>
+            <td>£@product.Price.ToString("0.00")</td>
             <td><button onclick="addToBasket('@product.Id')">Add to basket</button></td>
             <td class = "quantity" data-id="@product.Id"></td>
         </tr>

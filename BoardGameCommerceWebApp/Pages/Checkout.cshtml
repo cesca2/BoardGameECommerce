@@ -53,7 +53,7 @@
         <tr>
             <td>@product.Name</td>
             <td>@product.Quantity</td>
-            <td>@(product.Price * product.Quantity)</td>
+            <td>£@((product.Price * product.Quantity)).ToString("0.00")</td>
 
         </tr>
         total += product.Price * product.Quantity;
