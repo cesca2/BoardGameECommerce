@@ -33,6 +33,8 @@ function addToBasket(productId) {
         console.log(td.dataset.id);
         td.textContent = getBasketQuantity(id);
     });
+
+    location.reload();
 }
 
 function removeFromBasket(productId) {
@@ -89,4 +91,18 @@ document.addEventListener("DOMContentLoaded", () => {
         
     });
     saveBasket();
+});
+
+function updateBasketTotal() {
+        document.querySelectorAll("#basket-total").forEach(a => {
+        a.innerHTML += "(" + getBasketTotal() + ")";
+        
+         
+    });
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateBasketTotal();
+
 });

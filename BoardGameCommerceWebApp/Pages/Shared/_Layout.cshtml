@@ -36,7 +36,7 @@ var login = "";}
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav ms-auto gap-3">
                         <li class="nav-item">
-                            @{<a class="nav-link" asp-page="./Basket", type="submit", class="link_icon confirm", id="storefront"><i class="material-icons icon">shopping_cart</i> Basket </a> }
+                            @{<a id = "basket-total" class="nav-link" asp-page="./Basket", type="submit"><i class="material-icons icon">shopping_cart</i> Basket </a> }
                         </li>
                         
                         @{if(string.IsNullOrWhiteSpace(username)){
