@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace CommerceAPI.Controllers
 {
@@ -36,6 +36,8 @@ namespace CommerceAPI.Controllers
             {
                 return StatusCode(500, new { error = ex.Message });
         }}
+
+        [Authorize]
         [HttpPost]
         public ActionResult<Sale> CreateSale(Sale sale)
         {

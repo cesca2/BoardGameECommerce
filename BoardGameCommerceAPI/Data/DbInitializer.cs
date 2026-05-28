@@ -8,7 +8,7 @@ public class DbInitializer
     {
         if (reInitialize)
         {
-            var lst = new List<string> {  "sales_products", "sales", "products",  "customers",};
+            var lst = new List<string> {  "sales_products", "sales", "products",  "users",};
 
             foreach (string table in lst)
             {
@@ -33,10 +33,12 @@ public class DbInitializer
 
         var command2 = connection.CreateCommand();
         command2.CommandText = @"
-              CREATE TABLE IF NOT EXISTS customers (
+              CREATE TABLE IF NOT EXISTS users (
                 id TEXT NOT NULL PRIMARY KEY ,
+                role TEXT NOT NULL DEFAULT 'customer',
                 name TEXT NOT NULL,
-                email TEXT NOT NULL UNIQUE
+                email TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL
             );";
 
         command2.ExecuteNonQuery();
@@ -49,7 +51,7 @@ public class DbInitializer
                 date TEXT NOT NULL, 
                 time TEXT NOT NULL,
                 FOREIGN KEY (customer_id) 
-                    REFERENCES customers (id) ON DELETE CASCADE
+                    REFERENCES users (id) ON DELETE CASCADE
             );";
 
         command3.ExecuteNonQuery();

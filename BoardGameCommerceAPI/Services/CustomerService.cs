@@ -1,279 +1,109 @@
-using Microsoft.Data.Sqlite;
-using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Data;
 
 
 public class CustomerService : ICustomerService
 {
-    private readonly IDbConnectionFactory _dbContext;
-
-    public CustomerService(IDbConnectionFactory dbContext)
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IPasswordHasher<Customer> _hasher;
+    private readonly IConfiguration _config;
+    public CustomerService(ICustomerRepository customerRepository, IConfiguration config, IPasswordHasher<Customer> hasher)
     {
-        _dbContext = dbContext;
+        _customerRepository = customerRepository;
+        _config = config;
+        _hasher = hasher;
 
     }
+    
 
-    public List<Customer>? GetAllCustomers()
+    public AuthResult Login(CustomerDTO dto)
     {
-
-        List<Customer> rows = new ();
-
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = """
-            SELECT id, name, email FROM customers
-        """;
-        try
+        var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
+        if (customerexists is  null)
         {
-        using var datareader = command.ExecuteReader();
-        var i = 0;
+            return AuthResultFactory.Fail("Invalid login details provided");
+        }
 
-        if (!datareader.HasRows) return rows;
+        var hash = _hasher.VerifyHashedPassword(customerexists, customerexists.PasswordHash, dto.Password);
+        if (hash== PasswordVerificationResult.Success)
+        {
+               var token = GenerateCustomerJWT(customerexists);
+               return AuthResultFactory.Ok(token);
+        }
         else
         {
-            while (datareader.Read())
-            {
-                {
-                    rows.Add(new Customer
-                        {
-                            Name = datareader.GetString(1),
-                            Email = datareader.GetString(2),
-                            Id = datareader.GetGuid(0)
-                        });
-                    rows[i].Id = datareader.GetGuid(0);
-                    i++;
-                }
-            }
+            return AuthResultFactory.Fail("Invalid login details provided");
         }
+     
 
-        }
-        catch (SqliteException ex)
+    }
+    
+
+    public AuthResult Register(CustomerDTO dto)
+    {
+        var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
+        
+        if (customerexists is not null)
         {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
-            throw new ApplicationException("Database operation failed");
+            return AuthResultFactory.Fail("User with email already exists");
         }
-        return rows;
+        var customer = new Customer
+        {
+            Email=dto.Email,
+            Name=dto.Name
+        };
+        
+        customer.PasswordHash = _hasher.HashPassword(customer, dto.Password);
+
+        var affected = _customerRepository.CreateCustomer(customer);
+
+        if (affected == 0)
+        { return AuthResultFactory.Fail("Customer was not created successfully");}
+        
+        var token = GenerateCustomerJWT(customer);
+        
+        return AuthResultFactory.Ok(token);
+    
+
+    }
+    public Sale CreateSale(Sale sale)
+    {
+        return new Sale();
+
     }
 
     public Customer? GetCustomerById(Guid id)
     {
-
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = """
-            SELECT id, name, email FROM Customers 
-            WHERE id = $id;
-        """;
-        command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
-
-        try{
-            using var datareader = command.ExecuteReader();
-
-        if (!datareader.HasRows) return null;
-        else
-        {
-            while (datareader.Read())
-            {
-                {
-
-                        var customer = new Customer
-                        {
-                            Name = datareader.GetString(1),
-                            Email = datareader.GetString(2),
-                            Id = datareader.GetGuid(0)
-                        };
-                        return customer;
-                }
-            }
-        }
-        return null;
-        }
-        catch (SqliteException ex)
-        {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
-            throw new ApplicationException("Database operation failed");
-        }     
-
-
+        return _customerRepository.GetCustomerById(id);
     }
-    public Customer? GetCustomerByEmail(string email)
+
+
+    // JWT token creation
+    private string GenerateCustomerJWT(Customer customer)
     {
-
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = """
-            SELECT id, name, email FROM Customers 
-            WHERE email = $email;
-        """;
-        command.Parameters.Add(new SqliteParameter("$email", email));
-
-        try{
-            using var datareader = command.ExecuteReader();
-
-        if (!datareader.HasRows) return null;
-        else
-        {
-            while (datareader.Read())
-            {
-                {
-
-                        var customer = new Customer
-                        {
-                            Name = datareader.GetString(1),
-                            Email = datareader.GetString(2),
-                            Id = datareader.GetGuid(0)
-                        };
-                        return customer;
-                }
-            }
-        }
-        return null;
-        }
-        catch (SqliteException ex)
-        {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
-            throw new ApplicationException("Database operation failed");
-        }     
-
-
-    }
-
-    
-    public Customer CreateCustomer(Customer newCustomer)
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]!));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        var userClaims = new[]
     {
-       
-        string message;
+        new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
+        new Claim(ClaimTypes.Role, "Customer"),
+    };
 
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: userClaims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: credentials
+            );
 
-        using var command = connection.CreateCommand();
-        command.CommandText =
-        """
-                INSERT INTO customers(id, name, email) 
-                VALUES 
-                ( $Id,
-                  $Name, 
-                  $Email)
-                ;
-            """;
-        
-        command.Parameters.AddWithValue("$Id", newCustomer.Id.ToString());
-        command.Parameters.AddWithValue("$Name", newCustomer.Name);
-        command.Parameters.AddWithValue("$Email", newCustomer.Email);
-
-        try
-        {
-            int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected > 0)
-            {
-                message = "Successfully inserted row";
-            }
-            else
-            {
-                message = "No row update";
-            }
-
-        }
-        catch (SqliteException ex)
-        {
-            message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
-            throw new ApplicationException("Database operation failed");
-        }
-
-        return newCustomer;
-
-    }
-    public string? DeleteCustomer(Guid id)
-    {
-        string message;
-
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText =
-        """
-                DELETE FROM customers
-                WHERE id = $ID
-                ;
-        """;
-        command.Parameters.AddWithValue("$ID", id.ToString());
-
-        try
-        {
-            int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected > 0)
-            {
-                message = $"Successfully deleted entry with id: {id}";
-            }
-            else
-            {
-                return null;
-            }
-
-        }
-        catch (SqliteException ex)
-        {
-            message = "SQLite Error" + ex.Message;
-            throw new ApplicationException("Database operation failed");
-        }
-
-        return message;
-
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string? UpdateCustomer(Guid id, Customer newCustomer)
-    {
-        string message;
-
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText =
-        """
-        UPDATE customers
-        SET 
-        name = $Name, 
-        email = $Email
-        WHERE id = $Id
-        ;
-        """;
-        command.Parameters.AddWithValue("$Id", newCustomer.Id.ToString());
-        command.Parameters.AddWithValue("$Name", newCustomer.Name);
-        command.Parameters.AddWithValue("$Email", newCustomer.Email);
-
-
-        try
-        {
-            int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected > 0)
-            {
-                message = $"Successfully updated entry with id: {id}";
-            }
-            else
-            {
-                return null;
-            }
-
-        }
-        catch (SqliteException ex)
-        {
-            message = "SQLite Error" + ex.Message;
-            throw new ApplicationException($"Database operation failed: {message}");
-        }
-
-        return message;
-
-    }
 }

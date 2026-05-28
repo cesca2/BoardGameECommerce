@@ -1,10 +1,12 @@
 
+using Microsoft.AspNetCore.Identity.Data;
+
 public interface ICustomerService
 {
-    public List<Customer>? GetAllCustomers();
-    public Customer? GetCustomerById(Guid id);
-    public Customer? GetCustomerByEmail(string email);
-    public Customer CreateCustomer(Customer customer);
-    public string? DeleteCustomer(Guid id);
-    public string? UpdateCustomer(Guid id, Customer customer);
+    public AuthResult Login(CustomerDTO customer);
+    public AuthResult Register(CustomerDTO customer);
+    public Sale CreateSale(Sale sale);
+
+    public Customer GetCustomerById(Guid id); // should probably move to admin
+
 }

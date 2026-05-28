@@ -1,27 +1,76 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace CommerceAPI.Controllers
 {
     // specifies routing pattern for the controller [controller] is replaced with name of controller minus Controller suffix
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CustomersController(ICustomerService customerService) : ControllerBase
-    {
-        private readonly ICustomerService _customerService = customerService;
-
-        [HttpGet]
-        public ActionResult<List<Product>> GetAllCustomers()
+     [Route("api/[controller]")]
+        [ApiController]
+        public class CustomersController(ICustomerService customerService) : ControllerBase
         {
-            try{return Ok(_customerService.GetAllCustomers());}
-            catch(ApplicationException ex)
+            private readonly ICustomerService _customerService = customerService;
+
+
+        
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public ActionResult<Customer> RegisterCustomer(CustomerDTO customer)
+        {
+  
+            try
+            {
+               var result= _customerService.Register(customer);
+                if (result.Success == true) 
+               {
+                    return StatusCode(201, new
+                    {
+                        token = result.Token
+                    }
+                );
+                }
+                else
+                {
+                    return BadRequest(result.Error);
+                };
+            }
+            catch (ApplicationException ex)
             {
                 return StatusCode(500, new { error = ex.Message });
-            }}
-        
-    
+            }
 
-    [HttpGet("{id}")]
+        }
+        
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public ActionResult<Customer> LoginCustomer(CustomerDTO customer)
+        {
+            try
+            {
+               var result = _customerService.Login(customer);
+               if (result.Success == true) 
+               {
+                    return StatusCode(200, new
+                    {
+                        token = result.Token
+                    }
+                );
+                }
+                else
+                {
+                    return Unauthorized(result.Error);
+                };}
+            catch (ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
+        }
+        /*
+
+       
+        [Authorize]
+        [HttpGet("{id}")]
         public ActionResult<Product> GetCustomerById(Guid id)
         {
         try{
@@ -39,39 +88,7 @@ namespace CommerceAPI.Controllers
                 return StatusCode(500, new { error = ex.Message });
         }}
 
-        [HttpGet("lookup/{email}")]
-        public ActionResult<Product> GetCustomerByEmail(string email)
-        {
-        try{
-            var result = _customerService.GetCustomerByEmail(email);
-
-        if (result == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result);
-        }
-        catch(ApplicationException ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-        }}
-
-                [HttpPost]
-        public ActionResult<Customer> CreateCustomer(Customer customer)
-        {
-            var newcustomer = _customerService.CreateCustomer(customer);
-            try
-            {
-                return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, newcustomer);
-            }
-            catch (ApplicationException ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-
-        }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult<Customer> DeleteCustomer(Guid id)
         {
@@ -93,6 +110,7 @@ namespace CommerceAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public ActionResult<Customer> UpdateCustomer(Guid id, [FromBody] Customer updatedCustomer)
         {
@@ -126,4 +144,39 @@ namespace CommerceAPI.Controllers
 
             }
         }
+        */
+
+                /*
+        [Authorize]
+        [HttpGet]
+        public ActionResult<List<Product>> GetAllCustomers()
+        {
+            try{return Ok(_customerService.GetAllCustomers());}
+            catch(ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }}
+        
+    
+
+        
+
+        [HttpGet("lookup/{email}")]
+        public ActionResult<Product> GetCustomerByEmail(string email)
+        {
+        try{
+            var result = _customerService.GetCustomerByEmail(email);
+
+        if (result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+        }
+        catch(ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+        }}
+        */
 }}
