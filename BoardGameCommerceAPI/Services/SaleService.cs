@@ -11,11 +11,11 @@ public class SaleService : ISaleService
         _saleRepository = saleRepository;
 
     }
-    
-    
+
+
     public Sale CreateSale(Sale newSale)
     {
-        var rowsaffected =  _saleRepository.CreateSale(newSale);
+        var rowsaffected = _saleRepository.CreateSale(newSale);
         if (rowsaffected == 0)
         {
             throw new InvalidOperationException("Sale could not be created succesfully");
@@ -27,7 +27,7 @@ public class SaleService : ISaleService
     public Sale? GetSaleById(Guid id)
     {
         return _saleRepository.GetSale(id);
-        
+
 
     }
 
@@ -35,8 +35,8 @@ public class SaleService : ISaleService
     public List<Sale> GetSalesByCustomerId(Guid id)
     {
         var sales = _saleRepository.GetAllSales();
-        return sales.Where( sale => sale.Customer_Id == id.ToString() ).ToList() ?? [];
-        
+        return sales.Where(sale => sale.Customer_Id == id.ToString()).ToList() ?? [];
+
 
     }
 }

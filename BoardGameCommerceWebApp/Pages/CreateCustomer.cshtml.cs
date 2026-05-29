@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BoardGameCommerce.Pages;
+
 public class CreateCustomerModel : PageModel
 {
 
     private readonly CustomersApiClient _customersApi;
 
-    [BindProperty]         
-    public string Name {get; set;}
-    [BindProperty] 
-    public string Email {get; set;}
-    [BindProperty] 
-    public string Password {get; set;}
+    [BindProperty]
+    public string Name { get; set; }
+    [BindProperty]
+    public string Email { get; set; }
+    [BindProperty]
+    public string Password { get; set; }
     public bool ValidModelEntry = true;
     public bool CustomerExists = false;
 
@@ -23,7 +24,7 @@ public class CreateCustomerModel : PageModel
         _customersApi = customersApi;
     }
 
-    public  async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync()
     {
         CreateCustomerRequest customer = new CreateCustomerRequest
         {
@@ -33,15 +34,16 @@ public class CreateCustomerModel : PageModel
         };
 
 
-        if (!ModelState.IsValid){
-                ValidModelEntry=false;
-                return Page();
-            }
-        
+        if (!ModelState.IsValid)
+        {
+            ValidModelEntry = false;
+            return Page();
+        }
+
         else
         {
             var customerToken = await _customersApi.CreateCustomer(customer);
-            
+
             GetCustomerResponse customerInfo = await _customersApi.GetCustomer(customerToken);
             HttpContext.Session.SetString("UserToken", customerToken);
 
@@ -52,11 +54,13 @@ public class CreateCustomerModel : PageModel
         }
 
         if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
-                    { return RedirectToPage("./Checkout");
-                        
-                    }
-        else {
-        return RedirectToPage("./Index");
+        {
+            return RedirectToPage("./Checkout");
+
+        }
+        else
+        {
+            return RedirectToPage("./Index");
         }
     }
 

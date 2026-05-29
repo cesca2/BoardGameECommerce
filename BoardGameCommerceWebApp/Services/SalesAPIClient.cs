@@ -17,14 +17,14 @@ public class SalesApiClient
         var request = new HttpRequestMessage(HttpMethod.Post, $"api/Sales");
         request.Headers.Authorization =
              new AuthenticationHeaderValue("Bearer", token);
-        
+
         // optional JSON body
-        var body =saleRequest;
+        var body = saleRequest;
 
         request.Content = JsonContent.Create(body);
-        var response = await _httpClient.SendAsync(request);    
-        Console.WriteLine(request.Headers.Authorization?.ToString());  
-    
+        var response = await _httpClient.SendAsync(request);
+        Console.WriteLine(request.Headers.Authorization?.ToString());
+
         var jsonString = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
         if (response.IsSuccessStatusCode)
@@ -45,19 +45,20 @@ public class SalesApiClient
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/Sales");
         request.Headers.Authorization =
              new AuthenticationHeaderValue("Bearer", token);
-        var response = await _httpClient.SendAsync(request);    
-Console.WriteLine(request.Headers.Authorization?.ToString());  
-    
-    if (response.IsSuccessStatusCode){
-        return await response.Content.ReadFromJsonAsync
-            <List<GetSaleResponse>>();
-    }
-    else
+        var response = await _httpClient.SendAsync(request);
+        Console.WriteLine(request.Headers.Authorization?.ToString());
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync
+                <List<GetSaleResponse>>();
+        }
+        else
         {
             Console.WriteLine($"Status code: {(int)response.StatusCode}");
             return null;
         }
 
 
-}
+    }
 }

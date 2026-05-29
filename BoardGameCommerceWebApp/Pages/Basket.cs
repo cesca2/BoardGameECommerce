@@ -11,13 +11,14 @@ public class BasketModel : PageModel
 
     [BindProperty]
     public string Basket { get; set; }
-    
+
     public List<BasketItem> BasketItems { get; set; }
-    public class BasketItem {
-           
-    public string productId {get; set;}
-   
-    public int quantity {get; set;}
+    public class BasketItem
+    {
+
+        public string productId { get; set; }
+
+        public int quantity { get; set; }
     }
 
 
@@ -49,7 +50,7 @@ public class BasketModel : PageModel
             Products.Add(product);
 
         }
-        
-        
+
+
     }
 }

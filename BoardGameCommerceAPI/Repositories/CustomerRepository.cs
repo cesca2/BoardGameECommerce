@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
-using System.Globalization;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 
 public class CustomerRepository : ICustomerRepository
@@ -18,7 +18,7 @@ public class CustomerRepository : ICustomerRepository
     public List<Customer>? GetAllCustomers()
     {
 
-        List<Customer> rows = new ();
+        List<Customer> rows = new();
 
         using var connection = _dbContext.CreateConnection();
         connection.Open();
@@ -31,26 +31,26 @@ public class CustomerRepository : ICustomerRepository
         """;
         try
         {
-        using var datareader = command.ExecuteReader();
-        var i = 0;
+            using var datareader = command.ExecuteReader();
+            var i = 0;
 
-        if (!datareader.HasRows) return rows;
-        else
-        {
-            while (datareader.Read())
+            if (!datareader.HasRows) return rows;
+            else
             {
+                while (datareader.Read())
                 {
-                    rows.Add(new Customer
+                    {
+                        rows.Add(new Customer
                         {
                             Name = datareader.GetString(1),
                             Email = datareader.GetString(2),
                             Id = datareader.GetGuid(0)
                         });
-                    rows[i].Id = datareader.GetGuid(0);
-                    i++;
+                        rows[i].Id = datareader.GetGuid(0);
+                        i++;
+                    }
                 }
             }
-        }
 
         }
         catch (SqliteException ex)
@@ -76,15 +76,16 @@ public class CustomerRepository : ICustomerRepository
         """;
         command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
 
-        try{
+        try
+        {
             using var datareader = command.ExecuteReader();
 
-        if (!datareader.HasRows) return null;
-        else
-        {
-            while (datareader.Read())
+            if (!datareader.HasRows) return null;
+            else
             {
+                while (datareader.Read())
                 {
+                    {
 
                         var customer = new Customer
                         {
@@ -93,17 +94,17 @@ public class CustomerRepository : ICustomerRepository
                             Id = datareader.GetGuid(0)
                         };
                         return customer;
+                    }
                 }
             }
-        }
-        return null;
+            return null;
         }
         catch (SqliteException ex)
         {
             var message = "SQLite Error" + ex.Message;
             Console.WriteLine(message);
             throw new ApplicationException("Database operation failed");
-        }     
+        }
 
 
     }
@@ -121,15 +122,16 @@ public class CustomerRepository : ICustomerRepository
         """;
         command.Parameters.Add(new SqliteParameter("$email", email));
 
-        try{
+        try
+        {
             using var datareader = command.ExecuteReader();
 
-        if (!datareader.HasRows) return null;
-        else
-        {
-            while (datareader.Read())
+            if (!datareader.HasRows) return null;
+            else
             {
+                while (datareader.Read())
                 {
+                    {
 
                         var customer = new Customer
                         {
@@ -139,25 +141,25 @@ public class CustomerRepository : ICustomerRepository
                             PasswordHash = datareader.GetString(3)
                         };
                         return customer;
+                    }
                 }
             }
-        }
-        return null;
+            return null;
         }
         catch (SqliteException ex)
         {
             var message = "SQLite Error" + ex.Message;
             Console.WriteLine(message);
             throw new ApplicationException("Database operation failed");
-        }     
+        }
 
 
     }
 
-    
+
     public int CreateCustomer(Customer newCustomer)
     {
-       
+
         string message;
 
         using var connection = _dbContext.CreateConnection();
@@ -174,7 +176,7 @@ public class CustomerRepository : ICustomerRepository
                   $PasswordHash)
                 ;
             """;
-        
+
         command.Parameters.AddWithValue("$Id", newCustomer.Id.ToString());
         command.Parameters.AddWithValue("$Name", newCustomer.Name);
         command.Parameters.AddWithValue("$Email", newCustomer.Email);

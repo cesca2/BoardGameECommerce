@@ -12,7 +12,7 @@ public class ProductService : IProductService
     public List<Product>? GetAllProducts()
     {
 
-        List<Product> rows = new ();
+        List<Product> rows = new();
 
         using var connection = _dbContext.CreateConnection();
         connection.Open();
@@ -23,21 +23,21 @@ public class ProductService : IProductService
         """;
         try
         {
-        using var datareader = command.ExecuteReader();
-        var i = 0;
+            using var datareader = command.ExecuteReader();
+            var i = 0;
 
-        if (!datareader.HasRows) return rows;
-        else
-        {
-            while (datareader.Read())
+            if (!datareader.HasRows) return rows;
+            else
             {
+                while (datareader.Read())
                 {
-                    rows.Add(new Product{Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price= float.Parse(datareader.GetString(3))});
-                    rows[i].Id = datareader.GetGuid(0);
-                    i++;
+                    {
+                        rows.Add(new Product { Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price = float.Parse(datareader.GetString(3)) });
+                        rows[i].Id = datareader.GetGuid(0);
+                        i++;
+                    }
                 }
             }
-        }
 
         }
         catch (SqliteException ex)
@@ -69,23 +69,24 @@ public class ProductService : IProductService
             Console.WriteLine(param.Value.ToString());
         }
 
-        try{
+        try
+        {
             using var datareader = command.ExecuteReader();
 
             while (datareader.Read())
             {
                 Console.WriteLine("here");
-                
 
-                    var product = new Product{Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price= float.Parse(datareader.GetString(3))};
-                    product.Id = datareader.GetGuid(0);
-                    
-                    return product;
-                
+
+                var product = new Product { Name = datareader.GetString(1), YearPublished = int.Parse(datareader.GetString(2)), Price = float.Parse(datareader.GetString(3)) };
+                product.Id = datareader.GetGuid(0);
+
+                return product;
+
             }
             return null;
-            
-        
+
+
 
         }
 
@@ -95,11 +96,11 @@ public class ProductService : IProductService
             Console.WriteLine(message);
             throw new ApplicationException("Database operation failed");
 
-        }     
+        }
 
 
     }
-        
-   
 
-    }
+
+
+}

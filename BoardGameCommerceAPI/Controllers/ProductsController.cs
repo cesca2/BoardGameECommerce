@@ -14,37 +14,42 @@ namespace CommerceAPI.Controllers
         public ActionResult<List<Product>> GetAllProducts([FromQuery] PaginationParams paginationParams)
         {
 
-            try{
+            try
+            {
                 var products = _productService.GetAllProducts();
                 if (!string.IsNullOrEmpty(paginationParams.SearchTerm))
                 {
-                    products = products.Where(x=>x.Name.ToLower().Contains(paginationParams.SearchTerm.ToLower())).ToList();
+                    products = products.Where(x => x.Name.ToLower().Contains(paginationParams.SearchTerm.ToLower())).ToList();
                 }
                 return Ok(products);
-                }
-            catch(ApplicationException ex)
+            }
+            catch (ApplicationException ex)
             {
                 return StatusCode(500, new { error = ex.Message });
-            }}
-        
-    
+            }
+        }
 
-    [HttpGet("{id}")]
+
+
+        [HttpGet("{id}")]
         public ActionResult<Product> GetProductById(Guid id)
         {
-        try{
-            var result = _productService.GetProductById(id);
+            try
+            {
+                var result = _productService.GetProductById(id);
 
-        if (result == null)
-        {
-            return NotFound();
-        }
+                if (result == null)
+                {
+                    return NotFound();
+                }
 
-        return Ok(result);
-        }
-        catch(ApplicationException ex)
+                return Ok(result);
+            }
+            catch (ApplicationException ex)
             {
                 return StatusCode(500, new { error = ex.Message });
-        }}
-        
-}}
+            }
+        }
+
+    }
+}

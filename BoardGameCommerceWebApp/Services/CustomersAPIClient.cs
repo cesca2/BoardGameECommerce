@@ -14,7 +14,7 @@ public class CustomersApiClient
     public async Task<string> CreateCustomer(CreateCustomerRequest customerRequest)
     {
 
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync( "api/Customers/register", customerRequest);
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Customers/register", customerRequest);
         var json = await response.Content.ReadAsStringAsync();
         var token = JsonSerializer.Deserialize<JsonElement>(json)
     .GetProperty("token")
@@ -34,7 +34,7 @@ public class CustomersApiClient
     public async Task<string> Login(CreateLoginRequest customerRequest)
     {
 
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync( "api/Customers/login", customerRequest);
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Customers/login", customerRequest);
         var json = await response.Content.ReadAsStringAsync();
         var token = JsonSerializer.Deserialize<JsonElement>(json)
     .GetProperty("token")
@@ -57,17 +57,19 @@ public class CustomersApiClient
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/Customers/me");
         request.Headers.Authorization =
              new AuthenticationHeaderValue("Bearer", token);
-        var response = await _httpClient.SendAsync(request);    
-Console.WriteLine(request.Headers.Authorization?.ToString());  
-    
-    if (response.IsSuccessStatusCode){
-        return await response.Content.ReadFromJsonAsync
-            <GetCustomerResponse>();
-    }
-    else
+        var response = await _httpClient.SendAsync(request);
+        Console.WriteLine(request.Headers.Authorization?.ToString());
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync
+                <GetCustomerResponse>();
+        }
+        else
         {
             Console.WriteLine($"Status code: {(int)response.StatusCode}");
             return null;
         }
-    
-}}
+
+    }
+}

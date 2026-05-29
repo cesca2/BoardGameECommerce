@@ -9,13 +9,13 @@ public class CustomerOrdersModel : PageModel
     [BindProperty(SupportsGet = true)]
     public Guid? OrderId { get; set; }
     private readonly SalesApiClient _salesApi;
-         public List<Product> Products { get; set; } = [];
+    public List<Product> Products { get; set; } = [];
 
     private readonly ProductsApiClient _productsApi;
 
     public List<GetSaleResponse> Sales { get; set; } = [];
-    public GetSaleResponse? Sale {get; set;}
-    public CustomerOrdersModel(SalesApiClient salesApi, ProductsApiClient productsApi )
+    public GetSaleResponse? Sale { get; set; }
+    public CustomerOrdersModel(SalesApiClient salesApi, ProductsApiClient productsApi)
     {
         _salesApi = salesApi;
         _productsApi = productsApi;
@@ -29,17 +29,17 @@ public class CustomerOrdersModel : PageModel
         Sales = await _salesApi.GetSales(token);
         Console.WriteLine(OrderId);
         if (OrderId is not null)
-        {           
-            Sale = Sales.Where(x=>x.Id == OrderId).ToList()[0];
-            foreach (var item in Sale.quantitiesByProductID)
         {
-  
-            var product = await _productsApi.GetProductAsync(item.Key);
-            product.Quantity = item.Value;
-            Products.Add(product);
+            Sale = Sales.Where(x => x.Id == OrderId).ToList()[0];
+            foreach (var item in Sale.quantitiesByProductID)
+            {
 
-        }
-        
+                var product = await _productsApi.GetProductAsync(item.Key);
+                product.Quantity = item.Value;
+                Products.Add(product);
+
+            }
+
         }
 
 

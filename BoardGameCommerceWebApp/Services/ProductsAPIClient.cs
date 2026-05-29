@@ -10,9 +10,10 @@ public class ProductsApiClient
     public async Task<List<Product>> GetProductsAsync(string searchTerm)
     {
         HttpResponseMessage response;
-        if (string.IsNullOrEmpty(searchTerm)){
+        if (string.IsNullOrEmpty(searchTerm))
+        {
             response = await _httpClient.GetAsync($"api/Products");
-        }   
+        }
         else
         {
             response = await _httpClient.GetAsync($"api/Products?SearchTerm={searchTerm}");
@@ -25,7 +26,7 @@ public class ProductsApiClient
 
 
         // Return in a parsed format
-        return products.Select( product => new Product()
+        return products.Select(product => new Product()
         {
             Id = product.Id,
             Name = product.Name,
@@ -34,11 +35,11 @@ public class ProductsApiClient
         }).ToList() ?? [];
     }
 
-    
+
     public async Task<Product?> GetProductAsync(string id)
     {
         return await _httpClient
             .GetFromJsonAsync<Product>($"api/Products/{id}");
     }
-    
+
 }

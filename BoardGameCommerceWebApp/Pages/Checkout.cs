@@ -9,17 +9,18 @@ public class CheckoutModel : PageModel
 {
     private readonly SalesApiClient _salesApi;
     private readonly ProductsApiClient _productsApi;
-     public List<Product> Products { get; set; } = [];
+    public List<Product> Products { get; set; } = [];
 
     [BindProperty]
     public string Basket { get; set; }
-    
+
     public List<BasketItem> BasketItems { get; set; }
-    public class BasketItem {
-           
-    public string productId {get; set;}
-   
-    public int quantity {get; set;}
+    public class BasketItem
+    {
+
+        public string productId { get; set; }
+
+        public int quantity { get; set; }
     }
 
     public Dictionary<string, int> BasketQuantitiesByProductId = new Dictionary<string, int>();
@@ -33,14 +34,16 @@ public class CheckoutModel : PageModel
 
     public IActionResult OnGet()
     {
-        var  username = HttpContext.Session.GetString("UserName");
+        var username = HttpContext.Session.GetString("UserName");
         Console.WriteLine(username);
 
-        if(string.IsNullOrWhiteSpace(username)){
-            HttpContext.Session.SetInt32("CheckoutRequested", 1); 
-            return RedirectToPage("./Login");}
-        
-        else {return Page();}
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            HttpContext.Session.SetInt32("CheckoutRequested", 1);
+            return RedirectToPage("./Login");
+        }
+
+        else { return Page(); }
     }
 
 
@@ -63,32 +66,32 @@ public class CheckoutModel : PageModel
         "BasketProducts",
         JsonSerializer.Serialize(Products)
 );
-        
-        
+
+
     }
     public async Task<IActionResult> OnPostCheckoutAsync()
     {
 
-        var  customerId = HttpContext.Session.GetString("UserId");
+        var customerId = HttpContext.Session.GetString("UserId");
 
-        var  products_json = HttpContext.Session.GetString("BasketProducts");
+        var products_json = HttpContext.Session.GetString("BasketProducts");
         var products =
             JsonSerializer.Deserialize<List<Product>>(products_json);
-        
+
         foreach (var product in products)
         {
             BasketQuantitiesByProductId[product.Id.ToString()] = product.Quantity;
 
-            
+
         }
         Console.WriteLine(BasketQuantitiesByProductId);
 
         var token = HttpContext.Session.GetString("UserToken");
 
-        var sale = new CreateSaleRequest{quantitiesByProductID=BasketQuantitiesByProductId, Date= DateOnly.FromDateTime(DateTime.Now), Time=TimeOnly.FromDateTime(DateTime.Now)};
-        
+        var sale = new CreateSaleRequest { quantitiesByProductID = BasketQuantitiesByProductId, Date = DateOnly.FromDateTime(DateTime.Now), Time = TimeOnly.FromDateTime(DateTime.Now) };
+
         await _salesApi.CreateSale(sale, token);
-        
+
         return RedirectToPage("./Index");
     }
 }

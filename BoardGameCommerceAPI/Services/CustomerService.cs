@@ -1,11 +1,10 @@
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 
 public class CustomerService : ICustomerService
@@ -20,56 +19,56 @@ public class CustomerService : ICustomerService
         _hasher = hasher;
 
     }
-    
+
 
     public AuthResult Login(LoginCustomerDTO dto)
     {
         var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
-        if (customerexists is  null)
+        if (customerexists is null)
         {
             return AuthResultFactory.Fail("Invalid login details provided");
         }
 
         var hash = _hasher.VerifyHashedPassword(customerexists, customerexists.PasswordHash, dto.Password);
-        if (hash== PasswordVerificationResult.Success)
+        if (hash == PasswordVerificationResult.Success)
         {
-               var token = GenerateCustomerJWT(customerexists);
-               return AuthResultFactory.Ok(token);
+            var token = GenerateCustomerJWT(customerexists);
+            return AuthResultFactory.Ok(token);
         }
         else
         {
             return AuthResultFactory.Fail("Invalid login details provided");
         }
-     
+
 
     }
-    
+
 
     public AuthResult Register(CreateCustomerDTO dto)
     {
         var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
-        
+
         if (customerexists is not null)
         {
             return AuthResultFactory.Fail("User with email already exists");
         }
         var customer = new Customer
         {
-            Email=dto.Email,
-            Name=dto.Name
+            Email = dto.Email,
+            Name = dto.Name
         };
-        
+
         customer.PasswordHash = _hasher.HashPassword(customer, dto.Password);
 
         var affected = _customerRepository.CreateCustomer(customer);
 
         if (affected == 0)
-        { return AuthResultFactory.Fail("Customer was not created successfully");}
-        
+        { return AuthResultFactory.Fail("Customer was not created successfully"); }
+
         var token = GenerateCustomerJWT(customer);
-        
+
         return AuthResultFactory.Ok(token);
-    
+
 
     }
     public Sale CreateSale(Sale sale)

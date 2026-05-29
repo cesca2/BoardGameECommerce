@@ -8,7 +8,7 @@ public class DbInitializer
     {
         if (reInitialize)
         {
-            var lst = new List<string> {  "sales_products", "sales", "products",  "users",};
+            var lst = new List<string> { "sales_products", "sales", "products", "users", };
 
             foreach (string table in lst)
             {
@@ -97,7 +97,7 @@ public class DbInitializer
                     csvParser.SetDelimiters(new string[] { "," });
                     csvParser.HasFieldsEnclosedInQuotes = true;
                     csvParser.CommentTokens = ["#"];
-                    
+
                     // skip titles line
                     csvParser.ReadLine();
 
