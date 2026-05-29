@@ -13,11 +13,13 @@ subheader="Order number: " + @Model.OrderId.ToString();}
 <h1>@header</h1>
 </div>
 @{if(Model.OrderId is not null){
-<div class="d-flex justify-content-center mt-5">
-<h2>@subheader</h2>
+<div class="d-flex justify-content-center mt-3">
+<h4>@subheader</h4>
 </div>
-
 <div class="d-flex justify-content-center mt-5">
+<h3>Items</h3>
+</div>
+<div class="d-flex justify-content-center mt-1">
     <table class="records" class="text-center">
     <thead>
         <tr>
@@ -91,3 +93,5 @@ function submitRow(id) {
         document.getElementById("orderform").submit();
         }
 </script>
+
+
