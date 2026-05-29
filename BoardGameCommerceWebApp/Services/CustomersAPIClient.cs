@@ -16,11 +16,12 @@ public class CustomersApiClient
 
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Customers/register", customerRequest);
         var json = await response.Content.ReadAsStringAsync();
-        var token = JsonSerializer.Deserialize<JsonElement>(json)
-    .GetProperty("token")
-    .GetString();
+
         if (response.IsSuccessStatusCode)
         {
+            var token = JsonSerializer.Deserialize<JsonElement>(json)
+    .GetProperty("token")
+    .GetString();
             Console.WriteLine("success");
             return token;
         }
@@ -36,13 +37,14 @@ public class CustomersApiClient
 
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Customers/login", customerRequest);
         var json = await response.Content.ReadAsStringAsync();
-        var token = JsonSerializer.Deserialize<JsonElement>(json)
-    .GetProperty("token")
-    .GetString();
-        Console.WriteLine(token);
+
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("success");
+            var token = JsonSerializer.Deserialize<JsonElement>(json)
+                    .GetProperty("token")
+                    .GetString();
+            Console.WriteLine(token);
             return token;
         }
         else

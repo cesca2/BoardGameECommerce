@@ -34,7 +34,7 @@ public class LoginModel : PageModel
 
         //RedirectToPage("./Index");
 
-        if (customerToken is not null)
+        if (!string.IsNullOrEmpty(customerToken))
         {
             GetCustomerResponse customerInfo = await _customersApi.GetCustomer(customerToken);
             HttpContext.Session.SetString("UserToken", customerToken);

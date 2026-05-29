@@ -28,6 +28,12 @@
         </div>
     }
 }
+@{ if (!@Model.ValidRegistration) {
+        <div class="d-flex justify-content-center mt-5">
+        <p class="invalid_input">Invalid registration request, please try again</p>
+        </div>
+    }
+}
 @{ if (@Model.CustomerExists) {
         <div class="d-flex justify-content-center mt-5">
         <p class="invalid_input">Customer already registered with entered email</p>

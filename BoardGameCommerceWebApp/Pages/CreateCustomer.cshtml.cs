@@ -16,6 +16,7 @@ public class CreateCustomerModel : PageModel
     [BindProperty]
     public string Password { get; set; }
     public bool ValidModelEntry = true;
+    public bool ValidRegistration = true;
     public bool CustomerExists = false;
 
 
@@ -43,14 +44,20 @@ public class CreateCustomerModel : PageModel
         else
         {
             var customerToken = await _customersApi.CreateCustomer(customer);
+            if (!string.IsNullOrEmpty(customerToken))
+            {
+                GetCustomerResponse customerInfo = await _customersApi.GetCustomer(customerToken);
+                HttpContext.Session.SetString("UserToken", customerToken);
 
-            GetCustomerResponse customerInfo = await _customersApi.GetCustomer(customerToken);
-            HttpContext.Session.SetString("UserToken", customerToken);
-
-            HttpContext.Session.SetString("UserName", customerInfo.Name);
-            HttpContext.Session.SetString("UserEmail", customerInfo.Email);
-            HttpContext.Session.SetString("UserId", customerInfo.Id.ToString());
-
+                HttpContext.Session.SetString("UserName", customerInfo.Name);
+                HttpContext.Session.SetString("UserEmail", customerInfo.Email);
+                HttpContext.Session.SetString("UserId", customerInfo.Id.ToString());
+            }
+            else
+            {
+                ValidRegistration = false;
+                return Page();
+            }
         }
 
         if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
