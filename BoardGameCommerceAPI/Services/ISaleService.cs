@@ -1,8 +1,7 @@
 
 public interface ISaleService
 {
-    public List<Sale>? GetAllSales();
-    public Sale? GetSale(Guid id);
+    public List<Sale> GetSalesByCustomerId(Guid id);
+    public Sale? GetSaleById(Guid id);
     public Sale CreateSale(Sale sale);
-    public string? DeleteSale(Guid id);
 }

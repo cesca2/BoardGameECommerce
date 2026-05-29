@@ -1,6 +1,5 @@
-public record CreateCustomerRequest
+public record CreateLoginRequest
 {
-    public string Name { get; set; }
     public string Email { get; set; }
     public string Password { get; init; }
 

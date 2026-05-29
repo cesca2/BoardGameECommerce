@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace CommerceAPI.Controllers
 {
@@ -15,7 +16,7 @@ namespace CommerceAPI.Controllers
         
         [AllowAnonymous]
         [HttpPost("register")]
-        public ActionResult<Customer> RegisterCustomer(CustomerDTO customer)
+        public ActionResult<Customer> RegisterCustomer(CreateCustomerDTO customer)
         {
   
             try
@@ -43,7 +44,7 @@ namespace CommerceAPI.Controllers
         
         [AllowAnonymous]
         [HttpPost("login")]
-        public ActionResult<Customer> LoginCustomer(CustomerDTO customer)
+        public ActionResult<Customer> LoginCustomer(LoginCustomerDTO customer)
         {
             try
             {
@@ -59,6 +60,29 @@ namespace CommerceAPI.Controllers
                 else
                 {
                     return Unauthorized(result.Error);
+                };}
+            catch (ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
+        }
+        [Authorize]
+        [HttpGet("me")]
+        public ActionResult<CustomerDetailsDTO> Me()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var result = _customerService.GetCustomerById(Guid.Parse(userId));
+               if (result is not null) 
+               {
+                    return Ok( new CustomerDetailsDTO{Name= result.Name, Id = result.Id, Email=result.Email})
+                ;
+                }
+                else
+                {
+                    return NotFound();
                 };}
             catch (ApplicationException ex)
             {

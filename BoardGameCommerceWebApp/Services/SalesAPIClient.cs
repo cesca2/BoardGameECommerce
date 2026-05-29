@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 
 public class SalesApiClient
 {
@@ -9,12 +10,22 @@ public class SalesApiClient
         _httpClient = httpClient;
     }
 
-    public async Task<bool> CreateSale(CreateSaleRequest saleRequest)
+    public async Task<bool> CreateSale(CreateSaleRequest saleRequest, string token)
     {
 
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync( "api/Sales", saleRequest);
+
+        var request = new HttpRequestMessage(HttpMethod.Post, $"api/Sales");
+        request.Headers.Authorization =
+             new AuthenticationHeaderValue("Bearer", token);
+        
+        // optional JSON body
+        var body =saleRequest;
+
+        request.Content = JsonContent.Create(body);
+        var response = await _httpClient.SendAsync(request);    
+        Console.WriteLine(request.Headers.Authorization?.ToString());  
+    
         var jsonString = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("LOOOK"+jsonString);
         response.EnsureSuccessStatusCode();
         if (response.IsSuccessStatusCode)
         {
@@ -29,32 +40,24 @@ public class SalesApiClient
 
 
     }
-    public async Task<List<GetSaleResponse>> GetSalesByCustomerId(Guid customer_id)
+    public async Task<List<GetSaleResponse>> GetSales(string token)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/Sales");
-        if (response.IsSuccessStatusCode){
-        var sales = await _httpClient
-            .GetFromJsonAsync<List<GetSaleResponse>>($"api/Sales");
-        return sales.Where( sale => sale.customer_Id == customer_id ).ToList() ?? [];
-        
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Sales");
+        request.Headers.Authorization =
+             new AuthenticationHeaderValue("Bearer", token);
+        var response = await _httpClient.SendAsync(request);    
+Console.WriteLine(request.Headers.Authorization?.ToString());  
+    
+    if (response.IsSuccessStatusCode){
+        return await response.Content.ReadFromJsonAsync
+            <List<GetSaleResponse>>();
     }
     else
         {
-            return [];
-        }
-    }
-    public async Task<GetSaleResponse?> GetSaleById(Guid? sale_id)
-    {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/Sales/{sale_id}");
-        if (response.IsSuccessStatusCode){
-        var sales = await _httpClient
-            .GetFromJsonAsync<GetSaleResponse>($"api/Sales/{sale_id}");
-        return sales;
-        
-    }
-    else
-        {
-            return null;;
+            Console.WriteLine($"Status code: {(int)response.StatusCode}");
+            return null;
         }
 
-}}
+
+}
+}

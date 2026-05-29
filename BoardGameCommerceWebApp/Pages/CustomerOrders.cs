@@ -24,18 +24,14 @@ public class CustomerOrdersModel : PageModel
     public async Task OnGetAsync()
 
     {
+        var token = HttpContext.Session.GetString("UserToken");
 
+        Sales = await _salesApi.GetSales(token);
         Console.WriteLine(OrderId);
-        if (OrderId is null)
+        if (OrderId is not null)
         {           
-        
-        Sales = await _salesApi.GetSalesByCustomerId(Guid.Parse(HttpContext.Session.GetString("UserId")));
-        }
-        else
-        {
-            Sale = await _salesApi.GetSaleById(OrderId);
-
-        foreach (var item in Sale.quantitiesByProductID)
+            Sale = Sales.Where(x=>x.Id == OrderId).ToList()[0];
+            foreach (var item in Sale.quantitiesByProductID)
         {
   
             var product = await _productsApi.GetProductAsync(item.Key);
@@ -43,8 +39,9 @@ public class CustomerOrdersModel : PageModel
             Products.Add(product);
 
         }
-
+        
         }
+
 
     }
 

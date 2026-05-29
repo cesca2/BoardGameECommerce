@@ -1,3 +1,4 @@
+using System.Security.Principal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -11,6 +12,8 @@ public class CreateCustomerModel : PageModel
     public string Name {get; set;}
     [BindProperty] 
     public string Email {get; set;}
+    [BindProperty] 
+    public string Password {get; set;}
     public bool ValidModelEntry = true;
     public bool CustomerExists = false;
 
@@ -25,17 +28,9 @@ public class CreateCustomerModel : PageModel
         CreateCustomerRequest customer = new CreateCustomerRequest
         {
             Name = Name,
-            Email = Email
+            Email = Email,
+            Password = Password
         };
-
-        // Check for existing customer with same email
-        var customerExists = await _customersApi.GetCustomerByEmail(Email);
-        if (customerExists is not null)
-        {
-            CustomerExists=true;
-            return Page();
-            
-        }
 
 
         if (!ModelState.IsValid){
@@ -45,11 +40,14 @@ public class CreateCustomerModel : PageModel
         
         else
         {
-            await _customersApi.CreateCustomer(customer);
-            var customerAPI = await _customersApi.GetCustomerByEmail(Email);
-            HttpContext.Session.SetString("UserName", customerAPI.Name);
-            HttpContext.Session.SetString("UserEmail", customerAPI.Email);
-            HttpContext.Session.SetString("UserId", customerAPI.Id.ToString());
+            var customerToken = await _customersApi.CreateCustomer(customer);
+            
+            GetCustomerResponse customerInfo = await _customersApi.GetCustomer(customerToken);
+            HttpContext.Session.SetString("UserToken", customerToken);
+
+            HttpContext.Session.SetString("UserName", customerInfo.Name);
+            HttpContext.Session.SetString("UserEmail", customerInfo.Email);
+            HttpContext.Session.SetString("UserId", customerInfo.Id.ToString());
 
         }
 

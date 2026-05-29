@@ -22,7 +22,7 @@ public class CustomerService : ICustomerService
     }
     
 
-    public AuthResult Login(CustomerDTO dto)
+    public AuthResult Login(LoginCustomerDTO dto)
     {
         var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
         if (customerexists is  null)
@@ -45,7 +45,7 @@ public class CustomerService : ICustomerService
     }
     
 
-    public AuthResult Register(CustomerDTO dto)
+    public AuthResult Register(CreateCustomerDTO dto)
     {
         var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
         
@@ -93,6 +93,7 @@ public class CustomerService : ICustomerService
     {
         new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
         new Claim(ClaimTypes.Role, "Customer"),
+         new Claim(ClaimTypes.NameIdentifier, customer.Name),
     };
 
         var token = new JwtSecurityToken(

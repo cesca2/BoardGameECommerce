@@ -1,4 +1,6 @@
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 public class CustomersApiClient
 {
@@ -9,35 +11,62 @@ public class CustomersApiClient
         _httpClient = httpClient;
     }
 
-    public async Task<bool> CreateCustomer(CreateCustomerRequest customerRequest)
+    public async Task<string> CreateCustomer(CreateCustomerRequest customerRequest)
     {
 
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync( "api/Customers", customerRequest);
-        var jsonString = await response.Content.ReadAsStringAsync();
-
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync( "api/Customers/register", customerRequest);
+        var json = await response.Content.ReadAsStringAsync();
+        var token = JsonSerializer.Deserialize<JsonElement>(json)
+    .GetProperty("token")
+    .GetString();
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("success");
-            return true;
-
+            return token;
         }
         else
         {
-            return false;
+            return "";
         }
 
 
     }
-
-    public async Task<GetCustomerResponse?> GetCustomerByEmail(string email)
+    public async Task<string> Login(CreateLoginRequest customerRequest)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/Customers/lookup/{email}");
-        if (response.IsSuccessStatusCode){
-        return await _httpClient
-            .GetFromJsonAsync<GetCustomerResponse>($"api/Customers/lookup/{email}");
+
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync( "api/Customers/login", customerRequest);
+        var json = await response.Content.ReadAsStringAsync();
+        var token = JsonSerializer.Deserialize<JsonElement>(json)
+    .GetProperty("token")
+    .GetString();
+        Console.WriteLine(token);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("success");
+            return token;
+        }
+        else
+        {
+            return "";
+        }
+
+
+    }
+    public async Task<GetCustomerResponse?> GetCustomer(string token)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Customers/me");
+        request.Headers.Authorization =
+             new AuthenticationHeaderValue("Bearer", token);
+        var response = await _httpClient.SendAsync(request);    
+Console.WriteLine(request.Headers.Authorization?.ToString());  
+    
+    if (response.IsSuccessStatusCode){
+        return await response.Content.ReadFromJsonAsync
+            <GetCustomerResponse>();
     }
     else
         {
+            Console.WriteLine($"Status code: {(int)response.StatusCode}");
             return null;
         }
     
