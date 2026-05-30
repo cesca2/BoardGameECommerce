@@ -2,11 +2,11 @@
 @model CustomerOrdersModel
 
 @{
-string header = "";
-string subheader = "";
-if(Model.OrderId is null){header="Orders";}
-else{header="Order Summary";
-subheader="Order number: " + @Model.OrderId.ToString();}
+    string header = "";
+    string subheader = "";
+    if(Model.OrderId is null){header="Orders";}
+    else{header="Order Summary";
+    subheader="Order number: " + @Model.OrderId.ToString();}
 
 }
 <div class="d-flex justify-content-center mt-5">

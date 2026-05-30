@@ -29,19 +29,13 @@ public class BasketModel : PageModel
         _productsApi = productsApi;
     }
 
-    public async Task OnGetAsync()
-    {
-        //Products = await _productsApi.GetProductsAsync();
-    }
 
     public async Task OnPostAsync()
     {
         Console.WriteLine(Basket[0]);
         BasketItems =
-            JsonSerializer.Deserialize<List<BasketItem>>(Basket);        //var product = await _productsApi.GetProductAsync(BasketProductId);
-        //Console.WriteLine(product);
-        //Products.Add(product);
-        Console.WriteLine(BasketItems);
+            JsonSerializer.Deserialize<List<BasketItem>>(Basket);        
+
         foreach (var item in BasketItems)
         {
             Console.WriteLine(item.productId);

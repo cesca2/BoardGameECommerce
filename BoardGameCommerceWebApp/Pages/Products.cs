@@ -20,7 +20,6 @@ public class ProductModel : PageModel
     public async Task OnGetAsync()
 
     {
-        Console.WriteLine("SEARCH" + Query);
 
         Products = await _productsApi.GetProductsAsync(Query);
 

@@ -7,9 +7,4 @@ public class IndexModel : PageModel
 {
 
 
-    public async Task OnGetAsync()
-    {
-        //HttpContext.Session.SetString("UserName", "Generic");
-
-    }
 }

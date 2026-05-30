@@ -17,6 +17,7 @@ public class CreateCustomerModel : PageModel
     public string Password { get; set; }
     public bool ValidModelEntry = true;
     public bool ValidRegistration = true;
+    // To Do: Retrieve error message from API for this case
     public bool CustomerExists = false;
 
 

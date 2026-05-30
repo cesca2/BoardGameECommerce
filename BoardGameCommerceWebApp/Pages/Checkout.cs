@@ -51,7 +51,7 @@ public class CheckoutModel : PageModel
     {
 
         BasketItems =
-            JsonSerializer.Deserialize<List<BasketItem>>(Basket);        //var product = await _productsApi.GetProductAsync(BasketProductId);
+            JsonSerializer.Deserialize<List<BasketItem>>(Basket);     
 
         foreach (var item in BasketItems)
         {

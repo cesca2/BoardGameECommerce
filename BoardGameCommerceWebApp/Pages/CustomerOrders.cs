@@ -5,16 +5,17 @@ namespace BoardGameCommerce.Pages;
 
 public class CustomerOrdersModel : PageModel
 {
+    private readonly SalesApiClient _salesApi;
+    private readonly ProductsApiClient _productsApi;
+
 
     [BindProperty(SupportsGet = true)]
     public Guid? OrderId { get; set; }
-    private readonly SalesApiClient _salesApi;
+    
     public List<Product> Products { get; set; } = [];
-
-    private readonly ProductsApiClient _productsApi;
-
     public List<GetSaleResponse> Sales { get; set; } = [];
     public GetSaleResponse? Sale { get; set; }
+    
     public CustomerOrdersModel(SalesApiClient salesApi, ProductsApiClient productsApi)
     {
         _salesApi = salesApi;
