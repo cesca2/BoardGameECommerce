@@ -1,7 +1,5 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -13,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 // New Security API for Swashbuckle 10.x
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "My Web API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Board Game Commerce API", Version = "v1" });
 
     options.AddSecurityDefinition(
         "Bearer",
