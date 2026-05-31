@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace CommerceAPI.Controllers
 {
     // specifies routing pattern for the controller [controller] is replaced with name of controller minus Controller suffix
@@ -11,15 +10,20 @@ namespace CommerceAPI.Controllers
         private readonly IProductService _productService = productService;
 
         [HttpGet]
-        public ActionResult<List<Product>> GetAllProducts([FromQuery] PaginationParams paginationParams)
+        public ActionResult<List<Product>> GetAllProducts(
+            [FromQuery] PaginationParams paginationParams
+        )
         {
-
             try
             {
                 var products = _productService.GetAllProducts();
                 if (!string.IsNullOrEmpty(paginationParams.SearchTerm))
                 {
-                    products = products.Where(x => x.Name.ToLower().Contains(paginationParams.SearchTerm.ToLower())).ToList();
+                    products = products
+                        .Where(x =>
+                            x.Name.ToLower().Contains(paginationParams.SearchTerm.ToLower())
+                        )
+                        .ToList();
                 }
                 return Ok(products);
             }
@@ -28,8 +32,6 @@ namespace CommerceAPI.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-
-
 
         [HttpGet("{id}")]
         public ActionResult<Product> GetProductById(Guid id)
@@ -50,6 +52,5 @@ namespace CommerceAPI.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-
     }
 }

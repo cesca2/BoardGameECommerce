@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Identity.Data;
 
 public interface ICustomerService
@@ -8,5 +7,4 @@ public interface ICustomerService
     public Sale CreateSale(Sale sale);
 
     public Customer GetCustomerById(Guid id); // should probably move to admin
-
 }

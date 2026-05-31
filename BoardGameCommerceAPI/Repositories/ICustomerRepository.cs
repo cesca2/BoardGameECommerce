@@ -1,4 +1,3 @@
-
 public interface ICustomerRepository
 {
     public List<Customer>? GetAllCustomers();

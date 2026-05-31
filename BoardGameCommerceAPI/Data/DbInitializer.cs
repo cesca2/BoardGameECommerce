@@ -8,7 +8,7 @@ public class DbInitializer
     {
         if (reInitialize)
         {
-            var lst = new List<string> { "sales_products", "sales", "products", "users", };
+            var lst = new List<string> { "sales_products", "sales", "products", "users" };
 
             foreach (string table in lst)
             {
@@ -17,10 +17,10 @@ public class DbInitializer
 
                 reinitCommand.ExecuteNonQuery();
             }
-
         }
         var command = connection.CreateCommand();
-        command.CommandText = @"
+        command.CommandText =
+            @"
               CREATE TABLE IF NOT EXISTS products (
                 id TEXT NOT NULL PRIMARY KEY ,
                 name TEXT NOT NULL,
@@ -32,7 +32,8 @@ public class DbInitializer
         command.ExecuteNonQuery();
 
         var command2 = connection.CreateCommand();
-        command2.CommandText = @"
+        command2.CommandText =
+            @"
               CREATE TABLE IF NOT EXISTS users (
                 id TEXT NOT NULL PRIMARY KEY ,
                 role TEXT NOT NULL DEFAULT 'customer',
@@ -44,7 +45,8 @@ public class DbInitializer
         command2.ExecuteNonQuery();
 
         var command3 = connection.CreateCommand();
-        command3.CommandText = @"
+        command3.CommandText =
+            @"
               CREATE TABLE IF NOT EXISTS sales (
                 id TEXT NOT NULL PRIMARY KEY ,
                 customer_id INTEGER NOT NULL,                
@@ -57,7 +59,8 @@ public class DbInitializer
         command3.ExecuteNonQuery();
 
         var command4 = connection.CreateCommand();
-        command4.CommandText = @"
+        command4.CommandText =
+            @"
               CREATE TABLE IF NOT EXISTS sales_products (
                 id TEXT NOT NULL PRIMARY KEY ,
                 product_id TEXT NOT NULL,
@@ -73,13 +76,12 @@ public class DbInitializer
 
         using (var transaction = connection.BeginTransaction())
         {
-
             if (reInitialize)
             {
                 var path = "BoardGameData/boardgames_data.csv";
                 var insert_command = connection.CreateCommand();
                 insert_command.CommandText =
-                     @"
+                    @"
                 INSERT INTO products(id, name, yearpublished, rank, price)
                 VALUES 
                 ( $Id,
@@ -90,10 +92,8 @@ public class DbInitializer
                 ;
                 ";
 
-
                 using (TextFieldParser csvParser = new TextFieldParser(path))
                 {
-
                     csvParser.SetDelimiters(new string[] { "," });
                     csvParser.HasFieldsEnclosedInQuotes = true;
                     csvParser.CommentTokens = ["#"];
@@ -115,12 +115,10 @@ public class DbInitializer
                         insert_command.Parameters.AddWithValue("$Price", float.Parse(fields[3]));
 
                         insert_command.ExecuteNonQuery();
-
                     }
                 }
 
                 transaction.Commit();
-
             }
         }
     }

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CommerceAPI.Controllers
 {
@@ -12,23 +12,16 @@ namespace CommerceAPI.Controllers
     {
         private readonly ICustomerService _customerService = customerService;
 
-
-
         [AllowAnonymous]
         [HttpPost("register")]
         public ActionResult<Customer> RegisterCustomer(CreateCustomerDTO customer)
         {
-
             try
             {
                 var result = _customerService.Register(customer);
                 if (result.Success == true)
                 {
-                    return StatusCode(201, new
-                    {
-                        token = result.Token
-                    }
-                );
+                    return StatusCode(201, new { token = result.Token });
                 }
                 else
                 {
@@ -40,7 +33,6 @@ namespace CommerceAPI.Controllers
             {
                 return StatusCode(500, new { error = ex.Message });
             }
-
         }
 
         [AllowAnonymous]
@@ -52,11 +44,7 @@ namespace CommerceAPI.Controllers
                 var result = _customerService.Login(customer);
                 if (result.Success == true)
                 {
-                    return StatusCode(200, new
-                    {
-                        token = result.Token
-                    }
-                );
+                    return StatusCode(200, new { token = result.Token });
                 }
                 else
                 {
@@ -68,8 +56,8 @@ namespace CommerceAPI.Controllers
             {
                 return StatusCode(500, new { error = ex.Message });
             }
-
         }
+
         [Authorize]
         [HttpGet("me")]
         public ActionResult<CustomerDetailsDTO> Me()
@@ -80,8 +68,14 @@ namespace CommerceAPI.Controllers
                 var result = _customerService.GetCustomerById(Guid.Parse(userId));
                 if (result is not null)
                 {
-                    return Ok(new CustomerDetailsDTO { Name = result.Name, Id = result.Id, Email = result.Email })
-                ;
+                    return Ok(
+                        new CustomerDetailsDTO
+                        {
+                            Name = result.Name,
+                            Id = result.Id,
+                            Email = result.Email,
+                        }
+                    );
                 }
                 else
                 {
@@ -93,7 +87,6 @@ namespace CommerceAPI.Controllers
             {
                 return StatusCode(500, new { error = ex.Message });
             }
-
         }
     }
 }

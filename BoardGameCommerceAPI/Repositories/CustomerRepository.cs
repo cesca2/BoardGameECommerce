@@ -1,7 +1,6 @@
+using System.Globalization;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
-
 
 public class CustomerRepository : ICustomerRepository
 {
@@ -12,12 +11,10 @@ public class CustomerRepository : ICustomerRepository
     {
         _dbContext = dbContext;
         _logger = logger;
-
     }
 
     public List<Customer>? GetAllCustomers()
     {
-
         List<Customer> rows = new();
 
         using var connection = _dbContext.CreateConnection();
@@ -25,33 +22,35 @@ public class CustomerRepository : ICustomerRepository
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, email 
-            FROM users
-            WHERE role='customer';
-        """;
+                SELECT id, name, email 
+                FROM users
+                WHERE role='customer';
+            """;
         try
         {
             using var datareader = command.ExecuteReader();
             var i = 0;
 
-            if (!datareader.HasRows) return rows;
+            if (!datareader.HasRows)
+                return rows;
             else
             {
                 while (datareader.Read())
                 {
                     {
-                        rows.Add(new Customer
-                        {
-                            Name = datareader.GetString(1),
-                            Email = datareader.GetString(2),
-                            Id = datareader.GetGuid(0)
-                        });
+                        rows.Add(
+                            new Customer
+                            {
+                                Name = datareader.GetString(1),
+                                Email = datareader.GetString(2),
+                                Id = datareader.GetGuid(0),
+                            }
+                        );
                         rows[i].Id = datareader.GetGuid(0);
                         i++;
                     }
                 }
             }
-
         }
         catch (SqliteException ex)
         {
@@ -64,34 +63,33 @@ public class CustomerRepository : ICustomerRepository
 
     public Customer? GetCustomerById(Guid id)
     {
-
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, email 
-            FROM users
-            WHERE id = $id AND role='customer';
-        """;
+                SELECT id, name, email 
+                FROM users
+                WHERE id = $id AND role='customer';
+            """;
         command.Parameters.Add(new SqliteParameter("$id", id.ToString()));
 
         try
         {
             using var datareader = command.ExecuteReader();
 
-            if (!datareader.HasRows) return null;
+            if (!datareader.HasRows)
+                return null;
             else
             {
                 while (datareader.Read())
                 {
                     {
-
                         var customer = new Customer
                         {
                             Name = datareader.GetString(1),
                             Email = datareader.GetString(2),
-                            Id = datareader.GetGuid(0)
+                            Id = datareader.GetGuid(0),
                         };
                         return customer;
                     }
@@ -105,40 +103,38 @@ public class CustomerRepository : ICustomerRepository
             Console.WriteLine(message);
             throw new ApplicationException("Database operation failed");
         }
-
-
     }
+
     public Customer? GetCustomerByEmail(string email)
     {
-
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, email, password_hash
-            FROM users
-            WHERE email = $email AND role='customer';
-        """;
+                SELECT id, name, email, password_hash
+                FROM users
+                WHERE email = $email AND role='customer';
+            """;
         command.Parameters.Add(new SqliteParameter("$email", email));
 
         try
         {
             using var datareader = command.ExecuteReader();
 
-            if (!datareader.HasRows) return null;
+            if (!datareader.HasRows)
+                return null;
             else
             {
                 while (datareader.Read())
                 {
                     {
-
                         var customer = new Customer
                         {
                             Name = datareader.GetString(1),
                             Email = datareader.GetString(2),
                             Id = datareader.GetGuid(0),
-                            PasswordHash = datareader.GetString(3)
+                            PasswordHash = datareader.GetString(3),
                         };
                         return customer;
                     }
@@ -152,22 +148,17 @@ public class CustomerRepository : ICustomerRepository
             Console.WriteLine(message);
             throw new ApplicationException("Database operation failed");
         }
-
-
     }
-
 
     public int CreateCustomer(Customer newCustomer)
     {
-
         string message;
 
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText =
-        """
+        command.CommandText = """
                 INSERT INTO users(id, name, email, password_hash) 
                 VALUES 
                 ( $Id,
@@ -195,7 +186,6 @@ public class CustomerRepository : ICustomerRepository
             }
             _logger.LogInformation(message);
             return rowsAffected;
-
         }
         catch (SqliteException ex)
         {
@@ -203,10 +193,8 @@ public class CustomerRepository : ICustomerRepository
             _logger.LogError(ex, ex.Message);
             throw new ApplicationException("Database operation failed");
         }
-
-
-
     }
+
     public string? DeleteCustomer(Guid id)
     {
         string message;
@@ -215,12 +203,11 @@ public class CustomerRepository : ICustomerRepository
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText =
-        """
-                DELETE FROM users
-                WHERE id = $ID AND role='customer'
-                ;
-        """;
+        command.CommandText = """
+                    DELETE FROM users
+                    WHERE id = $ID AND role='customer'
+                    ;
+            """;
         command.Parameters.AddWithValue("$ID", id.ToString());
 
         try
@@ -234,7 +221,6 @@ public class CustomerRepository : ICustomerRepository
             {
                 return null;
             }
-
         }
         catch (SqliteException ex)
         {
@@ -243,7 +229,6 @@ public class CustomerRepository : ICustomerRepository
         }
 
         return message;
-
     }
 
     public string? UpdateCustomer(Guid id, Customer newCustomer)
@@ -254,19 +239,17 @@ public class CustomerRepository : ICustomerRepository
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText =
-        """
-        UPDATE users
-        SET 
-        name = $Name, 
-        email = $Email
-        WHERE id = $Id AND role='customer'
-        ;
-        """;
+        command.CommandText = """
+            UPDATE users
+            SET 
+            name = $Name, 
+            email = $Email
+            WHERE id = $Id AND role='customer'
+            ;
+            """;
         command.Parameters.AddWithValue("$Id", newCustomer.Id.ToString());
         command.Parameters.AddWithValue("$Name", newCustomer.Name);
         command.Parameters.AddWithValue("$Email", newCustomer.Email);
-
 
         try
         {
@@ -279,7 +262,6 @@ public class CustomerRepository : ICustomerRepository
             {
                 return null;
             }
-
         }
         catch (SqliteException ex)
         {
@@ -288,6 +270,5 @@ public class CustomerRepository : ICustomerRepository
         }
 
         return message;
-
     }
 }

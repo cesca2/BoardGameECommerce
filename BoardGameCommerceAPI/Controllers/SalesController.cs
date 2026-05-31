@@ -1,7 +1,6 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
 
 namespace CommerceAPI.Controllers
 {
@@ -11,7 +10,6 @@ namespace CommerceAPI.Controllers
     public class SalesController(ISaleService saleService) : ControllerBase
     {
         private readonly ISaleService _saleService = saleService;
-
 
         [Authorize] //set role to admin
         [HttpGet("{id}")]
@@ -33,7 +31,6 @@ namespace CommerceAPI.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-
 
         [Authorize]
         [HttpGet()]
@@ -64,7 +61,13 @@ namespace CommerceAPI.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             Console.WriteLine("USERID:" + userId);
-            var salerequest = new Sale { Customer_Id = userId, Date = sale.Date, Time = sale.Time, QuantitiesByProductID = sale.QuantitiesByProductID };
+            var salerequest = new Sale
+            {
+                Customer_Id = userId,
+                Date = sale.Date,
+                Time = sale.Time,
+                QuantitiesByProductID = sale.QuantitiesByProductID,
+            };
 
             var newsale = _saleService.CreateSale(salerequest);
             try
@@ -76,9 +79,6 @@ namespace CommerceAPI.Controllers
             {
                 return StatusCode(500, new { error = ex.Message });
             }
-
         }
-
-
     }
 }

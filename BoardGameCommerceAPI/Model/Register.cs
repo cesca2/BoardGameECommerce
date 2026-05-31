@@ -1,4 +1,1 @@
-public class Register
-{
-
-}
+public class Register { }

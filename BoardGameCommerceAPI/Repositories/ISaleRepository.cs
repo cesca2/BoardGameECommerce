@@ -1,4 +1,3 @@
-
 public interface ISaleRepository
 {
     public List<Sale>? GetAllSales();

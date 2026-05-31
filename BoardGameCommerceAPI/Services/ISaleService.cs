@@ -1,4 +1,3 @@
-
 public interface ISaleService
 {
     public List<Sale> GetSalesByCustomerId(Guid id);
