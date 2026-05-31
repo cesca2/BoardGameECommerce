@@ -4,94 +4,102 @@
 @{
     string header = "";
     string subheader = "";
-    if(Model.OrderId is null){header="Orders";}
-    else{header="Order Summary";
-    subheader="Order number: " + @Model.OrderId.ToString();}
-
-}
-<div class="d-flex justify-content-center mt-5">
-<h1>@header</h1>
-</div>
-@{if(Model.OrderId is not null){
-<div class="d-flex justify-content-center mt-3">
-<h4>@subheader</h4>
-</div>
-<div class="d-flex justify-content-center mt-5">
-<h3>Items</h3>
-</div>
-<div class="d-flex justify-content-center mt-1">
-    <table class="records" class="text-center">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-
-
-        </tr>
-    </thead>
-
-    <tbody>
-    @foreach (var product in Model.Products)
+    if (Model.OrderId is null) { header = "Orders"; }
+    else
     {
-        <tr>
-            <td>@product.Name</td>
-            <td>@product.Quantity</td>
-            <td>£@((product.Price * product.Quantity).ToString("0.00"))</td>
-
-        </tr>
-
+        header = "Order Summary";
+        subheader = "Order number: " + @Model.OrderId.ToString();
     }
-    </tbody>
-</table>
-</div>
+
 }
-else{
-
 <div class="d-flex justify-content-center mt-5">
-
-<form id="orderform" method="get"  asp-page="./CustomerOrders">
-<input type="hidden" name="OrderId" id="orderid"/>
-<table class="records">
-    <thead>
-        <tr>
-            <th>Order Number</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Number of Items</th>
-
-        </tr>
-    </thead>
-
-    <tbody>
-    @foreach (var product in Model.Sales)
+    <h1>@header</h1>
+</div>
+@{
+    if (Model.OrderId is not null)
     {
-        <tr onclick="submitRow('@product.Id')" style="cursor:pointer;">
-            <td>@product.Id </td>
-            <td>@product.Date </td>
-            <td>@product.Time </td>
-            <td>@product.quantitiesByProductID.Sum(x => x.Value) </td>
+        <div class="d-flex justify-content-center mt-3">
+            <h4>@subheader</h4>
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <h3>Items</h3>
+        </div>
+        <div class="d-flex justify-content-center mt-1">
+            <table class="records" class="text-center">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>@product.Name</td>
+                            <td>@product.Quantity</td>
+                            <td>£@((product.Price * product.Quantity).ToString("0.00"))</td>
+
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+
+        <div class="d-flex justify-content-center mt-5">
+
+            <form id="orderform" method="get" asp-page="./CustomerOrders">
+                <input type="hidden" name="OrderId" id="orderid" />
+                <table class="records">
+                    <thead>
+                        <tr>
+                            <th>Order Number</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Number of Items</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var product in Model.Sales)
+                        {
+                            <tr onclick="submitRow('@product.Id')" style="cursor:pointer;">
+                                <td>@product.Id </td>
+                                <td>@product.Date </td>
+                                <td>@product.Time </td>
+                                <td>@product.quantitiesByProductID.Sum(x => x.Value) </td>
+
    
+                            </tr>
 
-        </tr>
-        
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
     }
-    </tbody>
-</table>
-</form>
-</div>
 
-}}
+}
 
 
-<script>  
-    
-function submitRow(id) {
+<script>
+
+    function submitRow(id) {
 
         document.getElementById("orderid").value = id;
 
         document.getElementById("orderform").submit();
-        }
+    }
 </script>
 
 

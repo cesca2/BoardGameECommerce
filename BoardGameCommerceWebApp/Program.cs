@@ -39,9 +39,6 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.UseSession();
-app.MapRazorPages()
-   .WithStaticAssets();
-
+app.MapRazorPages().WithStaticAssets();
 
 app.Run();
-

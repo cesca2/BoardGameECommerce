@@ -2,9 +2,11 @@
 @model CheckoutModel
 
 <div class="d-flex justify-content-center mt-5">
-<h1>Checkout summary</h1>
+    <h1>Checkout summary</h1>
 </div>
-@{double total = 0.0;}
+@{
+    double total = 0.0;
+}
 <form method="post" id="autoForm" asp-page-handler="Basket">
     <input type="hidden" name="Basket" id="Basket" />
 </form>
@@ -31,41 +33,41 @@
     });
     window.addEventListener("beforeunload", function () {
 
-    sessionStorage.removeItem("submitted");
-});
+        sessionStorage.removeItem("submitted");
+    });
 </script>
 
 <div class="d-flex justify-content-center mt-5">
     <table class="records" class="text-center">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
 
 
-        </tr>
-    </thead>
+            </tr>
+        </thead>
 
-    <tbody>
-    @foreach (var product in Model.Products)
-    {
-        <tr>
-            <td>@product.Name</td>
-            <td>@product.Quantity</td>
-            <td>£@((product.Price * product.Quantity).ToString("0.00"))</td>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Quantity</td>
+                    <td>£@((product.Price * product.Quantity).ToString("0.00"))</td>
 
-        </tr>
-        total += product.Price * product.Quantity;
-    }
-    </tbody>
-</table>
+                </tr>
+                total += product.Price * product.Quantity;
+            }
+        </tbody>
+    </table>
 </div>
 <div class="d-flex justify-content-center mt-5">
-<h2>Total cost: £@total.ToString("0.00")</h2>
+    <h2>Total cost: £@total.ToString("0.00")</h2>
 </div>
 <div class="d-flex justify-content-center mt-5">
-<form asp-page-handler="Checkout">
-<button onclick="clearBasket()" type="submit" > Place Order <i class="icon send material-icons">send</i></button>
-</form>
+    <form asp-page-handler="Checkout">
+        <button onclick="clearBasket()" type="submit"> Place Order <i class="icon send material-icons">send</i></button>
+    </form>
 </div>

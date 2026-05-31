@@ -12,11 +12,8 @@ public class SalesApiClient
 
     public async Task<bool> CreateSale(CreateSaleRequest saleRequest, string token)
     {
-
-
         var request = new HttpRequestMessage(HttpMethod.Post, $"api/Sales");
-        request.Headers.Authorization =
-             new AuthenticationHeaderValue("Bearer", token);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         // optional JSON body
         var body = saleRequest;
@@ -31,34 +28,28 @@ public class SalesApiClient
         {
             Console.WriteLine("success");
             return true;
-
         }
         else
         {
             return false;
         }
-
-
     }
+
     public async Task<List<GetSaleResponse>> GetSales(string token)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/Sales");
-        request.Headers.Authorization =
-             new AuthenticationHeaderValue("Bearer", token);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _httpClient.SendAsync(request);
         Console.WriteLine(request.Headers.Authorization?.ToString());
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync
-                <List<GetSaleResponse>>();
+            return await response.Content.ReadFromJsonAsync<List<GetSaleResponse>>();
         }
         else
         {
             Console.WriteLine($"Status code: {(int)response.StatusCode}");
             return null;
         }
-
-
     }
 }

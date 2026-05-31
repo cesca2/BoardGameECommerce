@@ -1,14 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Http
 @{
-var  username = Context.Session.GetString("UserName");
-var greeting = "";
-if (!string.IsNullOrWhiteSpace(username))
-{greeting = $"Welcome back, {username}";
-var login = "";}
+    var username = Context.Session.GetString("UserName");
+    var greeting = "";
+    if (!string.IsNullOrWhiteSpace(username))
+    {
+        greeting = $"Welcome back, {username}";
+        var login = "";
+    }
 
 }
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,78 +24,92 @@ var login = "";}
 
 </head>
 <script src="~/js/basket.js"></script>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Board Game Store <i class="material-icons icon">casino</i> </a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Board Game Store <i
+                    class="material-icons icon">casino</i> </a>
 
                 
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav ms-auto gap-3">
-                        <li class="nav-item">
-                            @{<a id = "basket-total" class="nav-link" asp-page="./Basket", type="submit"><i class="material-icons icon">shopping_cart</i> Basket </a> }
-                        </li>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav ms-auto gap-3">
+                            <li class="nav-item">
+                                @{
+                                    <a id="basket-total" class="nav-link" asp-page="./Basket" , type="submit"><i
+                                        class="material-icons icon">shopping_cart</i> Basket </a>
+                                    }
+                                </li>
+
+                                @{
+                                    if (string.IsNullOrWhiteSpace(username))
+                                    {
+                                        <li class="nav-item ">
+                                            <a class="nav-link" asp-page="./Login" , type="submit" , class="link_icon confirm" ,
+                                               id="new_record"><i class="material-icons icon">person_pin</i> Login </a>
+                                        </li>
+                                    }
+
+                                }
+                                @{
+                        else
+                                    {
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                               data-bs-toggle="dropdown" aria-expanded="false">
+
+                                                @greeting
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+
+                                                <li>
+                                                    <a class="dropdown-item" asp-page="./CustomerOrders">
+                                                        My Orders
+                                                    </a>
+                                                </li>
+
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+
+                                                <li>
+                                                    <a class="dropdown-item" asp-page="./Logout">
+                                                        Logout
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+
+                                        </li>
+                                    }
+
                         
-                        @{if(string.IsNullOrWhiteSpace(username)){
-                        <li class="nav-item ">
-                            <a class="nav-link" asp-page="./Login", type="submit", class="link_icon confirm", id="new_record"><i class="material-icons icon">person_pin</i> Login  </a>
-                        </li>}}
-                        @{else{
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle"
-                                    href="#"
-                                    id="userDropdown"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-
-                                        @greeting
-                                    </a>
-                                 <ul class="dropdown-menu dropdown-menu-end"
-                                aria-labelledby="userDropdown">
-
-                                <li>
-                                    <a class="dropdown-item" asp-page="./CustomerOrders">
-                                        My Orders
-                                    </a>
-                                </li>
-
-                                <li><hr class="dropdown-divider"></li>
-
-                                <li>
-                                    <a class="dropdown-item" asp-page="./Logout">
-                                        Logout
-                                    </a>
-                                </li>
-
+                                }
                             </ul>
-
-                        </li>
-                    }}
-                    </ul>
-                </div>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <div class="container">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-    </footer>
+            <footer class="border-top footer text-muted">
+            </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
 
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+            @await RenderSectionAsync("Scripts", required: false)
+        </body>
+
+    </html>

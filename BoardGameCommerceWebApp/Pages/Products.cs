@@ -18,10 +18,7 @@ public class ProductModel : PageModel
     }
 
     public async Task OnGetAsync()
-
     {
-
         Products = await _productsApi.GetProductsAsync(Query);
-
     }
 }

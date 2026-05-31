@@ -3,8 +3,4 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BoardGameCommerce.Pages;
 
-public class IndexModel : PageModel
-{
-
-
-}
+public class IndexModel : PageModel { }

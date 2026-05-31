@@ -6,20 +6,21 @@ namespace BoardGameCommerce.Pages;
 
 public class CreateCustomerModel : PageModel
 {
-
     private readonly CustomersApiClient _customersApi;
 
     [BindProperty]
     public string Name { get; set; }
+
     [BindProperty]
     public string Email { get; set; }
+
     [BindProperty]
     public string Password { get; set; }
     public bool ValidModelEntry = true;
     public bool ValidRegistration = true;
+
     // To Do: Retrieve error message from API for this case
     public bool CustomerExists = false;
-
 
     public CreateCustomerModel(CustomersApiClient customersApi)
     {
@@ -32,16 +33,14 @@ public class CreateCustomerModel : PageModel
         {
             Name = Name,
             Email = Email,
-            Password = Password
+            Password = Password,
         };
-
 
         if (!ModelState.IsValid)
         {
             ValidModelEntry = false;
             return Page();
         }
-
         else
         {
             var customerToken = await _customersApi.CreateCustomer(customer);
@@ -64,13 +63,10 @@ public class CreateCustomerModel : PageModel
         if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
         {
             return RedirectToPage("./Checkout");
-
         }
         else
         {
             return RedirectToPage("./Index");
         }
     }
-
-
 }

@@ -1,6 +1,6 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Text.Json;
 
 namespace BoardGameCommerce.Pages;
 
@@ -13,14 +13,13 @@ public class BasketModel : PageModel
     public string Basket { get; set; }
 
     public List<BasketItem> BasketItems { get; set; }
+
     public class BasketItem
     {
-
         public string productId { get; set; }
 
         public int quantity { get; set; }
     }
-
 
     public List<Product> Products { get; set; } = [];
 
@@ -29,12 +28,10 @@ public class BasketModel : PageModel
         _productsApi = productsApi;
     }
 
-
     public async Task OnPostAsync()
     {
         Console.WriteLine(Basket[0]);
-        BasketItems =
-            JsonSerializer.Deserialize<List<BasketItem>>(Basket);        
+        BasketItems = JsonSerializer.Deserialize<List<BasketItem>>(Basket);
 
         foreach (var item in BasketItems)
         {
@@ -42,9 +39,6 @@ public class BasketModel : PageModel
             var product = await _productsApi.GetProductAsync(item.productId);
             product.Quantity = item.quantity;
             Products.Add(product);
-
         }
-
-
     }
 }

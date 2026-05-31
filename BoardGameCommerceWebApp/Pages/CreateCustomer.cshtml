@@ -2,46 +2,52 @@
 @model CreateCustomerModel
 
 <div class="d-flex justify-content-center mt-5">
-<h1>Create Customer</h1>
+    <h1>Create Customer</h1>
 </div>
 <div class="d-flex justify-content-center align-items-center mt-5">
-<form method="post">
-<div class="text-center">
-    <label>Name: </label>
-    <input autocomplete="off" class="rounded-pill" type="text", asp-for="Name" />
-</div>
-<div class="spacer"></div>
-<div class="text-center">
-    <label>Email: </label>
-    <input autocomplete="off" class="rounded-pill" type="text", asp-for="Email" />
-</div>
+    <form method="post">
+        <div class="text-center">
+            <label>Name: </label>
+            <input autocomplete="off" class="rounded-pill" type="text" , asp-for="Name" />
+        </div>
+        <div class="spacer"></div>
+        <div class="text-center">
+            <label>Email: </label>
+            <input autocomplete="off" class="rounded-pill" type="text" , asp-for="Email" />
+        </div>
 
 
-<div class="spacer"></div>
-<div class="text-center" >
-    <label>Password: </label>
-    <input class="rounded-pill" type="password", asp-for="Password" />
-</div>
-@{ if (!@Model.ValidModelEntry) {
-        <div class="d-flex justify-content-center mt-5">
-        <p class="invalid_input">Invalid input</p>
+        <div class="spacer"></div>
+        <div class="text-center">
+            <label>Password: </label>
+            <input class="rounded-pill" type="password" , asp-for="Password" />
         </div>
-    }
-}
-@{ if (!@Model.ValidRegistration) {
+        @{
+            if (!@Model.ValidModelEntry)
+            {
+                <div class="d-flex justify-content-center mt-5">
+                    <p class="invalid_input">Invalid input</p>
+                </div>
+            }
+        }
+        @{
+            if (!@Model.ValidRegistration)
+            {
+                <div class="d-flex justify-content-center mt-5">
+                    <p class="invalid_input">Invalid registration request, please try again</p>
+                </div>
+            }
+        }
+        @{
+            if (@Model.CustomerExists)
+            {
+                <div class="d-flex justify-content-center mt-5">
+                    <p class="invalid_input">Customer already registered with entered email</p>
+                </div>
+            }
+        }
         <div class="d-flex justify-content-center mt-5">
-        <p class="invalid_input">Invalid registration request, please try again</p>
+            <button type="submit" class="icon-btn send material-icons">send</button>
         </div>
-    }
-}
-@{ if (@Model.CustomerExists) {
-        <div class="d-flex justify-content-center mt-5">
-        <p class="invalid_input">Customer already registered with entered email</p>
-        </div>
-    }
-}
-<div class="d-flex justify-content-center mt-5">
-    <button type="submit" class="icon-btn send material-icons">send</button>
-</div>
-</form>
+    </form>
 </div>
