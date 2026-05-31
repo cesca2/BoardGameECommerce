@@ -22,7 +22,7 @@ public class CustomerRepository : ICustomerRepository
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-                SELECT id, name, email 
+                SELECT id, name, email
                 FROM users
                 WHERE role='customer';
             """;
@@ -68,7 +68,7 @@ public class CustomerRepository : ICustomerRepository
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-                SELECT id, name, email 
+                SELECT id, name, email
                 FROM users
                 WHERE id = $id AND role='customer';
             """;
@@ -159,10 +159,10 @@ public class CustomerRepository : ICustomerRepository
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-                INSERT INTO users(id, name, email, password_hash) 
-                VALUES 
+                INSERT INTO users(id, name, email, password_hash)
+                VALUES
                 ( $Id,
-                  $Name, 
+                  $Name,
                   $Email,
                   $PasswordHash)
                 ;
@@ -241,8 +241,8 @@ public class CustomerRepository : ICustomerRepository
         using var command = connection.CreateCommand();
         command.CommandText = """
             UPDATE users
-            SET 
-            name = $Name, 
+            SET
+            name = $Name,
             email = $Email
             WHERE id = $Id AND role='customer'
             ;

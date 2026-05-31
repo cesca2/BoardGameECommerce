@@ -34,7 +34,6 @@ public class CheckoutModel : PageModel
     public IActionResult OnGet()
     {
         var username = HttpContext.Session.GetString("UserName");
-        Console.WriteLine(username);
 
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -53,7 +52,6 @@ public class CheckoutModel : PageModel
 
         foreach (var item in BasketItems)
         {
-            Console.WriteLine(item.productId);
             var product = await _productsApi.GetProductAsync(item.productId);
             product.Quantity = item.quantity;
             Products.Add(product);
@@ -73,7 +71,6 @@ public class CheckoutModel : PageModel
         {
             BasketQuantitiesByProductId[product.Id.ToString()] = product.Quantity;
         }
-        Console.WriteLine(BasketQuantitiesByProductId);
 
         var token = HttpContext.Session.GetString("UserToken");
 

@@ -26,7 +26,6 @@ public class CustomerOrdersModel : PageModel
         var token = HttpContext.Session.GetString("UserToken");
 
         Sales = await _salesApi.GetSales(token);
-        Console.WriteLine(OrderId);
         if (OrderId is not null)
         {
             Sale = Sales.Where(x => x.Id == OrderId).ToList()[0];

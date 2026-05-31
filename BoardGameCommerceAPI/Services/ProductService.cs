@@ -59,20 +59,12 @@ public class ProductService : IProductService
     {
         using var connection = _dbContext.CreateConnection();
         connection.Open();
-        Console.WriteLine(id);
         using var command = connection.CreateCommand();
         command.CommandText = """
                 SELECT id, name, yearpublished, price FROM products WHERE id = @id;
             """;
         var sql_id = id.ToString();
-        Console.WriteLine(sql_id);
         command.Parameters.AddWithValue("@id", sql_id);
-        Console.WriteLine(command.CommandText);
-        foreach (SqliteParameter param in command.Parameters)
-        {
-            Console.WriteLine(param.ParameterName);
-            Console.WriteLine(param.Value.ToString());
-        }
 
         try
         {
@@ -80,8 +72,6 @@ public class ProductService : IProductService
 
             while (datareader.Read())
             {
-                Console.WriteLine("here");
-
                 var product = new Product
                 {
                     Name = datareader.GetString(1),

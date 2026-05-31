@@ -25,7 +25,6 @@ public class CustomersApiClient
                 .Deserialize<JsonElement>(json)
                 .GetProperty("token")
                 .GetString();
-            Console.WriteLine("success");
             return token;
         }
         else
@@ -44,12 +43,10 @@ public class CustomersApiClient
 
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("success");
             var token = JsonSerializer
                 .Deserialize<JsonElement>(json)
                 .GetProperty("token")
                 .GetString();
-            Console.WriteLine(token);
             return token;
         }
         else
@@ -63,15 +60,12 @@ public class CustomersApiClient
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/Customers/me");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _httpClient.SendAsync(request);
-        Console.WriteLine(request.Headers.Authorization?.ToString());
-
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<GetCustomerResponse>();
         }
         else
         {
-            Console.WriteLine($"Status code: {(int)response.StatusCode}");
             return null;
         }
     }

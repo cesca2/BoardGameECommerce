@@ -20,13 +20,11 @@ public class SalesApiClient
 
         request.Content = JsonContent.Create(body);
         var response = await _httpClient.SendAsync(request);
-        Console.WriteLine(request.Headers.Authorization?.ToString());
 
         var jsonString = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("success");
             return true;
         }
         else
@@ -40,7 +38,6 @@ public class SalesApiClient
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/Sales");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _httpClient.SendAsync(request);
-        Console.WriteLine(request.Headers.Authorization?.ToString());
 
         if (response.IsSuccessStatusCode)
         {
@@ -48,7 +45,6 @@ public class SalesApiClient
         }
         else
         {
-            Console.WriteLine($"Status code: {(int)response.StatusCode}");
             return null;
         }
     }

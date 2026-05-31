@@ -60,7 +60,6 @@ namespace CommerceAPI.Controllers
         public ActionResult<Sale> CreateSale(SaleDTO sale)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Console.WriteLine("USERID:" + userId);
             var salerequest = new Sale
             {
                 Customer_Id = userId,

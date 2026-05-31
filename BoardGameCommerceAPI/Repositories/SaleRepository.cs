@@ -18,7 +18,7 @@ public class SaleRepository : ISaleRepository
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT sales.id, customer_id, product_id, quantity 
+            SELECT sales.id, customer_id, product_id, quantity
             FROM sales JOIN sales_products ON sales.id = sales_products.sale_id
             WHERE sales.id = $id;
             """;
@@ -68,7 +68,7 @@ public class SaleRepository : ISaleRepository
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT sales.id, customer_id, product_id, quantity, date, time 
+            SELECT sales.id, customer_id, product_id, quantity, date, time
             FROM sales JOIN sales_products ON sales.id = sales_products.sale_id ;
             """;
         try
@@ -120,8 +120,8 @@ public class SaleRepository : ISaleRepository
             {
                 using var sales_command = connection.CreateCommand();
                 sales_command.CommandText = """
-                        INSERT INTO sales(id, customer_id, date, time) 
-                        VALUES 
+                        INSERT INTO sales(id, customer_id, date, time)
+                        VALUES
                         ( $Id,
                           $Customer_Id,
                           $Date,
@@ -138,8 +138,8 @@ public class SaleRepository : ISaleRepository
 
                 using var sales_products_command = connection.CreateCommand();
                 sales_products_command.CommandText = """
-                        INSERT INTO sales_products(id, sale_id, product_id, quantity) 
-                        VALUES 
+                        INSERT INTO sales_products(id, sale_id, product_id, quantity)
+                        VALUES
                         ( $Id,
                           $Sale_Id,
                           $Product_Id,
@@ -167,7 +167,6 @@ public class SaleRepository : ISaleRepository
                     );
                     sales_products_command.Parameters.AddWithValue("$Quantity", item.Value);
 
-                    Console.WriteLine(item.Key.ToString(), item.Value);
                     total_rows_affected += sales_products_command.ExecuteNonQuery();
                 }
 

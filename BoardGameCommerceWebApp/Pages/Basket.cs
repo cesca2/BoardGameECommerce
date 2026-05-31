@@ -37,12 +37,10 @@ public class BasketModel : PageModel
 
     public async Task OnPostAsync()
     {
-        Console.WriteLine(Basket[0]);
         BasketItems = JsonSerializer.Deserialize<List<BasketItem>>(Basket);
 
         foreach (var item in BasketItems)
         {
-            Console.WriteLine(item.productId);
             var product = await _productsApi.GetProductAsync(item.productId);
             product.Quantity = item.quantity;
             Products.Add(product);
