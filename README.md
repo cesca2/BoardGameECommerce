@@ -5,6 +5,9 @@ C# .NET Razor Pages project utilising a web API designed to be an eCommerce engi
 ## Demo
 ![Demo Web Application](./demo/demo_app.gif?raw=true)
 
+## Structure
+![Demo Web Application](./demo/BoardGameCommerce.png)
+
 ## Features
 
 * Record eCommerce transactions in SQLite DB including data on:
