@@ -6,11 +6,12 @@ namespace BoardGameCommerce.Pages;
 
 public class BasketModel : PageModel
 {
-    public bool Submitted = false;
     private readonly ProductsApiClient _productsApi;
 
     [BindProperty]
     public string Basket { get; set; }
+
+    public string BasketPageVisitId { get; set; }
 
     public List<BasketItem> BasketItems { get; set; }
 
@@ -26,6 +27,12 @@ public class BasketModel : PageModel
     public BasketModel(ProductsApiClient productsApi)
     {
         _productsApi = productsApi;
+    }
+
+    public void OnGet()
+    {
+        BasketPageVisitId = "j" + Guid.NewGuid().ToString();
+        HttpContext.Session.SetString("BasketPageVisitId", BasketPageVisitId);
     }
 
     public async Task OnPostAsync()

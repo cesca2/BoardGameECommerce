@@ -9,27 +9,31 @@
 
 
 <script>
+    window.basketPageVisitId = '@Model.BasketPageVisitId';
+    const lastSubmittedHash = sessionStorage.getItem("lastSubmittedBasket") + Math.random();
 
-    window.addEventListener("load", function () {
-        if (sessionStorage.getItem("submitted") == "true")
-            return;
-        // Read from localStorage
-        const basket = JSON.parse(localStorage.getItem("basket"));
 
-        console.log(basket);
-        basket.forEach(entry => {
-            console.log(entry.productId);
-            console.log(entry.quantity);
-        });
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) return;
+
+
+        const basketRaw = localStorage.getItem("basket");
+
+        const basket = JSON.parse(basketRaw);
+
+
+        const submitKey = "submitted:" + window.basketPageVisitId;
+
+
+        if (sessionStorage.getItem(submitKey) == "true") { return; }
+
         document.getElementById("Basket").value = JSON.stringify(basket);
+
+
         document.getElementById("autoForm").submit();
-        sessionStorage.setItem("submitted", "true");
+        sessionStorage.setItem("submitted:" + window.basketPageVisitId, "true");
 
         
-    });
-    window.addEventListener("beforeunload", function () {
-
-        sessionStorage.removeItem("submitted");
     });
 </script>
 
