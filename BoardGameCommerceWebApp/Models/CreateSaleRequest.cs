@@ -1,6 +1,6 @@
-public class CreateSaleRequest
+public record CreateSaleRequest
 {
-    public Dictionary<string, int> quantitiesByProductID { get; set; }
-    public DateOnly Date { get; set; }
-    public TimeOnly Time { get; set; }
+    public Dictionary<string, int> quantitiesByProductID { get; init; }
+    public DateOnly Date { get; init; }
+    public TimeOnly Time { get; init; }
 }
