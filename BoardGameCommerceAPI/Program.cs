@@ -42,6 +42,7 @@ builder.Services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>(
         dataSource: "Default"
     )
 );
+builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddScoped<IPasswordHasher<Customer>, PasswordHasher<Customer>>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -82,12 +83,10 @@ var app = builder.Build();
 // 🔧 Initialize the database at startup
 using (var scope = app.Services.CreateScope())
 {
-    var factory = scope.ServiceProvider.GetRequiredService<IDbConnectionFactory>();
+    var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    var reinit_setting = scope.ServiceProvider.GetRequiredService<IConfiguration>()["ReInitialize"];
 
-    using var connection = factory.CreateConnection();
-    connection.Open();
-
-    DbInitializer.Initialize(connection);
+    initializer.Initialize(reInitialize: reinit_setting == "true");
 }
 
 if (app.Environment.IsDevelopment())
