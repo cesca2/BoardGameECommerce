@@ -50,6 +50,13 @@ Go to the project directory
   cd BoardGameECommerce
 ```
 
+Set up the user-secrets. Edit `BoardGameCommerceAPI/secrets_inputs.json`, then run (macOS/Linux)
+```bash
+  cat ./secrets.json | dotnet user-secrets set
+```
+
+Ensure you add this json file to your gitignore file before commiting. 
+
 Run the applications
 
 ```bash
@@ -57,12 +64,8 @@ Run the applications
   dotnet run --project BoardGameCommerceApp
 ```
 
-Edit secrets_inputs.json, then run (macOS/Linux)
-```bash
-  cat ./secrets.json | dotnet user-secrets set
-```
 
-Ensure you add the json file to your gitignore before commiting. 
+
 
 ## API Reference
 
@@ -153,7 +156,7 @@ EXAMPLE INPUT:
 | ---------- | ------- | -------- | ----------------------------------    |
 | `quantitiesByProductID` | Dictionary<Guid, int> | Yes      | Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
 | `date` | DateOnly | Yes      | Date of transaction. |
-| `date` | TimeOnly | Yes      | Time of transaction. |
+| `time` | TimeOnly | Yes      | Time of transaction. |
 
 ### Retrieve Sales Associated to Customer
 
@@ -182,7 +185,7 @@ EXAMPLE OUTPUT:
 | ---------- | ------- | -------- | ----------------------------------    |
 | `quantitiesByProductID` | Dictionary<Guid, int> | Yes      | Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
 | `date` | DateOnly | Yes      | Date of transaction. |
-| `date` | TimeOnly | Yes      | Time of transaction. |
+| `time` | TimeOnly | Yes      | Time of transaction. |
 
 ## Database information and acknowledgements
 Data used to populate mock products are sourced from BoardGameGeek BGG XML API https://boardgamegeek.com/using_the_xml_api, and BoardGamePrices https://boardgameprices.co.uk/api/plugin.
