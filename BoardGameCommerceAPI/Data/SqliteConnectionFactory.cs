@@ -7,7 +7,7 @@ public class SqliteConnectionFactory : IDbConnectionFactory
     // IConfiguration available in DI container
     public SqliteConnectionFactory(IConfiguration config, string dataSource)
     {
-        _connectionString = config.GetConnectionString(dataSource);
+        _connectionString = config.GetConnectionString(dataSource) ?? "";
     }
 
     public SqliteConnection CreateConnection()

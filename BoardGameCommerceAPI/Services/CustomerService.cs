@@ -71,11 +71,6 @@ public class CustomerService : ICustomerService
         return AuthResultFactory.Ok(token);
     }
 
-    public Sale CreateSale(Sale sale)
-    {
-        return new Sale();
-    }
-
     public Customer? GetCustomerById(Guid id)
     {
         return _customerRepository.GetCustomerById(id);

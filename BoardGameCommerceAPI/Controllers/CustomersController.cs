@@ -65,6 +65,10 @@ namespace CommerceAPI.Controllers
             try
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userId is null)
+                {
+                    return Unauthorized();
+                }
                 var result = _customerService.GetCustomerById(Guid.Parse(userId));
                 if (result is not null)
                 {

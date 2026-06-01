@@ -9,7 +9,7 @@ public class ProductService : IProductService
         _dbContext = dbContext;
     }
 
-    public List<Product>? GetAllProducts()
+    public List<Product> GetAllProducts()
     {
         List<Product> rows = new();
 

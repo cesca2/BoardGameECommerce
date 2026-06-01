@@ -39,7 +39,10 @@ namespace CommerceAPI.Controllers
             try
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+                if (userId is null)
+                {
+                    return Unauthorized();
+                }
                 var result = _saleService.GetSalesByCustomerId(Guid.Parse(userId));
 
                 if (result == null)
@@ -60,6 +63,10 @@ namespace CommerceAPI.Controllers
         public ActionResult<Sale> CreateSale(SaleDTO sale)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
             var salerequest = new Sale
             {
                 Customer_Id = userId,

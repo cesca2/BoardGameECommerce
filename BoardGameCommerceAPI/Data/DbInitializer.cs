@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.VisualBasic.FileIO;
 
@@ -24,7 +25,7 @@ public class DbInitializer
               CREATE TABLE IF NOT EXISTS products (
                 id TEXT NOT NULL PRIMARY KEY ,
                 name TEXT NOT NULL,
-                yearpublished INTEGER NOT NULL, 
+                yearpublished INTEGER NOT NULL,
                 rank REAL NOT NULL,
                 price REAL NOT NULL
             );";
@@ -49,10 +50,10 @@ public class DbInitializer
             @"
               CREATE TABLE IF NOT EXISTS sales (
                 id TEXT NOT NULL PRIMARY KEY ,
-                customer_id INTEGER NOT NULL,                
-                date TEXT NOT NULL, 
+                customer_id INTEGER NOT NULL,
+                date TEXT NOT NULL,
                 time TEXT NOT NULL,
-                FOREIGN KEY (customer_id) 
+                FOREIGN KEY (customer_id)
                     REFERENCES users (id) ON DELETE CASCADE
             );";
 
@@ -66,7 +67,7 @@ public class DbInitializer
                 product_id TEXT NOT NULL,
                 sale_id TEXT NOT NULL,
                 quantity INTEGER NOT NULL,
-                FOREIGN KEY (sale_id) 
+                FOREIGN KEY (sale_id)
                     REFERENCES sales (id) ON DELETE CASCADE,
                 FOREIGN KEY (product_id)
                     REFERENCES products (id)
@@ -83,10 +84,10 @@ public class DbInitializer
                 insert_command.CommandText =
                     @"
                 INSERT INTO products(id, name, yearpublished, rank, price)
-                VALUES 
+                VALUES
                 ( $Id,
-                  $Name, 
-                  $Year, 
+                  $Name,
+                  $Year,
                   $Rank,
                   $Price)
                 ;
@@ -106,15 +107,24 @@ public class DbInitializer
                     while (!csvParser.EndOfData)
                     {
                         i++;
-                        string[] fields = csvParser.ReadFields();
-                        insert_command.Parameters.Clear();
-                        insert_command.Parameters.AddWithValue("$Id", Guid.NewGuid().ToString());
-                        insert_command.Parameters.AddWithValue("$Name", fields[0]);
-                        insert_command.Parameters.AddWithValue("$Year", int.Parse(fields[1]));
-                        insert_command.Parameters.AddWithValue("$Rank", float.Parse(fields[2]));
-                        insert_command.Parameters.AddWithValue("$Price", float.Parse(fields[3]));
+                        string[]? fields = csvParser.ReadFields();
+                        if (fields is not null)
+                        {
+                            insert_command.Parameters.Clear();
+                            insert_command.Parameters.AddWithValue(
+                                "$Id",
+                                Guid.NewGuid().ToString()
+                            );
+                            insert_command.Parameters.AddWithValue("$Name", fields[0]);
+                            insert_command.Parameters.AddWithValue("$Year", int.Parse(fields[1]));
+                            insert_command.Parameters.AddWithValue("$Rank", float.Parse(fields[2]));
+                            insert_command.Parameters.AddWithValue(
+                                "$Price",
+                                float.Parse(fields[3])
+                            );
 
-                        insert_command.ExecuteNonQuery();
+                            insert_command.ExecuteNonQuery();
+                        }
                     }
                 }
 
