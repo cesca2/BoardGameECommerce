@@ -12,6 +12,7 @@ bgpapi
 *.user
 *.userosscache
 *.sln.docstates
+secrets.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

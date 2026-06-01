@@ -57,6 +57,12 @@ Run the applications
   dotnet run --project BoardGameCommerceApp
 ```
 
+Edit secrets_inputs.json, then run (macOS/Linux)
+```bash
+  cat ./secrets.json | dotnet user-secrets set
+```
+
+Ensure you add the json file to your gitignore before commiting. 
 
 ## API Reference
 
