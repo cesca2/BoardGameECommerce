@@ -28,6 +28,15 @@ public class SaleService : ISaleService
         return _saleRepository.GetSale(id);
     }
 
+    public List<Sale> GetAllSales()
+    {
+        var sales = _saleRepository.GetAllSales();
+        if (sales is null)
+            return [];
+
+        return sales;
+    }
+
     public List<Sale> GetSalesByCustomerId(Guid id)
     {
         var sales = _saleRepository.GetAllSales();

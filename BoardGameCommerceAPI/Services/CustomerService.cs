@@ -25,20 +25,28 @@ public class CustomerService : ICustomerService
 
     public AuthResult Login(LoginCustomerDTO dto)
     {
-        var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
-        if (customerexists is null)
+        Customer? user;
+        string role;
+        // try for highest priveledge first
+        user = _customerRepository.GetAdminByEmail(dto.Email);
+        if (user is null)
         {
-            return AuthResultFactory.Fail("Invalid login details provided");
+            user = _customerRepository.GetCustomerByEmail(dto.Email);
+            role = "Customer";
+            if (user is null)
+            {
+                return AuthResultFactory.Fail("Invalid login details provided");
+            }
+        }
+        else
+        {
+            role = "Admin";
         }
 
-        var hash = _hasher.VerifyHashedPassword(
-            customerexists,
-            customerexists.PasswordHash,
-            dto.Password
-        );
+        var hash = _hasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
         if (hash == PasswordVerificationResult.Success)
         {
-            var token = GenerateCustomerJWT(customerexists);
+            var token = GenerateJWT(user, role);
             return AuthResultFactory.Ok(token);
         }
         else
@@ -47,6 +55,7 @@ public class CustomerService : ICustomerService
         }
     }
 
+    // DANGER - only let customers not admins register with this method
     public AuthResult Register(CreateCustomerDTO dto)
     {
         var customerexists = _customerRepository.GetCustomerByEmail(dto.Email);
@@ -66,7 +75,7 @@ public class CustomerService : ICustomerService
             return AuthResultFactory.Fail("Customer was not created successfully");
         }
 
-        var token = GenerateCustomerJWT(customer);
+        var token = GenerateJWT(customer, "Customer");
 
         return AuthResultFactory.Ok(token);
     }
@@ -77,7 +86,7 @@ public class CustomerService : ICustomerService
     }
 
     // JWT token creation
-    private string GenerateCustomerJWT(Customer customer)
+    private string GenerateJWT(Customer customer, string role)
     {
         var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]!)
@@ -86,7 +95,7 @@ public class CustomerService : ICustomerService
         var userClaims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
-            new Claim(ClaimTypes.Role, "Customer"),
+            new Claim(ClaimTypes.Role, role),
             new Claim(ClaimTypes.NameIdentifier, customer.Name),
         };
 

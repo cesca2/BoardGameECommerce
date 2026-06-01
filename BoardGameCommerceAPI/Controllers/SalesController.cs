@@ -11,7 +11,7 @@ namespace CommerceAPI.Controllers
     {
         private readonly ISaleService _saleService = saleService;
 
-        [Authorize] //set role to admin
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public ActionResult<Sale> GetSaleById(Guid id)
         {
@@ -32,9 +32,25 @@ namespace CommerceAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public ActionResult<List<Sale>> GetAllSales()
+        {
+            try
+            {
+                var result = _saleService.GetAllSales();
+
+                return Ok(result);
+            }
+            catch (ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
         [Authorize]
         [HttpGet()]
-        public ActionResult<List<Sale>> GetSales()
+        public ActionResult<List<Sale>> GetCustomerSales()
         {
             try
             {

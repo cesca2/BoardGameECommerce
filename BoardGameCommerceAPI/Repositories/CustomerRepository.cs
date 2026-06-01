@@ -147,6 +147,50 @@ public class CustomerRepository : ICustomerRepository
         }
     }
 
+    public Customer? GetAdminByEmail(string email)
+    {
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+                SELECT id, name, email, password_hash
+                FROM users
+                WHERE email = $email AND role='admin';
+            """;
+        command.Parameters.Add(new SqliteParameter("$email", email));
+
+        try
+        {
+            using var datareader = command.ExecuteReader();
+
+            if (!datareader.HasRows)
+                return null;
+            else
+            {
+                while (datareader.Read())
+                {
+                    {
+                        var customer = new Customer
+                        {
+                            Name = datareader.GetString(1),
+                            Email = datareader.GetString(2),
+                            Id = datareader.GetGuid(0),
+                            PasswordHash = datareader.GetString(3),
+                        };
+                        return customer;
+                    }
+                }
+            }
+            return null;
+        }
+        catch (SqliteException ex)
+        {
+            _logger.LogError(ex.Message);
+            throw new ApplicationException("Database operation failed");
+        }
+    }
+
     public int CreateCustomer(Customer newCustomer)
     {
         string message;

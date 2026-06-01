@@ -57,12 +57,13 @@ public class DbInitializer
 
         using var command = connection.CreateCommand();
         command.CommandText = """
-                INSERT INTO users(id, name, email, password_hash)
+                INSERT INTO users(id, name, email, password_hash, role)
                 VALUES
                 ( $Id,
                   $Name,
                   $Email,
-                  $PasswordHash)
+                  $PasswordHash,
+                  'admin')
                 ;
             """;
 
