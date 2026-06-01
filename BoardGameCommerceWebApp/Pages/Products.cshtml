@@ -2,60 +2,65 @@
 @model ProductModel
 
 @{
-string header = "Board Games";
-if (Model.Query is not null){
-    header = $"Search results for '{Model.Query}'";
-} }
+    string header = "Board Games";
+    if (!string.IsNullOrEmpty(Model.Query))
+    {
+        header = $"Search results for '{Model.Query}'";
+    }
+}
 <script></script>
 
 
-@{if (Model.Products.Count > 0)
-{
-
-<h1 class="d-flex justify-content-center mt-5">@header (@Model.Products.Count)</h1>
-<div class="d-flex justify-content-center mt-5">
-<form class="input-group w-50" method="get" asp-page="./Products" class="d-flex gap-2">
-    <input autocomplete="off" class="form-control rounded-pill"" type="search" name="query" placeholder="Search Our Range..." />
-    <button type="submit"><i class="material-icons icon">search</i> </button>
-</form>
-</div>
-<div class="d-flex justify-content-center mt-5">
-<table class="records" class="text-center">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Year</th>
-            <th>Price</th>
-            <th></th>
-            <th>In basket</th>
-        </tr>
-    </thead>
-
-    <tbody>
-    @foreach (var product in Model.Products)
+@{
+    if (Model.Products.Count > 0)
     {
-        <tr>
-            <td>@product.Name</td>
-            <td>@product.YearPublished</td>
-            <td>£@product.Price.ToString("0.00")</td>
-            <td><button onclick="addToBasket('@product.Id')">Add to basket</button></td>
-            <td class = "quantity" data-id="@product.Id"></td>
-        </tr>
-    }
-    </tbody>
-</table>
-</div>
-}
-else{
-<div class="d-flex justify-content-center mt-5">
-<h1>No results for "@Model.Query".</h1>
-</div>
-<div class="d-flex justify-content-center mt-5">
-<form class="input-group w-50" method="get" asp-page="./Products" class="d-flex gap-2">
-    <input class="form-control rounded-pill"" type="search" name="query" placeholder="Search Our Range..." />
-    <button type="submit"><i class="material-icons icon">search</i> </button>
-</form>
-</div>
 
-}
+        <h1 class="d-flex justify-content-center mt-5">@header (@Model.Products.Count)</h1>
+        <div class="d-flex justify-content-center mt-5">
+            <form class="input-group w-50" method="get" asp-page="./Products" class="d-flex gap-2">
+                <input autocomplete="off" class="form-control rounded-pill"" type=" search" name="query"
+                       placeholder="Search Our Range..." />
+                <button type="submit"><i class="material-icons icon">search</i> </button>
+            </form>
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <table class="records" class="text-center">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Year</th>
+                        <th>Price</th>
+                        <th></th>
+                        <th>In basket</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>@product.Name</td>
+                            <td>@product.YearPublished</td>
+                            <td>£@product.Price.ToString("0.00")</td>
+                            <td><button onclick="addToBasket('@product.Id')">Add to basket</button></td>
+                            <td class="quantity" data-id="@product.Id"></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-center mt-5">
+            <h1>No results for "@Model.Query".</h1>
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <form class="input-group w-50" method="get" asp-page="./Products" class="d-flex gap-2">
+                <input class="form-control rounded-pill"" type=" search" name="query" placeholder="Search Our Range..." />
+                <button type="submit"><i class="material-icons icon">search</i> </button>
+            </form>
+        </div>
+
+    }
 }

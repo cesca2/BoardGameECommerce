@@ -12,15 +12,15 @@ public class CheckoutModel : PageModel
     public List<Product> Products { get; set; } = [];
 
     [BindProperty]
-    public string Basket { get; set; }
+    public string Basket { get; set; } = "";
 
-    public List<BasketItem> BasketItems { get; set; }
+    public List<BasketItem> BasketItems { get; set; } = [];
 
     public class BasketItem
     {
-        public string productId { get; set; }
+        public required string productId { get; set; }
 
-        public int quantity { get; set; }
+        public required int quantity { get; set; }
     }
 
     public Dictionary<string, int> BasketQuantitiesByProductId = new Dictionary<string, int>();
@@ -48,13 +48,16 @@ public class CheckoutModel : PageModel
 
     public async Task OnPostBasketAsync()
     {
-        BasketItems = JsonSerializer.Deserialize<List<BasketItem>>(Basket);
+        BasketItems = JsonSerializer.Deserialize<List<BasketItem>>(Basket) ?? [];
 
         foreach (var item in BasketItems)
         {
             var product = await _productsApi.GetProductAsync(item.productId);
-            product.Quantity = item.quantity;
-            Products.Add(product);
+            if (product is not null)
+            {
+                product.Quantity = item.quantity;
+                Products.Add(product);
+            }
         }
 
         HttpContext.Session.SetString("BasketProducts", JsonSerializer.Serialize(Products));
@@ -64,15 +67,15 @@ public class CheckoutModel : PageModel
     {
         var customerId = HttpContext.Session.GetString("UserId");
 
-        var products_json = HttpContext.Session.GetString("BasketProducts");
-        var products = JsonSerializer.Deserialize<List<Product>>(products_json);
+        var products_json = HttpContext.Session.GetString("BasketProducts") ?? "";
+        var products = JsonSerializer.Deserialize<List<Product>>(products_json) ?? [];
 
         foreach (var product in products)
         {
             BasketQuantitiesByProductId[product.Id.ToString()] = product.Quantity;
         }
 
-        var token = HttpContext.Session.GetString("UserToken");
+        var token = HttpContext.Session.GetString("UserToken") ?? "";
 
         var sale = new CreateSaleRequest
         {

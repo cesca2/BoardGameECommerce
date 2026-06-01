@@ -23,7 +23,7 @@ public class CustomerOrdersModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var token = HttpContext.Session.GetString("UserToken");
+        var token = HttpContext.Session.GetString("UserToken") ?? "";
 
         Sales = await _salesApi.GetSales(token);
         if (OrderId is not null)
@@ -32,8 +32,11 @@ public class CustomerOrdersModel : PageModel
             foreach (var item in Sale.quantitiesByProductID)
             {
                 var product = await _productsApi.GetProductAsync(item.Key);
-                product.Quantity = item.Value;
-                Products.Add(product);
+                if (product is not null)
+                {
+                    product.Quantity = item.Value;
+                    Products.Add(product);
+                }
             }
         }
     }

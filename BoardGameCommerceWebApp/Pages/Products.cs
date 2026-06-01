@@ -6,7 +6,7 @@ namespace BoardGameCommerce.Pages;
 public class ProductModel : PageModel
 {
     [BindProperty(SupportsGet = true)]
-    public string? Query { get; set; }
+    public string Query { get; set; } = "";
 
     private readonly ProductsApiClient _productsApi;
 

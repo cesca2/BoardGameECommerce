@@ -9,13 +9,13 @@ public class CreateCustomerModel : PageModel
     private readonly CustomersApiClient _customersApi;
 
     [BindProperty]
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 
     [BindProperty]
-    public string Email { get; set; }
+    public string Email { get; set; } = "";
 
     [BindProperty]
-    public string Password { get; set; }
+    public string Password { get; set; } = "";
     public bool ValidModelEntry = true;
     public bool ValidRegistration = true;
 
@@ -44,9 +44,10 @@ public class CreateCustomerModel : PageModel
         else
         {
             var customerToken = await _customersApi.CreateCustomer(customer);
-            if (!string.IsNullOrEmpty(customerToken))
+            GetCustomerResponse? customerInfo = await _customersApi.GetCustomer(customerToken);
+
+            if (customerInfo is not null)
             {
-                GetCustomerResponse customerInfo = await _customersApi.GetCustomer(customerToken);
                 HttpContext.Session.SetString("UserToken", customerToken);
 
                 HttpContext.Session.SetString("UserName", customerInfo.Name);

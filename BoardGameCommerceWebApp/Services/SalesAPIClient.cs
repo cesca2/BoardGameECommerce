@@ -41,11 +41,11 @@ public class SalesApiClient
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<List<GetSaleResponse>>();
+            return await response.Content.ReadFromJsonAsync<List<GetSaleResponse>>() ?? [];
         }
         else
         {
-            return null;
+            return [];
         }
     }
 }

@@ -20,7 +20,7 @@ public class ProductsApiClient
         }
         response.EnsureSuccessStatusCode();
 
-        var products = await response.Content.ReadFromJsonAsync<List<GetProductsResponse>>();
+        var products = await response.Content.ReadFromJsonAsync<List<GetProductsResponse>>() ?? [];
 
         // Return in a parsed format
         return products

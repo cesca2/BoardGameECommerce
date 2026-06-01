@@ -25,7 +25,7 @@ public class CustomersApiClient
                 .Deserialize<JsonElement>(json)
                 .GetProperty("token")
                 .GetString();
-            return token;
+            return token ?? "";
         }
         else
         {
@@ -43,10 +43,9 @@ public class CustomersApiClient
 
         if (response.IsSuccessStatusCode)
         {
-            var token = JsonSerializer
-                .Deserialize<JsonElement>(json)
-                .GetProperty("token")
-                .GetString();
+            var token =
+                JsonSerializer.Deserialize<JsonElement>(json).GetProperty("token").GetString()
+                ?? "";
             return token;
         }
         else

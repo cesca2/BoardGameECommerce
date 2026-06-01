@@ -9,17 +9,17 @@ public class BasketModel : PageModel
     private readonly ProductsApiClient _productsApi;
 
     [BindProperty]
-    public string Basket { get; set; }
+    public string Basket { get; set; } = "";
 
-    public string BasketPageVisitId { get; set; }
+    public string BasketPageVisitId { get; set; } = "";
 
-    public List<BasketItem> BasketItems { get; set; }
+    public List<BasketItem> BasketItems { get; set; } = [];
 
     public class BasketItem
     {
-        public string productId { get; set; }
+        public required string productId { get; set; }
 
-        public int quantity { get; set; }
+        public required int quantity { get; set; }
     }
 
     public List<Product> Products { get; set; } = [];
@@ -37,13 +37,17 @@ public class BasketModel : PageModel
 
     public async Task OnPostAsync()
     {
-        BasketItems = JsonSerializer.Deserialize<List<BasketItem>>(Basket);
+        BasketItems = JsonSerializer.Deserialize<List<BasketItem>>(Basket) ?? [];
 
         foreach (var item in BasketItems)
         {
+            // Should handle case this is null on frontend
             var product = await _productsApi.GetProductAsync(item.productId);
-            product.Quantity = item.quantity;
-            Products.Add(product);
+            if (product is not null)
+            {
+                product.Quantity = item.quantity;
+                Products.Add(product);
+            }
         }
     }
 }
