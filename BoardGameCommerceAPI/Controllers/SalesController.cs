@@ -69,10 +69,10 @@ namespace CommerceAPI.Controllers
                 Time = sale.Time,
                 QuantitiesByProductID = sale.QuantitiesByProductID,
             };
-
-            var newsale = _saleService.CreateSale(salerequest);
             try
             {
+                var newsale = _saleService.CreateSale(salerequest);
+
                 return Created("", new SaleConfirmationDetailsDTO { Id = salerequest.Id });
             }
             catch (ApplicationException ex)
