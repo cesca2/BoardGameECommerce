@@ -9,6 +9,7 @@ public class CheckoutModel : PageModel
 {
     private readonly SalesApiClient _salesApi;
     private readonly ProductsApiClient _productsApi;
+    public string CheckoutPageVisitId { get; set; } = "";
     public List<Product> Products { get; set; } = [];
 
     [BindProperty]
@@ -33,6 +34,9 @@ public class CheckoutModel : PageModel
 
     public IActionResult OnGet()
     {
+        CheckoutPageVisitId = "j" + Guid.NewGuid().ToString();
+        HttpContext.Session.SetString("CheckoutPageVisitId", CheckoutPageVisitId);
+
         var username = HttpContext.Session.GetString("UserName");
 
         if (string.IsNullOrWhiteSpace(username))

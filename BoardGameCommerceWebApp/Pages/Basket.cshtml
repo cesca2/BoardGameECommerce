@@ -10,8 +10,6 @@
 
 <script>
     window.basketPageVisitId = '@Model.BasketPageVisitId';
-    const lastSubmittedHash = sessionStorage.getItem("lastSubmittedBasket") + Math.random();
-
 
     window.addEventListener("pageshow", function (event) {
         if (event.persisted) return;
