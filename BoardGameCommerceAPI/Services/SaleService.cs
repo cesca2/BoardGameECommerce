@@ -1,6 +1,7 @@
 using System.Globalization;
 using CommerceAPI.Controllers;
 using Microsoft.Data.Sqlite;
+using SQLitePCL;
 
 public class SaleService : ISaleService
 {
@@ -16,8 +17,9 @@ public class SaleService : ISaleService
         var rowsaffected = _saleRepository.CreateSale(newSale);
         if (rowsaffected == 0)
         {
-            throw new InvalidOperationException("Sale could not be created succesfully");
+            throw new ApplicationException("Sale could not be created succesfully");
         }
+
         return _saleRepository.GetSale(newSale.Id);
     }
 
@@ -31,6 +33,7 @@ public class SaleService : ISaleService
         var sales = _saleRepository.GetAllSales();
         if (sales is null)
             return [];
+
         var customer_sales = sales.Where(sale => sale.Customer_Id == id.ToString()).ToList() ?? [];
         return customer_sales;
     }

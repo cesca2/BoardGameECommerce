@@ -45,11 +45,6 @@ namespace CommerceAPI.Controllers
                 }
                 var result = _saleService.GetSalesByCustomerId(Guid.Parse(userId));
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
                 return Ok(result);
             }
             catch (ApplicationException ex)
@@ -78,8 +73,7 @@ namespace CommerceAPI.Controllers
             var newsale = _saleService.CreateSale(salerequest);
             try
             {
-                //return CreatedAtAction("Update me", new { id = sale.Id }, newsale);
-                return Ok(newsale);
+                return Created("", new SaleConfirmationDetailsDTO { Id = salerequest.Id });
             }
             catch (ApplicationException ex)
             {

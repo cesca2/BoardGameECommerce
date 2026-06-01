@@ -33,6 +33,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 builder.Services.AddControllers();
+builder.Services.AddLogging(builder => builder.AddConsole());
 
 // Register configuration-based services
 builder.Services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>(
@@ -47,6 +48,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IPasswordHasher<Customer>, PasswordHasher<Customer>>();
 builder
     .Services.AddAuthentication(options =>

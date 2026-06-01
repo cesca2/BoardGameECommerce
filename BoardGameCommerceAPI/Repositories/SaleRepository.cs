@@ -5,10 +5,12 @@ using Microsoft.Data.Sqlite;
 public class SaleRepository : ISaleRepository
 {
     private readonly IDbConnectionFactory _dbContext;
+    private readonly ILogger<SaleRepository> _logger;
 
-    public SaleRepository(IDbConnectionFactory dbContext)
+    public SaleRepository(IDbConnectionFactory dbContext, ILogger<SaleRepository> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public Sale? GetSale(Guid id)
@@ -53,8 +55,7 @@ public class SaleRepository : ISaleRepository
         }
         catch (SqliteException ex)
         {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
     }
@@ -110,7 +111,6 @@ public class SaleRepository : ISaleRepository
 
     public int CreateSale(Sale newSale)
     {
-        string message;
         try
         {
             using var connection = _dbContext.CreateConnection();
@@ -171,29 +171,19 @@ public class SaleRepository : ISaleRepository
                 }
 
                 transaction.Commit();
-                if (sales_rowsAffected > 0 & total_rows_affected > 0)
-                {
-                    message = "Successfully inserted data";
-                }
-                else
-                {
-                    message = "No row update";
-                }
+
                 return sales_rowsAffected;
             }
         }
         catch (SqliteException ex)
         {
-            message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
     }
 
     public int DeleteSale(Guid id)
     {
-        string message;
-
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
@@ -208,15 +198,12 @@ public class SaleRepository : ISaleRepository
         try
         {
             int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected > 0)
-            {
-                message = $"Successfully deleted entry with id: {id}";
-            }
+
             return rowsAffected;
         }
         catch (SqliteException ex)
         {
-            message = "SQLite Error" + ex.Message;
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
     }

@@ -54,8 +54,7 @@ public class CustomerRepository : ICustomerRepository
         }
         catch (SqliteException ex)
         {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
         return rows;
@@ -99,8 +98,7 @@ public class CustomerRepository : ICustomerRepository
         }
         catch (SqliteException ex)
         {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
     }
@@ -144,8 +142,7 @@ public class CustomerRepository : ICustomerRepository
         }
         catch (SqliteException ex)
         {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
     }
@@ -189,16 +186,13 @@ public class CustomerRepository : ICustomerRepository
         }
         catch (SqliteException ex)
         {
-            message = "SQLite Error" + ex.Message;
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
     }
 
-    public string? DeleteCustomer(Guid id)
+    public int DeleteCustomer(Guid id)
     {
-        string message;
-
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
@@ -213,28 +207,17 @@ public class CustomerRepository : ICustomerRepository
         try
         {
             int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected > 0)
-            {
-                message = $"Successfully deleted entry with id: {id}";
-            }
-            else
-            {
-                return null;
-            }
+            return rowsAffected;
         }
         catch (SqliteException ex)
         {
-            message = "SQLite Error" + ex.Message;
-            throw new ApplicationException("Database operation failed");
+            _logger.LogError(ex.Message);
+            throw new ApplicationException($"Database operation failed");
         }
-
-        return message;
     }
 
-    public string? UpdateCustomer(Guid id, Customer newCustomer)
+    public int UpdateCustomer(Guid id, Customer newCustomer)
     {
-        string message;
-
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
@@ -254,21 +237,13 @@ public class CustomerRepository : ICustomerRepository
         try
         {
             int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected > 0)
-            {
-                message = $"Successfully updated entry with id: {id}";
-            }
-            else
-            {
-                return null;
-            }
+
+            return rowsAffected;
         }
         catch (SqliteException ex)
         {
-            message = "SQLite Error" + ex.Message;
-            throw new ApplicationException($"Database operation failed: {message}");
+            _logger.LogError(ex.Message);
+            throw new ApplicationException($"Database operation failed");
         }
-
-        return message;
     }
 }
