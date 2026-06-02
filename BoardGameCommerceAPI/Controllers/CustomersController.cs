@@ -25,7 +25,7 @@ namespace CommerceAPI.Controllers
                 }
                 else
                 {
-                    return BadRequest(result.Error);
+                    return BadRequest(new { error = result.Error });
                 }
                 ;
             }
@@ -48,7 +48,7 @@ namespace CommerceAPI.Controllers
                 }
                 else
                 {
-                    return Unauthorized(result.Error);
+                    return Unauthorized(new { error = result.Error });
                 }
                 ;
             }
