@@ -5,8 +5,8 @@ C# .NET Razor Pages project utilising a web API designed to be an eCommerce engi
 ## Demo
 ![Demo Web Application](./demo/demo_app.gif?raw=true)
 
-## Structure
-![Demo Web Application](./demo/BoardGameCommerce.png)
+## System Structure
+![Demo Web Application](./demo/BoardGameCommerceSystem.png)
 
 ## Features
 
