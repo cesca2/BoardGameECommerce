@@ -100,7 +100,7 @@ Authorisation structure:
 **EXAMPLE INPUT:**
 ```json
 {
-  "name": Jane Doe,
+  "name": "Jane Doe",
   "email": "jdoe@email.com",
   "password": "password123"
 }
