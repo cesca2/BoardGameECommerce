@@ -73,13 +73,13 @@ JWT token generation on user login. Authenticated users are assigned either 'Cus
 Authorisation structure:
 * Unauthenticated users can access all product information and create login/registration requests.
 * Authenticated customers can access their own information, order history and create a new order.
-* Authenticated admins have customer priveledges and can additionally access user information (TO DO) and orders associated to all customers.
+* Authenticated admins have customer priveledges and can additionally access user information and orders associated to all customers.
 
 
 ### Get products
 
 ```http
-  GET /api/Products
+  GET /api/products
 ```
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
@@ -94,7 +94,7 @@ Authorisation structure:
 ### Register customer
 
 ```http
-  POST /api/Customers/register
+  POST /api/customers/register
 ```
 
 **EXAMPLE INPUT:**
@@ -117,7 +117,7 @@ Authorisation structure:
 ### Login Customer
 
 ```http
-  POST /api/Customers/login
+  POST /api/customers/login
 ```
 
 **EXAMPLE INPUT:** 
@@ -135,10 +135,33 @@ Authorisation structure:
 
 **SUCCESSFUL RESPONSE: JWT token**
 
+### Retrieve customer details
+
+```http
+  GET /api/customers/me
+```
+**AUTHORISATION: Requires valid Bearer token**
+
+**EXAMPLE OUTPUT**:
+```json
+{
+  "id": "347f574e-d38d-4024-b92f-d653377dee7f",
+  "name": "Jane Doe",
+  "email": "jdoe@email.com"
+}
+```
+
+| Field      | Type   |  Description                           |
+| ---------- | ------- | ----------------------------------    |
+| `id`    | `Guid`   | Customer ID |
+| `name` | `string`  | Customer name. |
+| `email` | `string`  | Customer email. |
+
+
 ### Create Sale
 
 ```http
-  POST /api/Sales
+  POST /api/sales
 ```
 
 **AUTHORISATION: Requires valid Bearer token**
@@ -147,9 +170,8 @@ Authorisation structure:
 ```json
 {
     "quantitiesByProductID": {
-      "3fa85f64-5717-4562-b3fc-2c963f66afa2": 1,
-      "3fa85f64-5717-4562-b3fc-2c963f66afa1": 2,
-      "3fa85f64-5717-4562-b3fc-2c963f66afa4": 3
+      "6d72464c-6f49-4eba-a4ac-23f92ee23e13" 1,
+      "f1e73cb3-bccc-45b0-9e41-53e85bae6e41": 2,
     }
     "date": "29-05-2026", 
     "time": "15:30"
@@ -164,31 +186,110 @@ Authorisation structure:
 ### Retrieve Sales Associated to Customer
 
 ```http
-  GET /api/Sales
+  GET /api/sales
 ```
 
 **AUTHORISATION: Requires valid Bearer token**
 
-EXAMPLE OUTPUT: 
+**EXAMPLE OUTPUT:**
 ```json
-{[
-    {"id": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
-    "customer_id": "3fa85f64-5717-4562-b3fc-2c963f76afa9",
+[
+  {
+    "id": "4f17b797-3b72-4c17-be84-6bb4df86d1f9",
+    "customer_Id": "347f574e-d38d-4024-b92f-d653377dee7f",
     "quantitiesByProductID": {
-      "3fa85f64-5717-4562-b3fc-2c963f66afa2": 1,
-      "3fa85f64-5717-4562-b3fc-2c963f66afa1": 2,
-      "3fa85f64-5717-4562-b3fc-2c963f66afa4": 3
-    }
-    "date": "29-05-2026", 
-    "time": "15:30"}
-]}
+      "6d72464c-6f49-4eba-a4ac-23f92ee23e13": 1,
+      "f1e73cb3-bccc-45b0-9e41-53e85bae6e41": 1
+    },
+    "date": "2026-06-02",
+    "time": "11:34:00"
+  },
+  {
+    "id": "2991b079-1e9b-4bec-8c11-8a5041c867cc",
+    "customer_Id": "347f574e-d38d-4024-b92f-d653377dee7f",
+    "quantitiesByProductID": {
+      "6d72464c-6f49-4eba-a4ac-23f92ee23e13": 1
+    },
+    "date": "2026-06-02",
+    "time": "11:35:00"
+  }
+]
 ```
 
-| Field      | Type    | Required | Description                           |
-| ---------- | ------- | -------- | ----------------------------------    |
-| `quantitiesByProductID` | `Dictionary<Guid, int>` | Yes      | Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
-| `date` | `DateOnly` | Yes      | Date of transaction. |
-| `time` | `TimeOnly` | Yes      | Time of transaction. |
+| Field      | Type    | Description                           |
+| ---------- | ------- |  ----------------------------------    |
+| `id`    | `Guid` |  Sale ID |
+| `customer_Id`    | `Guid` |  Customer ID |
+| `quantitiesByProductID` | `Dictionary<Guid, int>` |  Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
+| `date` | `DateOnly` | Date of transaction. |
+| `time` | `TimeOnly` | Time of transaction. |
+
+### Retrieve Customer Details Associated to all Customers
+
+```http
+  GET /api/customers/admin
+```
+
+**AUTHORISATION: Requires valid Bearer token with Admin role**
+
+**EXAMPLE OUTPUT:**
+```json
+[
+  {
+    "id": "347f574e-d38d-4024-b92f-d653377dee7f"
+    "name": "Jane Doe",
+    "email": "jdoe@email.com"
+  },
+  {
+    "id": "afb4d6a7-d8f1-4362-b06b-3cb2448edfe0",
+    "name": "John Smith",
+    "email": "jsmith@email.com"
+  }
+]
+```
+
+| Field      | Type   |  Description                           |
+| ---------- | ------- | ----------------------------------    |
+| `id`    | `Guid` |  Customer ID |
+| `name` | `string`  | Customer name. |
+| `email` | `string`  | Customer email. |
+
+
+### Retrieve Sales Details Associated to all Customers
+
+```http
+  GET /api/sales/admin
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **optional**. Id of item to fetch , must be valid Guid|
+
+**AUTHORISATION: Requires valid Bearer token with Admin role**
+
+**EXAMPLE OUTPUT:**
+```json
+[
+  {
+    "id": "4f17b797-3b72-4c17-be84-6bb4df86d1f9",
+    "customer_Id": "347f574e-d38d-4024-b92f-d653377dee7f",
+    "quantitiesByProductID": {
+      "6d72464c-6f49-4eba-a4ac-23f92ee23e13": 1,
+      "f1e73cb3-bccc-45b0-9e41-53e85bae6e41": 1
+    },
+    "date": "2026-06-02",
+    "time": "11:34:00"
+  },
+]
+```
+
+| Field      | Type    | Description                           |
+| ---------- | ------- |  ----------------------------------    |
+| `id`    | `Guid` |  Sale ID |
+| `customer_Id`    | `Guid` |  Customer ID |
+| `quantitiesByProductID` | `Dictionary<Guid, int>` |  Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
+| `date` | `DateOnly` | Date of transaction. |
+| `time` | `TimeOnly` | Time of transaction. |
 
 ## Database information and acknowledgements
 Data used to populate mock products are sourced from BoardGameGeek BGG XML API https://boardgamegeek.com/using_the_xml_api, and BoardGamePrices https://boardgameprices.co.uk/api/plugin.
@@ -202,3 +303,4 @@ Original project inspiration from https://www.thecsharpacademy.com/project/18/ec
 ## To-Do
 
 * Improve error handling in front-end from API status codes and error messages
+* Check DateTime consistency from front-end
