@@ -77,6 +77,7 @@ builder
             ClockSkew = TimeSpan.Zero,
         };
     });
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 var app = builder.Build();
 
