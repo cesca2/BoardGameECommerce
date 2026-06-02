@@ -10,7 +10,7 @@ C# .NET eCommerce system incorporating an ASP.NET Core Web API designed to be an
 
 ## Features
 
-* Record eCommerce transactions in SQLite DB including data on:
+* Record eCommerce transactions in ASP.NET Core Web API using an SQLite DB including data on:
     * Products
     * Sales
     * Customers
@@ -19,6 +19,7 @@ C# .NET eCommerce system incorporating an ASP.NET Core Web API designed to be an
     * Basket & Checkout to complete a sale with POST request
     * Complete product catalogue display with search capability (GET)
     * Past order catalogue available for logged in user
+* Role-based authorisation for resource access in API see [Authorisation structure](#authorisation) 
 
 ## Pre-requisites 
 
