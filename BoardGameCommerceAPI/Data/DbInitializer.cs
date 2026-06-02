@@ -29,7 +29,17 @@ public class DbInitializer
         using var connection = _dbContext.CreateConnection();
         connection.Open();
 
-        if (reInitialize)
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+                    SELECT 1
+                    FROM sqlite_master
+                    WHERE type = 'table'
+                    AND name = 'users';
+            """;
+
+        var exists = command.ExecuteScalar() != null;
+
+        if (reInitialize || !exists)
         {
             DropTables(connection);
 

@@ -2,5 +2,6 @@
     "Jwt:SecretKey": "YOUR SECRET KEY HERE",
     "AdminInfo:Name": "YOUR ADMIN NAME HERE",
     "AdminInfo:Email": "YOUR ADMIN EMAIL HERE",
-    "AdminInfo:Password": "YOUR ADMIN PASSWORD HERE"
+    "AdminInfo:Password": "YOUR ADMIN PASSWORD HERE",
+    "Database:Password": "YOUR DB FILE PASSWORD HERE "
 }

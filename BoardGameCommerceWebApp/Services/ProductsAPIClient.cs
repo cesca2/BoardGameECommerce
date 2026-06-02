@@ -18,25 +18,40 @@ public class ProductsApiClient
         {
             response = await _httpClient.GetAsync($"api/Products?SearchTerm={searchTerm}");
         }
-        response.EnsureSuccessStatusCode();
+        try
+        {
+            response.EnsureSuccessStatusCode();
 
-        var products = await response.Content.ReadFromJsonAsync<List<GetProductsResponse>>() ?? [];
+            var products =
+                await response.Content.ReadFromJsonAsync<List<GetProductsResponse>>() ?? [];
 
-        // Return in a parsed format
-        return products
-                .Select(product => new Product()
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Price = product.Price,
-                    YearPublished = product.YearPublished,
-                })
-                .ToList()
-            ?? [];
+            // Return in a parsed format
+            return products
+                    .Select(product => new Product()
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                        YearPublished = product.YearPublished,
+                    })
+                    .ToList()
+                ?? [];
+        }
+        catch
+        {
+            return [];
+        }
     }
 
     public async Task<Product?> GetProductAsync(string id)
     {
-        return await _httpClient.GetFromJsonAsync<Product>($"api/Products/{id}");
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<Product>($"api/Products/{id}");
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
