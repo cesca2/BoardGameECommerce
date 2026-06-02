@@ -151,7 +151,7 @@ EXAMPLE INPUT:
       "3fa85f64-5717-4562-b3fc-2c963f66afa4": 3
     }
     "date": "29-05-2026", 
-    "time: "15:30"
+    "time": "15:30"
 }
 ```
 | Field      | Type    | Required | Description                           |
@@ -179,7 +179,7 @@ EXAMPLE OUTPUT:
       "3fa85f64-5717-4562-b3fc-2c963f66afa4": 3
     }
     "date": "29-05-2026", 
-    "time: "15:30"
+    "time": "15:30"
 }
 ```
 
