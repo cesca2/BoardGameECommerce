@@ -61,7 +61,7 @@ builder
     {
         var key =
             builder.Configuration["Jwt:SecretKey"]
-            ?? throw new InvalidOperationException("JWT SecretKey missing");
+            ?? throw new ApplicationException("JWT SecretKey missing");
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -81,7 +81,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 var app = builder.Build();
 
-// 🔧 Initialize the database at startup
+//  Initialize the database at startup
 using (var scope = app.Services.CreateScope())
 {
     var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();

@@ -102,8 +102,7 @@ public class SaleRepository : ISaleRepository
         }
         catch (SqliteException ex)
         {
-            var message = "SQLite Error" + ex.Message;
-            Console.WriteLine(message);
+            _logger.LogError(ex.Message);
             throw new ApplicationException("Database operation failed");
         }
         return rows;
