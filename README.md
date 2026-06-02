@@ -171,7 +171,7 @@ Authorisation structure:
 ```json
 {
     "quantitiesByProductID": {
-      "6d72464c-6f49-4eba-a4ac-23f92ee23e13" 1,
+      "6d72464c-6f49-4eba-a4ac-23f92ee23e13": 1,
       "f1e73cb3-bccc-45b0-9e41-53e85bae6e41": 2,
     }
     "date": "29-05-2026", 
