@@ -1,6 +1,6 @@
-# Board Game eCommerce 
+# Board Game eCommerce System
 
-C# .NET Razor Pages project utilising a web API designed to be an eCommerce engine to support a mock board game retail business. 
+C# .NET eCommerce system incorporating an ASP.NET Core Web API designed to be an eCommerce engine to support a mock board game retail business. The user interface is serviced by a Razor Pages web application. 
 
 ## Demo
 ![Demo Web Application](./demo/demo_app.gif?raw=true)
@@ -20,12 +20,7 @@ C# .NET Razor Pages project utilising a web API designed to be an eCommerce engi
     * Complete product catalogue display with search capability (GET)
     * Past order catalogue available for logged in user
 
-
-## To-Do
-
-* Improve error handling in front-end from API status codes and error messages
-
-## Pre-requsites 
+## Pre-requisites 
 
 ### Dependencies 
 
@@ -66,14 +61,20 @@ Run the applications
 ```
 
 ## Formatting
-This project uses CSharpier v1.2.6.0, any files committed to the repository are checked in the Format .NET projects GitHub action
+This project uses CSharpier v1.2.6.0, any files committed to the repository are checked in the Format .NET projects GitHub action.
 
 
 ## API Reference
 
 ### Authorisation
 
-JWT token generation on user login. Authorised users can access their information, order history and create a new order. Unauthorised users can access all Products endpoints and create login/registration. 
+JWT token generation on user login. Authenticated users are assigned either 'Customer' or 'Admin' role. 
+
+Authorisation structure:
+* Unauthenticated users can access all product information and create login/registration requests.
+* Authenticated customers can access their own information, order history and create a new order.
+* Authenticated admins have customer priveledges and can additionally access user information (TO DO) and orders associated to all customers.
+
 
 ### Get products
 
@@ -96,7 +97,7 @@ JWT token generation on user login. Authorised users can access their informatio
   POST /api/Customers/register
 ```
 
-EXAMPLE INPUT:
+**EXAMPLE INPUT:**
 ```json
 {
   "name": Jane Doe,
@@ -107,11 +108,11 @@ EXAMPLE INPUT:
 ```
 | Field      | Type    | Required | Description                           |
 | ---------- | ------- | -------- | ----------------------------------    |
-| `name`    | string  | Yes      | Name of customer. |
-| `email` | string  | Yes      | Customer email. |
-| `password`     | string  | Yes     | Customer password.  |
+| `name`    | `string`  | Yes      | Name of customer. |
+| `email` | `string`  | Yes      | Customer email. |
+| `password`     | `string`  | Yes     | Customer password.  |
 
-SUCCESSFUL RESPONSE: JWT token
+**SUCCESSFUL RESPONSE: JWT token** 
 
 ### Login Customer
 
@@ -119,7 +120,7 @@ SUCCESSFUL RESPONSE: JWT token
   POST /api/Customers/login
 ```
 
-EXAMPLE INPUT:
+**EXAMPLE INPUT:** 
 ```json
 {
   "email": "jdoe@email.com",
@@ -129,10 +130,10 @@ EXAMPLE INPUT:
 ```
 | Field      | Type    | Required | Description                           |
 | ---------- | ------- | -------- | ----------------------------------    |
-| `password`    | string  | Yes      | Customer password. |
-| `email` | string  | Yes      | Customer email. |
+| `password`    | `string`  | Yes      | Customer password. |
+| `email` | `string`  | Yes      | Customer email. |
 
-SUCCESSFUL RESPONSE: JWT token
+**SUCCESSFUL RESPONSE: JWT token**
 
 ### Create Sale
 
@@ -140,9 +141,9 @@ SUCCESSFUL RESPONSE: JWT token
   POST /api/Sales
 ```
 
-AUTHORISATION: Requires valid Bearer token
+**AUTHORISATION: Requires valid Bearer token**
 
-EXAMPLE INPUT:
+**EXAMPLE INPUT:**
 ```json
 {
     "quantitiesByProductID": {
@@ -156,22 +157,22 @@ EXAMPLE INPUT:
 ```
 | Field      | Type    | Required | Description                           |
 | ---------- | ------- | -------- | ----------------------------------    |
-| `quantitiesByProductID` | Dictionary<Guid, int> | Yes      | Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
-| `date` | DateOnly | Yes      | Date of transaction. |
-| `time` | TimeOnly | Yes      | Time of transaction. |
+| `quantitiesByProductID` | `Dictionary<Guid, int>` | Yes      | Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
+| `date` | `DateOnly` | Yes      | Date of transaction. |
+| `time` | `TimeOnly` | Yes      | Time of transaction. |
 
 ### Retrieve Sales Associated to Customer
 
 ```http
-  GET/api/Sales
+  GET /api/Sales
 ```
 
-AUTHORISATION: Requires valid Bearer token
+**AUTHORISATION: Requires valid Bearer token**
 
 EXAMPLE OUTPUT: 
 ```json
-{
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
+{[
+    {"id": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
     "customer_id": "3fa85f64-5717-4562-b3fc-2c963f76afa9",
     "quantitiesByProductID": {
       "3fa85f64-5717-4562-b3fc-2c963f66afa2": 1,
@@ -179,21 +180,25 @@ EXAMPLE OUTPUT:
       "3fa85f64-5717-4562-b3fc-2c963f66afa4": 3
     }
     "date": "29-05-2026", 
-    "time": "15:30"
-}
+    "time": "15:30"}
+]}
 ```
 
 | Field      | Type    | Required | Description                           |
 | ---------- | ------- | -------- | ----------------------------------    |
-| `quantitiesByProductID` | Dictionary<Guid, int> | Yes      | Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
-| `date` | DateOnly | Yes      | Date of transaction. |
-| `time` | TimeOnly | Yes      | Time of transaction. |
+| `quantitiesByProductID` | `Dictionary<Guid, int>` | Yes      | Product Ids, valid Guid as in /Products endpoint with associated quantity included in the sale.|
+| `date` | `DateOnly` | Yes      | Date of transaction. |
+| `time` | `TimeOnly` | Yes      | Time of transaction. |
 
 ## Database information and acknowledgements
 Data used to populate mock products are sourced from BoardGameGeek BGG XML API https://boardgamegeek.com/using_the_xml_api, and BoardGamePrices https://boardgameprices.co.uk/api/plugin.
 
-`.csv` files containing data directly from these files is found under `BoardGameData` and these data are used to initialise the Products table. 
+`.csv` files containing data directly from these files are found under `BoardGameCommerceAPI/BoardGameData` and these data are used to initialise the Products table. 
 
 ## Acknowledgements
 
 Original project inspiration from https://www.thecsharpacademy.com/project/18/ecommerce-api 
+
+## To-Do
+
+* Improve error handling in front-end from API status codes and error messages
