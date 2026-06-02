@@ -23,10 +23,6 @@ C# .NET Razor Pages project utilising a web API designed to be an eCommerce engi
 
 ## To-Do
 
-* Admin endpoints in API and front-end dashboard
-  * Introudce role based authentication and authorisation to access all sales and customer information
-* Inputs validation, add requirements for password, email etc... format
-* Improve exception handling in API
 * Improve error handling in front-end from API status codes and error messages
 
 ## Pre-requsites 
