@@ -64,6 +64,11 @@ Run the applications
   dotnet run --project BoardGameCommerceApp
 ```
 
+(Optional) To reset the database run 
+```bash
+    dotnet run --project BoardGameCommerceAPI --ReInitialize=true 
+```
+
 ## Formatting
 This project uses CSharpier v1.2.6.0, any files committed to the repository are checked in the Format .NET projects GitHub action
 
