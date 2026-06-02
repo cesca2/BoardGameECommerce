@@ -12,42 +12,35 @@ public class ProductsApiClient
         HttpResponseMessage response;
         if (string.IsNullOrEmpty(searchTerm))
         {
-            response = await _httpClient.GetAsync($"api/Products");
+            response = await _httpClient.GetAsync($"api/products");
         }
         else
         {
-            response = await _httpClient.GetAsync($"api/Products?SearchTerm={searchTerm}");
+            response = await _httpClient.GetAsync($"api/products?SearchTerm={searchTerm}");
         }
-        try
-        {
-            response.EnsureSuccessStatusCode();
 
-            var products =
-                await response.Content.ReadFromJsonAsync<List<GetProductsResponse>>() ?? [];
+        response.EnsureSuccessStatusCode();
 
-            // Return in a parsed format
-            return products
-                    .Select(product => new Product()
-                    {
-                        Id = product.Id,
-                        Name = product.Name,
-                        Price = product.Price,
-                        YearPublished = product.YearPublished,
-                    })
-                    .ToList()
-                ?? [];
-        }
-        catch
-        {
-            return [];
-        }
+        var products = await response.Content.ReadFromJsonAsync<List<GetProductsResponse>>() ?? [];
+
+        // Return in a parsed format
+        return products
+                .Select(product => new Product()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    YearPublished = product.YearPublished,
+                })
+                .ToList()
+            ?? [];
     }
 
     public async Task<Product?> GetProductAsync(string id)
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<Product>($"api/Products/{id}");
+            return await _httpClient.GetFromJsonAsync<Product>($"api/products/{id}");
         }
         catch
         {

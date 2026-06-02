@@ -12,7 +12,7 @@ public class SalesApiClient
 
     public async Task<bool> CreateSale(CreateSaleRequest saleRequest, string token)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"api/Sales");
+        var request = new HttpRequestMessage(HttpMethod.Post, $"api/sales");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         // optional JSON body
@@ -35,7 +35,7 @@ public class SalesApiClient
 
     public async Task<List<GetSaleResponse>> GetSales(string token)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Sales");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/sales");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _httpClient.SendAsync(request);
 

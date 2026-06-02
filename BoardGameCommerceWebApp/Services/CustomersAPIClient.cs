@@ -14,7 +14,7 @@ public class CustomersApiClient
     public async Task<string> CreateCustomer(CreateCustomerRequest customerRequest)
     {
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
-            "api/Customers/register",
+            "api/customers/register",
             customerRequest
         );
         var json = await response.Content.ReadAsStringAsync();
@@ -36,7 +36,7 @@ public class CustomersApiClient
     public async Task<string> Login(CreateLoginRequest customerRequest)
     {
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
-            "api/Customers/login",
+            "api/Ccstomers/login",
             customerRequest
         );
         var json = await response.Content.ReadAsStringAsync();
@@ -56,7 +56,7 @@ public class CustomersApiClient
 
     public async Task<GetCustomerResponse?> GetCustomer(string token)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Customers/me");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/customers/me");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _httpClient.SendAsync(request);
         if (response.IsSuccessStatusCode)
