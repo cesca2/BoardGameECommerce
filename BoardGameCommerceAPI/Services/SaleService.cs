@@ -43,7 +43,7 @@ public class SaleService : ISaleService
         if (sales is null)
             return [];
 
-        var customer_sales = sales.Where(sale => sale.Customer_Id == id.ToString()).ToList() ?? [];
+        var customer_sales = sales.Where(sale => sale.Customer_Id == id).ToList() ?? [];
         return customer_sales;
     }
 }

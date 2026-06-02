@@ -74,13 +74,14 @@ namespace CommerceAPI.Controllers
         public ActionResult<Sale> CreateSale(SaleDTO sale)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Guid? parsedUserId = Guid.Parse(userId ?? "");
             if (userId is null)
             {
                 return Unauthorized();
             }
             var salerequest = new Sale
             {
-                Customer_Id = userId,
+                Customer_Id = (Guid)parsedUserId,
                 Date = sale.Date,
                 Time = sale.Time,
                 QuantitiesByProductID = sale.QuantitiesByProductID,

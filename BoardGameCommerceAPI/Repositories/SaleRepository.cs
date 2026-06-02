@@ -43,7 +43,7 @@ public class SaleRepository : ISaleRepository
                     {
                         sale = new Sale
                         {
-                            Customer_Id = datareader.GetString(1),
+                            Customer_Id = datareader.GetGuid(1),
                             QuantitiesByProductID = new(),
                             Id = datareader.GetGuid(0),
                         };
@@ -88,7 +88,7 @@ public class SaleRepository : ISaleRepository
                     {
                         sale = new Sale
                         {
-                            Customer_Id = datareader.GetString(1),
+                            Customer_Id = datareader.GetGuid(1),
                             QuantitiesByProductID = new(),
                             Id = datareader.GetGuid(0),
                             Date = DateOnly.Parse(datareader.GetString(4)),
@@ -130,7 +130,10 @@ public class SaleRepository : ISaleRepository
                     """;
 
                 sales_command.Parameters.AddWithValue("$Id", newSale.Id.ToString());
-                sales_command.Parameters.AddWithValue("$Customer_Id", newSale.Customer_Id);
+                sales_command.Parameters.AddWithValue(
+                    "$Customer_Id",
+                    newSale.Customer_Id.ToString()
+                );
                 sales_command.Parameters.AddWithValue("$Time", newSale.Time.ToString());
                 sales_command.Parameters.AddWithValue("$Date", newSale.Date.ToString());
 
