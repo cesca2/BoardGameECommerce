@@ -12,7 +12,7 @@ namespace CommerceAPI.Controllers
         private readonly ISaleService _saleService = saleService;
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("{id}")]
+        [HttpGet("admin/{id}")]
         public ActionResult<Sale> GetSaleById(Guid id)
         {
             try

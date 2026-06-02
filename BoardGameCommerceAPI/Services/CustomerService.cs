@@ -85,6 +85,11 @@ public class CustomerService : ICustomerService
         return _customerRepository.GetCustomerById(id);
     }
 
+    public List<Customer>? GetAllCustomers()
+    {
+        return _customerRepository.GetAllCustomers();
+    }
+
     // JWT token creation
     private string GenerateJWT(Customer customer, string role)
     {

@@ -92,5 +92,39 @@ namespace CommerceAPI.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public ActionResult<List<CustomerDetailsDTO>> GetCustomers()
+        {
+            try
+            {
+                var customerDetails = new List<CustomerDetailsDTO>();
+                var results = _customerService.GetAllCustomers();
+                if (results is not null)
+                {
+                    foreach (var result in results)
+                    {
+                        var customerDetail = new CustomerDetailsDTO
+                        {
+                            Name = result.Name,
+                            Id = result.Id,
+                            Email = result.Email,
+                        };
+                        customerDetails.Add(customerDetail);
+                    }
+                    return Ok(customerDetails);
+                }
+                else
+                {
+                    return NotFound();
+                }
+                ;
+            }
+            catch (ApplicationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 }
