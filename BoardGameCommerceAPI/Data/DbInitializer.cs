@@ -26,31 +26,39 @@ public class DbInitializer
 
     public void Initialize(bool reInitialize = false)
     {
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = """
-                    SELECT 1
-                    FROM sqlite_master
-                    WHERE type = 'table'
-                    AND name = 'users';
-            """;
-
-        var exists = command.ExecuteScalar() != null;
-
-        if (reInitialize || !exists)
+        try
         {
-            DropTables(connection);
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
 
-            CreateProductsTable(connection);
-            CreateUsersTable(connection);
-            CreateSalesTable(connection);
-            CreateSalesProductsTable(connection);
+            using var command = connection.CreateCommand();
+            command.CommandText = """
+                        SELECT 1
+                        FROM sqlite_master
+                        WHERE type = 'table'
+                        AND name = 'users';
+                """;
 
-            InsertProductData(connection);
+            var exists = command.ExecuteScalar() != null;
 
-            CreateAdmin(connection);
+            if (reInitialize || !exists)
+            {
+                DropTables(connection);
+
+                CreateProductsTable(connection);
+                CreateUsersTable(connection);
+                CreateSalesTable(connection);
+                CreateSalesProductsTable(connection);
+
+                InsertProductData(connection);
+
+                CreateAdmin(connection);
+            }
+        }
+        catch (SqliteException ex)
+        {
+            _logger.LogError(ex.Message);
+            throw new ApplicationException("Database operation failed");
         }
     }
 
