@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 10.0.x
     - name: Set user secrets
-      run: cat ./BoardGameCommerceAPI/secrets.json | dotnet user-secrets set --project ./BoardGameCommerceAPI/BoardGameCommerceAPI.csproj
+      run: cat ./BoardGameCommerceAPI/secrets_input.json | dotnet user-secrets set --project ./BoardGameCommerceAPI/BoardGameCommerceAPI.csproj
     - name: Restore dependencies API
       run: dotnet restore ./BoardGameCommerceAPI/BoardGameCommerceAPI.csproj 
     - name: Build API
