@@ -45,12 +45,12 @@ Go to the project directory
   cd BoardGameECommerce
 ```
 
-Set up the user-secrets. Edit `BoardGameCommerceAPI/secrets_inputs.json`, then run (macOS/Linux)
+Set up the user-secrets. Edit `BoardGameCommerceAPI/secrets_input_example.json`, then run (macOS/Linux)
 ```bash
+  cd BoardGameCommerceAPI
+  mv ./secrets_input_example.json ./secrets.json 
   cat ./secrets.json | dotnet user-secrets set
-```
-
-Ensure you add this json file to your gitignore file before commiting. 
+``` 
 
 Run the applications
 
@@ -59,7 +59,7 @@ Run the applications
   dotnet run --project BoardGameCommerceApp
 ```
 
-(Optional) To reset the database run 
+(Optional) To reset the database at any point run 
 ```bash
     dotnet run --project BoardGameCommerceAPI --ReInitialize=true 
 ```
@@ -308,3 +308,4 @@ Original project inspiration from https://www.thecsharpacademy.com/project/18/ec
 
 * Improve error handling in front-end from API status codes and error messages
 * Check DateTime consistency from front-end
+* Expand testing suite
