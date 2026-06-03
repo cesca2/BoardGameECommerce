@@ -12,4 +12,11 @@
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="./BoardGameData/boardgames_data.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>BoardGameData/boardgames_data.csv</TargetPath>
+    </Content>
+  </ItemGroup>
 </Project>

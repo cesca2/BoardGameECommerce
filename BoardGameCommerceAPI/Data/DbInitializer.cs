@@ -190,7 +190,11 @@ public class DbInitializer
     {
         using (var transaction = connection.BeginTransaction())
         {
-            var path = "BoardGameData/boardgames_data.csv";
+            string path = Path.Combine(
+                AppContext.BaseDirectory,
+                "BoardGameData",
+                "boardgames_data.csv"
+            );
             var insert_command = connection.CreateCommand();
             insert_command.CommandText = """
                 INSERT INTO products(id, name, yearpublished, rank, price)
