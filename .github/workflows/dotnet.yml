@@ -28,5 +28,9 @@ jobs:
       run: dotnet restore ./BoardGameCommerceWebApp/BoardGameCommerce.csproj 
     - name: Build WepApp
       run: dotnet build ./BoardGameCommerceWebApp/BoardGameCommerce.csproj --no-restore
+    - name: Restore dependencies Test API
+      run: dotnet restore BoardGameCommerceAPI.IntegrationTests 
+    - name: Build Test API
+      run: dotnet build BoardGameCommerceAPI.IntegrationTests --no-restore
     - name: Test API
-      run: dotnet test BoardGameCommerceAPI.IntegrationTests --verbosity normal
+      run: dotnet test BoardGameCommerceAPI.IntegrationTests --verbosity normal --no-build
