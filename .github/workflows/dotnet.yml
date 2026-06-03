@@ -28,3 +28,6 @@ jobs:
       run: dotnet restore ./BoardGameCommerceWebApp/BoardGameCommerce.csproj 
     - name: Build WepApp
       run: dotnet build ./BoardGameCommerceWebApp/BoardGameCommerce.csproj --no-restore
+    - name: Test API
+      run:     - name: Test
+      run: dotnet test BoardGameCommerceAPI.IntegrationTests --no-build --verbosity normal
