@@ -9,6 +9,7 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
 {
     private readonly CustomWebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
+    private readonly string ProductsPath = "/api/products";
 
     public ProductsControllerTests(CustomWebApplicationFactory<Program> factory)
     {
@@ -16,12 +17,11 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
         _client = factory.CreateClient();
     }
 
-    [Theory(DisplayName = "Test API products endpoint returns success")]
-    [InlineData("api/products")]
-    public async Task Get_Products_EndpointsReturnSuccesAndCorrectContentType(string url)
+    [Fact(DisplayName = "Test API products endpoint returns success")]
+    public async Task Get_Products_EndpointsReturnSuccesAndCorrectContentType()
     {
         // Act
-        var response = await _client.GetAsync(url);
+        var response = await _client.GetAsync(ProductsPath);
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -46,7 +46,7 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
         var test_id = invalid_guid.ToString();
 
         // Act
-        var response = await _factory.CreateClient().GetAsync($"api/products/{test_id}");
+        var response = await _factory.CreateClient().GetAsync($"{ProductsPath}/{test_id}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -65,7 +65,7 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
     )
     {
         // Arrange
-        var url = $"api/products?SearchTerm={searchTerm}";
+        var url = $"{ProductsPath}?SearchTerm={searchTerm}";
         int items_count;
 
         // Act
