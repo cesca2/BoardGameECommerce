@@ -66,10 +66,18 @@ public class DbInitializer
     {
         var admin = new Customer
         {
-            Name = _config["AdminInfo:Name"],
-            Email = _config["AdminInfo:Email"],
+            Name =
+                _config["AdminInfo:Name"]
+                ?? throw new ApplicationException("Admin Information missing"),
+            Email =
+                _config["AdminInfo:Email"]
+                ?? throw new ApplicationException("Admin Information missing"),
         };
-        admin.PasswordHash = _hasher.HashPassword(admin, _config["AdminInfo:Password"]);
+        admin.PasswordHash = _hasher.HashPassword(
+            admin,
+            _config["AdminInfo:Password"]
+                ?? throw new ApplicationException("Admin Information missing")
+        );
 
         connection.Open();
 
