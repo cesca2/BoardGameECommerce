@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 
@@ -17,10 +18,9 @@ public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
 
     [Theory(DisplayName = "Test API products endpoint returns success")]
     [InlineData("api/products")]
-    public async Task Get_EndpointsReturnSuccesAndCorrectContentType(string url)
+    public async Task Get_Products_EndpointsReturnSuccesAndCorrectContentType(string url)
     {
         // Act
-
         var response = await _client.GetAsync(url);
 
         // Assert
@@ -36,5 +36,19 @@ public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
         {
             Assert.Fail("Content type is empty");
         }
+    }
+
+    [Fact(DisplayName = "Get product by invalid Id returns not found")]
+    public async Task Get_Product_By_Invalid_Id_Returns_NotFound()
+    {
+        // Arrange - Guid.NewGuid() will not return Guid.Empty so use this as test
+        var invalid_guid = Guid.Empty;
+        var test_id = invalid_guid.ToString();
+
+        // Act
+        var response = await _factory.CreateClient().GetAsync($"api/products/{test_id}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }
