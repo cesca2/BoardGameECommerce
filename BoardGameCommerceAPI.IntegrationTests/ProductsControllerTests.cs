@@ -5,12 +5,12 @@ using Newtonsoft.Json;
 
 namespace SessionAPI.IntegrationTests;
 
-public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
+public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
     private readonly CustomWebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
 
-    public BasicTests(CustomWebApplicationFactory<Program> factory)
+    public ProductsControllerTests(CustomWebApplicationFactory<Program> factory)
     {
         _factory = factory;
         _client = factory.CreateClient();
