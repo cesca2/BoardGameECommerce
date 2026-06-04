@@ -1,6 +1,6 @@
 # Board Game eCommerce System
 
-[![Build and Test .NET projects](https://github.com/cesca2/BoardGameECommerce/actions/workflows/dotnet.yml/badge.svg)](https://github.com/cesca2/BoardGameECommerce/actions/workflows/dotnet.yml)
+[![Build and Test .NET projects](https://github.com/cesca2/BoardGameECommerce/actions/workflows/dotnet.yml/badge.svg?branch=main&event=push)](https://github.com/cesca2/BoardGameECommerce/actions/workflows/dotnet.yml)
 [![Format .NET projects](https://github.com/cesca2/BoardGameECommerce/actions/workflows/dotnet-format.yml/badge.svg)](https://github.com/cesca2/BoardGameECommerce/actions/workflows/dotnet-format.yml)
 
 C# .NET eCommerce system incorporating an ASP.NET Core Web API designed to be an eCommerce engine to support a mock board game retail business. The user interface is serviced by a Razor Pages web application. 
