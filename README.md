@@ -36,38 +36,44 @@ C# .NET eCommerce system incorporating an ASP.NET Core Web API designed to be an
 Clone the project
 
 ```bash
-  git clone git@github.com:cesca2/BoardGameECommerce.git
+   git clone git@github.com:cesca2/BoardGameECommerce.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd BoardGameECommerce
+   cd BoardGameECommerce
 ```
 
 Set up the user-secrets. Edit `BoardGameCommerceAPI/secrets_input_example.json`, then run (macOS/Linux)
 ```bash
-  cd BoardGameCommerceAPI
-  mv ./secrets_input_example.json ./secrets.json 
-  cat ./secrets.json | dotnet user-secrets set
+   cd BoardGameCommerceAPI
+   mv ./secrets_input_example.json ./secrets.json 
+   cat ./secrets.json | dotnet user-secrets set
 ``` 
 
 Run the applications
 
 ```bash
-  dotnet run --project BoardGameCommerceAPI
-  dotnet run --project BoardGameCommerceApp
+   dotnet run --project BoardGameCommerceAPI
+   dotnet run --project BoardGameCommerceApp
 ```
 
 (Optional) To reset the database at any point run 
 ```bash
-    dotnet run --project BoardGameCommerceAPI --ReInitialize=true 
+   dotnet run --project BoardGameCommerceAPI --ReInitialize=true 
 ```
 
 ## Formatting
 This project uses CSharpier v1.2.6.0, any files committed to the repository are checked in the Format .NET projects GitHub action.
 
-
+## Testing 
+* BoardGameCommerceAPI.IntegrationTests: xunit
+     * UserExperienceTests: Tests user experience - logon, create order, see order details
+     * ProductsControllerTests: Tests products endpoints
+```bash
+   dotnet test BoardGameCommerceAPI.IntegrationTests
+```
 ## API Reference
 
 ### Authorisation
