@@ -51,4 +51,36 @@ public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    [Theory(DisplayName = "Test search term query in products")]
+    [InlineData("duel", 4)] // test duel with various combinations of caps/lowercase
+    [InlineData("Duel", 4)]
+    [InlineData("DUEL", 4)]
+    [InlineData("DUel", 4)]
+    [InlineData("djfld", 0)] // no results expected
+    [InlineData("Dice", 8)]
+    public async Task Get_Products_With_SearchTerm_Pagination_Returns_CorrectNumberOfProducts(
+        string searchTerm,
+        int expectedCount
+    )
+    {
+        // Arrange
+        var url = $"api/products?SearchTerm={searchTerm}";
+        int items_count;
+
+        // Act
+        var items = await _client.GetFromJsonAsync<List<Product>>(url);
+
+        if (items is not null)
+        {
+            items_count = items.Count;
+        }
+        else
+        {
+            items_count = -1;
+        }
+
+        // Assert
+        Assert.Equal(expectedCount, items_count);
+    }
 }
