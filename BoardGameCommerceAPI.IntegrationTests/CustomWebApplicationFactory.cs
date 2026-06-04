@@ -11,7 +11,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 d.ServiceType == typeof(IDbConnectionFactory)
             );
 
-            services.Remove(dbContextDescriptor);
+            if (dbContextDescriptor is not null)
+            {
+                services.Remove(dbContextDescriptor);
+            }
 
             // Reconfigure datasource in tests
             services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>(

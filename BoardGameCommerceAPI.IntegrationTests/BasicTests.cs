@@ -22,13 +22,19 @@ public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
         // Act
 
         var response = await _client.GetAsync(url);
-        var body = await response.Content.ReadAsStringAsync();
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
-        Assert.Equal(
-            "application/json; charset=utf-8",
-            response.Content.Headers.ContentType.ToString()
-        );
+        if (response.Content.Headers.ContentType is not null)
+        {
+            Assert.Equal(
+                "application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString()
+            );
+        }
+        else
+        {
+            Assert.Fail("Content type is empty");
+        }
     }
 }
