@@ -46,7 +46,7 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
         var test_id = invalid_guid.ToString();
 
         // Act
-        var response = await _factory.CreateClient().GetAsync($"{ProductsPath}/{test_id}");
+        var response = await _client.GetAsync($"{ProductsPath}/{test_id}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
