@@ -17,14 +17,6 @@ public class UserExperienceTests : IClassFixture<CustomWebApplicationFactory<Pro
     public UserExperienceTests(CustomWebApplicationFactory<Program> factory)
     {
         _factory = factory;
-
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
-
-            initializer.Initialize(reInitialize: true);
-        }
-
         _client = _factory.CreateClient();
     }
 

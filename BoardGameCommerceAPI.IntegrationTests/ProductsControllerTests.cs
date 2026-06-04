@@ -14,7 +14,7 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
     public ProductsControllerTests(CustomWebApplicationFactory<Program> factory)
     {
         _factory = factory;
-        _client = factory.CreateClient();
+        _client = _factory.CreateClient();
     }
 
     [Fact(DisplayName = "Test API products endpoint returns success")]

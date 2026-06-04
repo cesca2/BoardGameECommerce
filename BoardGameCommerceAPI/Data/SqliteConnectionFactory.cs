@@ -8,6 +8,12 @@ public class SqliteConnectionFactory : IDbConnectionFactory
     public SqliteConnectionFactory(IConfiguration config, string dataSource)
     {
         var dataSourceString = config.GetConnectionString(dataSource) ?? "";
+        if (dataSource == "Testing")
+        {
+            dataSourceString += Guid.NewGuid().ToString() + ".db";
+        }
+        Console.WriteLine(dataSourceString);
+
         var dataSourcePassword = config["Database:Password"];
         _connectionString = new SqliteConnectionStringBuilder()
         {
