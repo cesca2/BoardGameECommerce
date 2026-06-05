@@ -12,7 +12,7 @@ public static class CustomWebApplicationFactoryExtensions
             YearPublished = 2015,
         };
         var _dbContext = factory.Services.GetRequiredService<IDbConnectionFactory>();
-        var connection = _dbContext.CreateConnection();
+        using var connection = _dbContext.CreateConnection();
         connection.Open();
         var command = connection.CreateCommand();
 
@@ -43,6 +43,38 @@ public static class CustomWebApplicationFactoryExtensions
         };
     }
 
+    public static Product SeedProduct(this CustomWebApplicationFactory<Program> factory)
+    {
+        // Create mock product which is needed to be pre-inserted into products table
+        Product TestProduct = new Product
+        {
+            Name = "TestProduct",
+            Price = 25,
+            YearPublished = 2015,
+        };
+        var _dbContext = factory.Services.GetRequiredService<IDbConnectionFactory>();
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+        var command = connection.CreateCommand();
+
+        command.CommandText = """
+            INSERT INTO products(id, name, yearpublished, price)
+            VALUES
+            ( $Id,
+              $Name,
+              $Year,
+              $Price)
+            ;
+            """;
+        command.Parameters.AddWithValue("$Id", TestProduct.Id.ToString());
+        command.Parameters.AddWithValue("$Name", TestProduct.Name);
+        command.Parameters.AddWithValue("$Year", TestProduct.YearPublished);
+        command.Parameters.AddWithValue("$Price", TestProduct.Price);
+        command.ExecuteNonQuery();
+
+        return TestProduct;
+    }
+
     public static HttpClient CreateAuthenticatedClient(
         this CustomWebApplicationFactory<Program> factory,
         string role,
@@ -64,7 +96,7 @@ public static class CustomWebApplicationFactoryExtensions
         string token = JWTTokenFactory.GenerateUserJWT(config, customer, role);
 
         var _dbContext = factory.Services.GetRequiredService<IDbConnectionFactory>();
-        var connection = _dbContext.CreateConnection();
+        using var connection = _dbContext.CreateConnection();
         connection.Open();
 
         var customer_command = connection.CreateCommand();
