@@ -1,6 +1,4 @@
-using System.Globalization;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Logging;
 
 public class CustomerRepository : ICustomerRepository
 {

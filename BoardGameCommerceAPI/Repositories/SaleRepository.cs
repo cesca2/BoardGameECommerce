@@ -1,5 +1,3 @@
-using System.Globalization;
-using CommerceAPI.Controllers;
 using Microsoft.Data.Sqlite;
 
 public class SaleRepository : ISaleRepository
