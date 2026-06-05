@@ -36,7 +36,7 @@ public class CustomersApiClient
     public async Task<string> Login(CreateLoginRequest customerRequest)
     {
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
-            "api/Ccstomers/login",
+            "api/customers/login",
             customerRequest
         );
         var json = await response.Content.ReadAsStringAsync();
