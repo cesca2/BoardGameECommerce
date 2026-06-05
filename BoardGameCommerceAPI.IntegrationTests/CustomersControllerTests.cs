@@ -29,20 +29,37 @@ public class CustomersControllerTests : IClassFixture<CustomWebApplicationFactor
     }
 
     [Fact]
-    public async Task Get_CustomerInfo_Endpoint_AsCustomer_AuthorisationGiven()
+    public async Task Get_CustomerInfo_Endpoint_AsCustomer_AuthorisationGiven_AndReturnsSuccessAndCorrectContent()
     {
-        //Arrange
-        var client = _factory.CreateAuthenticatedClient(role: "Customer");
+        //Arrange - create authenticated customer with specific details which can be checked in assertion
+        var customer_guid = Guid.NewGuid();
+        var customer_email = customer_guid.ToString() + "@example.com"; // initialise email here as it needs to be unique across each test
+        var client = _factory.CreateAuthenticatedClient(
+            role: "Customer",
+            customer_guid,
+            customer_email
+        );
 
         // Act
         var response = await client.GetAsync(CustomerInfoPath);
+        var response_dto = await response.Content.ReadFromJsonAsync<CustomerDetailsDTO>();
 
         // Assert
-        Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        response.EnsureSuccessStatusCode();
+        Assert.NotNull(response.Content.Headers.ContentType);
+        Assert.NotNull(response_dto);
+
+        Assert.Equal(
+            "application/json; charset=utf-8",
+            response.Content.Headers.ContentType.ToString()
+        );
+
+        Assert.Equal(customer_guid.ToString(), response_dto.Id.ToString());
+        Assert.Equal(customer_email.ToString(), response_dto.Email.ToString());
     }
 
     [Fact]
-    public async Task Get_CustomerAdmin_Endpoint_AsAdmin_ReturnsSuccess()
+    public async Task Get_CustomerAdmin_Endpoint_AsAdmin_ReturnsSuccessAndCorrectContentType()
     {
         //Arrange
         var client = _factory.CreateAuthenticatedClient(role: "Admin");
@@ -52,6 +69,11 @@ public class CustomersControllerTests : IClassFixture<CustomWebApplicationFactor
 
         // Assert
         response.EnsureSuccessStatusCode();
+        Assert.NotNull(response.Content.Headers.ContentType);
+        Assert.Equal(
+            "application/json; charset=utf-8",
+            response.Content.Headers.ContentType.ToString()
+        );
     }
 
     [Fact]
@@ -80,12 +102,11 @@ public class CustomersControllerTests : IClassFixture<CustomWebApplicationFactor
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    // TEST REGISTER, do raw sql to check details entered correctly and password hash stored not password
     [Fact]
     public async Task Post_CustomerRegistration_EntersCorrectDetailsAndHashedPassword()
     {
-        var client = _factory.CreateClient();
         // Arrange
+        var client = _factory.CreateClient();
         var customer = new CreateCustomerDTO
         {
             Name = "Registration Test",
@@ -125,18 +146,23 @@ public class CustomersControllerTests : IClassFixture<CustomWebApplicationFactor
         Assert.NotNull(sqlCustomer);
         Assert.Equal(customer.Name, sqlCustomer.Name);
         Assert.Equal(customer.Email, sqlCustomer.Email);
-        Assert.NotEqual(customer.Password, sqlCustomer.Password);
+        Assert.DoesNotContain(customer.Password, sqlCustomer.Password); // Stored password should be hashed
     }
 
     [Fact]
     public async Task Post_UserLogin_CorrectPassword_Returns_OK()
     {
-        // Arrange
+        // Arrange - use admin for test as are seeded and 'registered' at database startup
         var client = _factory.CreateClient();
+        var config = _factory.Services.GetRequiredService<IConfiguration>();
+
         var customer = new LoginCustomerDTO
         {
-            Email = "test-admin@email.com",
-            Password = "testadmin123",
+            Email =
+                config["AdminInfo:Email"] ?? throw new ApplicationException("Admin Info not found"),
+            Password =
+                config["AdminInfo:Password"]
+                ?? throw new ApplicationException("Admin Info not found"),
         };
 
         // Act
@@ -149,11 +175,13 @@ public class CustomersControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task Post_UserLogin_IncorrectPassword_Returns_Unauthorized()
     {
-        // Arrange
+        // Arrange  - use admin for test as are seeded and 'registered' at database startup
+        var config = _factory.Services.GetRequiredService<IConfiguration>();
         var client = _factory.CreateClient();
         var customer = new LoginCustomerDTO
         {
-            Email = "test-admin@email.com",
+            Email =
+                config["AdminInfo:Email"] ?? throw new ApplicationException("Admin Info not found"),
             Password = "fakeadminpassword",
         };
 

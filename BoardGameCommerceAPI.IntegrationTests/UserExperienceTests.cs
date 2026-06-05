@@ -17,7 +17,7 @@ public class UserExperienceTests : IClassFixture<CustomWebApplicationFactory<Pro
     }
 
     [Fact(DisplayName = "Test user journey, register and place order")]
-    public async Task User_Can_Register_And_Successfully_Post_And_Retrieve_Sale()
+    public async Task User_Can_Register_And_SuccessfullyPost_And_RetrievePostedSale()
     {
         // Arrange
         var customer = new CreateCustomerDTO
@@ -96,8 +96,8 @@ public class UserExperienceTests : IClassFixture<CustomWebApplicationFactory<Pro
         Assert.Contains(mysalesList, item => item.Id == Guid.Parse(saleId));
     }
 
-    [Fact(DisplayName = "Test user journey, register, login and place order")]
-    public async Task User_Can_Register_Login_And_Successfully_Post_And_Retrieve_Sale()
+    [Fact]
+    public async Task User_Can_Register_Login_And_SuccessfullyPost_And_RetrievePostedSale()
     {
         // Arrange
         var customer = new CreateCustomerDTO

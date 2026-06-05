@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 
 public static class CustomWebApplicationFactoryExtensions
@@ -78,7 +79,8 @@ public static class CustomWebApplicationFactoryExtensions
     public static HttpClient CreateAuthenticatedClient(
         this CustomWebApplicationFactory<Program> factory,
         string role,
-        Guid? customer_id = null
+        Guid? customer_id = null,
+        string? email = null
     )
     {
         var client = factory.CreateClient();
@@ -89,7 +91,7 @@ public static class CustomWebApplicationFactoryExtensions
         {
             Id = customer_id ?? Guid.NewGuid(),
             Name = "example",
-            Email = "example@email" + Guid.NewGuid().ToString() + ".com",
+            Email = email ?? "example@email" + Guid.NewGuid().ToString() + ".com",
         };
 
         // needs to go in to sql database for foreign key constraints
@@ -114,7 +116,7 @@ public static class CustomWebApplicationFactoryExtensions
         customer_command.Parameters.AddWithValue("$Id", customer.Id.ToString());
         customer_command.Parameters.AddWithValue("$Name", customer.Name);
         customer_command.Parameters.AddWithValue("$Email", customer.Email);
-        customer_command.Parameters.AddWithValue("$Role", role);
+        customer_command.Parameters.AddWithValue("$Role", role.ToLower());
         customer_command.Parameters.AddWithValue("$PasswordHash", "testpasswordhash");
 
         customer_command.ExecuteNonQuery();
