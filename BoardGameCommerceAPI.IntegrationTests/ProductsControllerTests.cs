@@ -1,7 +1,4 @@
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
 
 namespace SessionAPI.IntegrationTests;
 

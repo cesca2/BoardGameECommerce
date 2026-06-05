@@ -1,9 +1,5 @@
-using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 // cross controller tests designed to test user-journey through application
 
@@ -31,7 +27,7 @@ public class UserExperienceTests : IClassFixture<CustomWebApplicationFactory<Pro
             Password = "regtest123",
         };
 
-        Dictionary<Guid, int> BasketQuantitiesByProductId = new Dictionary<Guid, int>();
+        Dictionary<Guid, int> BasketQuantitiesByProductId = [];
 
         var productResponse = await _client.GetAsync($"api/products");
 
@@ -118,7 +114,7 @@ public class UserExperienceTests : IClassFixture<CustomWebApplicationFactory<Pro
             Password = customer.Password,
         };
 
-        Dictionary<Guid, int> BasketQuantitiesByProductId = new Dictionary<Guid, int>();
+        Dictionary<Guid, int> BasketQuantitiesByProductId = [];
 
         var productResponse = await _client.GetAsync($"api/products");
 
