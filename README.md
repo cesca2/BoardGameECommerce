@@ -52,7 +52,7 @@ Set up the user-secrets. Edit `BoardGameCommerceAPI/secrets_input_example.json`,
    cat ./secrets.json | dotnet user-secrets set
 ``` 
 
-Run the applications
+Run the applications, from project base directory
 
 ```bash
    dotnet run --project BoardGameCommerceAPI
