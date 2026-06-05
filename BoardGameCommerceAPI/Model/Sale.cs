@@ -1,4 +1,4 @@
-public class Sale
+public record Sale
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public required Guid Customer_Id { get; set; }

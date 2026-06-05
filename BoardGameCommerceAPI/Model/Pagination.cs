@@ -1,4 +1,4 @@
-public class PaginationParams
+public record Pagination
 {
     public string SearchTerm { get; set; } = "";
 }

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-public class CreateCustomerDTO
+public record CreateCustomerDTO
 {
     [MinLength(2)]
     public required string Name { get; set; }

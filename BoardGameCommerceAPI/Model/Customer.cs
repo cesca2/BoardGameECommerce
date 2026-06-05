@@ -1,4 +1,4 @@
-public class Customer
+public record Customer
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public required string Name { get; set; }

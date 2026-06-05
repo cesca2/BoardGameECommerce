@@ -1,4 +1,4 @@
-public class AuthResult
+public record AuthResult
 {
     public required bool Success { get; set; }
     public string? Error { get; set; }
