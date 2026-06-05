@@ -1,5 +1,6 @@
 // Test authorisation works on protected endpoints
 using System.Net;
+using Microsoft.Data.Sqlite;
 
 namespace SessionAPI.IntegrationTests;
 
@@ -74,6 +75,90 @@ public class CustomersControllerTests : IClassFixture<CustomWebApplicationFactor
 
         // Act
         var response = await client.GetAsync(CustomerAdminPath);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    // TEST REGISTER, do raw sql to check details entered correctly and password hash stored not password
+    [Fact]
+    public async Task Post_CustomerRegistration_EntersCorrectDetailsAndHashedPassword()
+    {
+        var client = _factory.CreateClient();
+        // Arrange
+        var customer = new CreateCustomerDTO
+        {
+            Name = "Registration Test",
+            Email = "regtest@email.com",
+            Password = "regtest123",
+        };
+
+        // Act - Register customer and read from database
+        var response = await client.PostAsJsonAsync("api/customers/register", customer);
+
+        var _dbContext = _factory.Services.GetRequiredService<IDbConnectionFactory>();
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+                SELECT name, email, password_hash
+                FROM users
+                WHERE email = $email AND role='customer';
+            """;
+        command.Parameters.Add(new SqliteParameter("$email", customer.Email));
+        using var datareader = command.ExecuteReader();
+
+        CreateCustomerDTO? sqlCustomer = null;
+        while (datareader.Read())
+        {
+            sqlCustomer = new CreateCustomerDTO
+            {
+                Name = datareader.GetString(0),
+                Email = datareader.GetString(1),
+                Password = datareader.GetString(2),
+            };
+        }
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.NotNull(sqlCustomer);
+        Assert.Equal(customer.Name, sqlCustomer.Name);
+        Assert.Equal(customer.Email, sqlCustomer.Email);
+        Assert.NotEqual(customer.Password, sqlCustomer.Password);
+    }
+
+    [Fact]
+    public async Task Post_UserLogin_CorrectPassword_Returns_OK()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        var customer = new LoginCustomerDTO
+        {
+            Email = "test-admin@email.com",
+            Password = "testadmin123",
+        };
+
+        // Act
+        var response = await client.PostAsJsonAsync("api/customers/login", customer);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Post_UserLogin_IncorrectPassword_Returns_Unauthorized()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        var customer = new LoginCustomerDTO
+        {
+            Email = "test-admin@email.com",
+            Password = "fakeadminpassword",
+        };
+
+        // Act
+        var response = await client.PostAsJsonAsync("api/customers/login", customer);
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
