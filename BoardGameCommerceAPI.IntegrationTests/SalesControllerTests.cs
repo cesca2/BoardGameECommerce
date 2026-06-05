@@ -9,48 +9,10 @@ public class SalesControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
     private readonly CustomWebApplicationFactory<Program> _factory;
     private readonly string CustomerSalesPath = "/api/sales";
     private readonly string AdminSalesPath = "/api/sales/admin";
-    private readonly Product testproduct = new Product
-    {
-        Id = Guid.NewGuid(),
-        Name = "TestProduct",
-        Price = 25,
-        YearPublished = 2015,
-    };
-    private readonly SaleDTO testsale;
 
     public SalesControllerTests(CustomWebApplicationFactory<Program> factory)
     {
         _factory = factory;
-
-        var _dbContext = _factory.Services.GetRequiredService<IDbConnectionFactory>();
-        var connection = _dbContext.CreateConnection();
-        connection.Open();
-        var command = connection.CreateCommand();
-
-        command.CommandText = """
-            INSERT INTO products(id, name, yearpublished, price)
-            VALUES
-            ( $Id,
-              $Name,
-              $Year,
-              $Price)
-            ;
-            """;
-        command.Parameters.AddWithValue("$Id", testproduct.Id.ToString());
-        command.Parameters.AddWithValue("$Name", testproduct.Name);
-        command.Parameters.AddWithValue("$Year", testproduct.YearPublished);
-        command.Parameters.AddWithValue("$Price", testproduct.Price);
-        command.ExecuteNonQuery();
-
-        Dictionary<Guid, int> BasketQuantitiesByProductId = [];
-        BasketQuantitiesByProductId[testproduct.Id] = 1;
-
-        testsale = new SaleDTO
-        {
-            QuantitiesByProductID = BasketQuantitiesByProductId,
-            Date = DateOnly.FromDateTime(DateTime.Now),
-            Time = TimeOnly.FromDateTime(DateTime.Now),
-        };
     }
 
     [Fact]
@@ -58,9 +20,10 @@ public class SalesControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
     {
         //Arrange
         var client = _factory.CreateClient();
+        var _testSaleDTO = _factory.SeedSaleDTO();
 
         // Act
-        var response = await client.PostAsJsonAsync(CustomerSalesPath, testsale);
+        var response = await client.PostAsJsonAsync(CustomerSalesPath, _testSaleDTO);
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -125,9 +88,10 @@ public class SalesControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
 
         var customer_guid = Guid.NewGuid();
         var client = _factory.CreateAuthenticatedClient(role: "Customer", customer_guid);
+        var _testSaleDTO = _factory.SeedSaleDTO();
 
         // Act - post test sale, read sale from database using SQL
-        var response = await client.PostAsJsonAsync(CustomerSalesPath, testsale);
+        var response = await client.PostAsJsonAsync(CustomerSalesPath, _testSaleDTO);
 
         var saleResponseJsonString = await response.Content.ReadAsStringAsync();
 
@@ -173,10 +137,10 @@ public class SalesControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
 
         // Assert
         Assert.NotNull(sqlSaleDTO);
-        Assert.Equal(testsale.Date, sqlSaleDTO.Date);
-        //Assert.Equal(testsale.Time, sqlSaleDTO.Time); - needs fix to format
+        Assert.Equal(_testSaleDTO.Date, sqlSaleDTO.Date);
+        Assert.Equal(_testSaleDTO.Time.ToShortTimeString(), sqlSaleDTO.Time.ToShortTimeString());
         Assert.Equal(
-            testsale.QuantitiesByProductID.Values,
+            _testSaleDTO.QuantitiesByProductID.Values,
             sqlSaleDTO.QuantitiesByProductID.Values
         );
         Assert.Equal(customer_guid, sqlCustomerId);
