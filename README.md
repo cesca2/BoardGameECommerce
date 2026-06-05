@@ -68,12 +68,22 @@ Run the applications
 This project uses CSharpier v1.2.6.0, any files committed to the repository are checked in the Format .NET projects GitHub action.
 
 ## Testing 
-* BoardGameCommerceAPI.IntegrationTests: xunit
-     * UserExperienceTests: Tests user experience - logon, create order, see order details
-     * ProductsControllerTests: Tests products endpoints
+Tests are ran in CI workflow, see [Build and Test .NET projects](https://github.com/cesca2/BoardGameECommerce/actions/workflows/dotnet.yml)
+
+To run testing:
 ```bash
    dotnet test BoardGameCommerceAPI.IntegrationTests
 ```
+Use` Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory` to build application in memory to perform integration testing.
+
+Testing breakdown:
+* BoardGameCommerceAPI.IntegrationTests: xunit
+     * UserExperienceTests: Tests user journey - logon, create order, see order details
+     * ProductsControllerTests: Tests `/products` endpoints
+     * SalesControllerTests: Tests `/sales` endpoints, includes authorisation tests
+     * CustomersControllerTests: Tests `/customers` endpoints, includes authorisation tests
+
+
 ## API Reference
 
 ### Authorisation
@@ -314,4 +324,3 @@ Original project inspiration from https://www.thecsharpacademy.com/project/18/ec
 
 * Improve error handling in front-end from API status codes and error messages
 * Check DateTime consistency from front-end
-* Expand testing suite

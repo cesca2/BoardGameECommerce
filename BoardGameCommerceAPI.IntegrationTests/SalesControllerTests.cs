@@ -12,6 +12,7 @@ public class SalesControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
 
     public SalesControllerTests(CustomWebApplicationFactory<Program> factory)
     {
+        //create clients outside of constructor since different access permissions are needed per test in this suite
         _factory = factory;
     }
 

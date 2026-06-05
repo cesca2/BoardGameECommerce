@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram>
     where TProgram : class
 {
+    // create unique testing datasource for each factory instance to prevent conflicts between tests
     private readonly string _datasource = Guid.NewGuid().ToString() + ".db";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -58,6 +59,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 
     private void DeleteDataSourceFile()
     {
+        // dispose of temp test database file
         if (File.Exists(_datasource))
         {
             File.Delete(_datasource);
