@@ -14,7 +14,7 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
         _client = _factory.CreateClient();
     }
 
-    [Fact(DisplayName = "Test API products endpoint returns success")]
+    [Fact]
     public async Task Get_Products_EndpointsReturnSuccesAndCorrectContentType()
     {
         // Act
@@ -35,7 +35,33 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
         }
     }
 
-    [Fact(DisplayName = "Get product by invalid Id returns not found")]
+    [Fact]
+    public async Task Get_Product_By_Id_Returns_CorrectDTO()
+    {
+        // Arrange
+        var product = _factory.SeedProduct();
+
+        // Act
+        var response = await _client.GetFromJsonAsync<Product>(ProductsPath + "/" + product.Id);
+
+        // Assert
+        Assert.Equal(product, response);
+    }
+
+    [Fact]
+    public async Task Get_Products_Returns_ListContainingCorrectDTO()
+    {
+        //Arrange
+        var product = _factory.SeedProduct();
+
+        // Act
+        var response = await _client.GetFromJsonAsync<List<Product>>(ProductsPath);
+
+        // Assert
+        Assert.Contains(product, response ?? []);
+    }
+
+    [Fact]
     public async Task Get_Product_By_Invalid_Id_Returns_NotFound()
     {
         // Arrange - Guid.NewGuid() will not return Guid.Empty so use this as test
@@ -49,7 +75,7 @@ public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Theory(DisplayName = "Test search term query in products")]
+    [Theory]
     [InlineData("duel", 4)] // test duel with various combinations of caps/lowercase
     [InlineData("Duel", 4)]
     [InlineData("DUEL", 4)]
