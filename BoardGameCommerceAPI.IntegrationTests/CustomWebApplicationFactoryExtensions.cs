@@ -4,6 +4,7 @@ public static class CustomWebApplicationFactoryExtensions
 {
     public static SaleDTO SeedSaleDTO(this CustomWebApplicationFactory<Program> factory)
     {
+        // Create mock product which is needed to be pre-inserted into products table
         Product TestProduct = new Product
         {
             Name = "TestProduct",
@@ -30,6 +31,7 @@ public static class CustomWebApplicationFactoryExtensions
         command.Parameters.AddWithValue("$Price", TestProduct.Price);
         command.ExecuteNonQuery();
 
+        // create sale DTO to use in tests using mock product's id
         Dictionary<Guid, int> BasketQuantitiesByProductId = [];
         BasketQuantitiesByProductId[TestProduct.Id] = 1;
 

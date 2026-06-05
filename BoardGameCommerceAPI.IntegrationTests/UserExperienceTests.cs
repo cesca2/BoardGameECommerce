@@ -27,13 +27,12 @@ public class UserExperienceTests : IClassFixture<CustomWebApplicationFactory<Pro
             Password = "regtest123",
         };
 
-        Dictionary<Guid, int> BasketQuantitiesByProductId = [];
-
         var productResponse = await _client.GetAsync($"api/products");
 
         productResponse.EnsureSuccessStatusCode();
         var testItems = await productResponse.Content.ReadFromJsonAsync<List<Product>>() ?? [];
 
+        Dictionary<Guid, int> BasketQuantitiesByProductId = [];
         BasketQuantitiesByProductId[testItems[0].Id] = 1;
 
         var saleRequestDTO = new SaleDTO
