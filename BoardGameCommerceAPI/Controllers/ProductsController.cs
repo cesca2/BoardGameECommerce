@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommerceAPI.Controllers
@@ -11,9 +10,7 @@ namespace CommerceAPI.Controllers
         private readonly IProductService _productService = productService;
 
         [HttpGet]
-        public ActionResult<List<Product>> GetAllProducts(
-            [FromQuery] PaginationParams paginationParams
-        )
+        public ActionResult<List<Product>> GetAllProducts([FromQuery] Pagination paginationParams)
         {
             try
             {
