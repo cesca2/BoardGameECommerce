@@ -56,7 +56,7 @@ Run the applications
 
 ```bash
    dotnet run --project BoardGameCommerceAPI
-   dotnet run --project BoardGameCommerceApp
+   dotnet run --project BoardGameCommerceWebApp
 ```
 
 (Optional) To reset the database at any point run 
