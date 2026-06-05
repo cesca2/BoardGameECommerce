@@ -132,7 +132,7 @@ public class DbInitializer
                 id TEXT NOT NULL PRIMARY KEY ,
                 name TEXT NOT NULL,
                 yearpublished INTEGER NOT NULL,
-                rank REAL NOT NULL,
+                rank REAL ,
                 price REAL NOT NULL
             );
             """;
