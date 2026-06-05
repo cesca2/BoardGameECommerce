@@ -1,8 +1,3 @@
-using System.Globalization;
-using CommerceAPI.Controllers;
-using Microsoft.Data.Sqlite;
-using SQLitePCL;
-
 public class SaleService : ISaleService
 {
     ISaleRepository _saleRepository;

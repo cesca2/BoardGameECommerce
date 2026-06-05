@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Identity.Data;
-
 public interface ICustomerService
 {
     public AuthResult Login(LoginCustomerDTO customer);
