@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 public class SalesApiClient
 {
@@ -10,7 +11,7 @@ public class SalesApiClient
         _httpClient = httpClient;
     }
 
-    public async Task<bool> CreateSale(CreateSaleRequest saleRequest, string token)
+    public async Task<Guid> CreateSale(CreateSaleRequest saleRequest, string token)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"api/sales");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -25,11 +26,14 @@ public class SalesApiClient
         response.EnsureSuccessStatusCode();
         if (response.IsSuccessStatusCode)
         {
-            return true;
+            return Guid.Parse(
+                JsonSerializer.Deserialize<JsonElement>(jsonString).GetProperty("id").GetString()
+                    ?? ""
+            );
         }
         else
         {
-            return false;
+            return Guid.Empty;
         }
     }
 

@@ -88,8 +88,15 @@ public class CheckoutModel : PageModel
             Time = TimeOnly.FromDateTime(DateTime.Now),
         };
 
-        await _salesApi.CreateSale(sale, token);
+        var sale_conf = await _salesApi.CreateSale(sale, token);
 
-        return RedirectToPage("./Index");
+        if (sale_conf.Equals(Guid.Empty))
+        {
+            return Page();
+        }
+        else
+        {
+            return RedirectToPage("./OrderConfirmation", new { id = sale_conf.ToString() });
+        }
     }
 }
