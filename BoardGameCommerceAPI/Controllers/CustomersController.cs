@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace CommerceAPI.Controllers
 {
@@ -18,6 +19,14 @@ namespace CommerceAPI.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    var modelstate_errors = ModelState.Values.SelectMany(v =>
+                        v.Errors.Select(b => b.ErrorMessage)
+                    );
+                    return BadRequest(new { error = string.Join(" ", modelstate_errors) });
+                }
+
                 var result = _customerService.Register(customer);
                 if (result.Success == true)
                 {
