@@ -79,6 +79,15 @@ namespace CommerceAPI.Controllers
             {
                 return Unauthorized();
             }
+
+            if (!ModelState.IsValid)
+            {
+                var modelstate_errors = ModelState.Values.SelectMany(v =>
+                    v.Errors.Select(b => b.ErrorMessage)
+                );
+                return BadRequest(new { error = string.Join(" ", modelstate_errors) });
+            }
+
             var salerequest = new Sale
             {
                 Customer_Id = (Guid)parsedUserId,
