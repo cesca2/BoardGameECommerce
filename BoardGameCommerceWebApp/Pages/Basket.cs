@@ -22,6 +22,7 @@ public class BasketModel : PageModel
         public required int quantity { get; set; }
     }
 
+    public string InvalidPage { get; set; }
     public List<Product> Products { get; set; } = [];
 
     public BasketModel(ProductsApiClient productsApi)
@@ -41,13 +42,17 @@ public class BasketModel : PageModel
 
         foreach (var item in BasketItems)
         {
-            // Should handle case this is null on frontend
-            var product = await _productsApi.GetProductAsync(item.productId);
-            if (product is not null)
+            var productresponse = await _productsApi.GetProductAsync(item.productId);
+            var product = productresponse.Response;
+            if (productresponse.Success && product is not null)
             {
                 product.Quantity = item.quantity;
                 Products.Add(product);
             }
+        }
+        if (BasketItems.Count > Products.Count)
+        {
+            InvalidPage = "Unable to load your basket, please try again later.";
         }
     }
 }

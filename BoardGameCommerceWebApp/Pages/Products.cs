@@ -7,6 +7,7 @@ public class ProductModel : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public string Query { get; set; } = "";
+    public string InvalidPage = "";
 
     private readonly ProductsApiClient _productsApi;
 
@@ -19,6 +20,14 @@ public class ProductModel : PageModel
 
     public async Task OnGetAsync()
     {
-        Products = await _productsApi.GetProductsAsync(Query);
+        var productsResult = await _productsApi.GetProductsAsync(Query);
+        if (productsResult.Success)
+        {
+            Products = productsResult.Response ?? [];
+        }
+        else
+        {
+            InvalidPage = productsResult.Error ?? "Unidentified error";
+        }
     }
 }

@@ -1,7 +1,6 @@
 
 let basket = JSON.parse(localStorage.getItem("basket")) || []
 
-
 function saveBasket() {
     localStorage.setItem("basket", JSON.stringify(basket));
     let total = getBasketTotal();
@@ -11,7 +10,10 @@ function saveBasket() {
 }
 
 function clearBasket() {
-    localStorage.setItem("basket", JSON.stringify([]));
+    localStorage.removeItem("basket");
+    basket = []
+    saveBasket();
+
 }
 
 function addToBasket(productId) {
@@ -104,5 +106,7 @@ function updateBasketTotal() {
 
 document.addEventListener("DOMContentLoaded", () => {
     updateBasketTotal();
+
+
 
 });

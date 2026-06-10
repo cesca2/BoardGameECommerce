@@ -56,8 +56,9 @@ public class CheckoutModel : PageModel
 
         foreach (var item in BasketItems)
         {
-            var product = await _productsApi.GetProductAsync(item.productId);
-            if (product is not null)
+            var productresponse = await _productsApi.GetProductAsync(item.productId);
+            var product = productresponse.Response;
+            if (productresponse.Success && product is not null)
             {
                 product.Quantity = item.quantity;
                 Products.Add(product);
@@ -69,8 +70,6 @@ public class CheckoutModel : PageModel
 
     public async Task<IActionResult> OnPostCheckoutAsync()
     {
-        var customerId = HttpContext.Session.GetString("UserId");
-
         var products_json = HttpContext.Session.GetString("BasketProducts") ?? "";
         var products = JsonSerializer.Deserialize<List<Product>>(products_json) ?? [];
 
@@ -88,8 +87,24 @@ public class CheckoutModel : PageModel
             Time = TimeOnly.FromDateTime(DateTime.Now),
         };
 
-        await _salesApi.CreateSale(sale, token);
+        var sale_conf = await _salesApi.CreateSale(sale, token);
+        if (!sale_conf.Success)
+        {
+            HttpContext.Session.SetString(
+                "CheckoutError",
+                sale_conf.Error ?? "Unable to place order"
+            );
+            CheckoutPageVisitId += Guid.NewGuid().ToString();
+            return Page();
+        }
+        else
+        {
+            HttpContext.Session.Remove("CheckoutError");
 
-        return RedirectToPage("./Index");
+            return RedirectToPage(
+                "./OrderConfirmation",
+                new { id = sale_conf.Response.ToString() }
+            );
+        }
     }
 }

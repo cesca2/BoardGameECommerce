@@ -17,7 +17,7 @@ public class CreateCustomerModel : PageModel
     [BindProperty]
     public string Password { get; set; } = "";
     public bool ValidModelEntry = true;
-    public bool ValidRegistration = true;
+    public string InvalidRegistration = "";
 
     // To Do: Retrieve error message from API for this case
     public bool CustomerExists = false;
@@ -29,6 +29,7 @@ public class CreateCustomerModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        InvalidRegistration = "";
         CreateCustomerRequest customer = new CreateCustomerRequest
         {
             Name = Name,
@@ -43,20 +44,30 @@ public class CreateCustomerModel : PageModel
         }
         else
         {
-            var customerToken = await _customersApi.CreateCustomer(customer);
-            GetCustomerResponse? customerInfo = await _customersApi.GetCustomer(customerToken);
-
-            if (customerInfo is not null)
+            var customerTokenResult = await _customersApi.CreateCustomer(customer);
+            if (customerTokenResult.Success)
             {
-                HttpContext.Session.SetString("UserToken", customerToken);
+                HttpContext.Session.SetString("UserToken", customerTokenResult.Response ?? "");
 
-                HttpContext.Session.SetString("UserName", customerInfo.Name);
-                HttpContext.Session.SetString("UserEmail", customerInfo.Email);
-                HttpContext.Session.SetString("UserId", customerInfo.Id.ToString());
+                var customerInfo = await _customersApi.GetCustomer(
+                    customerTokenResult.Response ?? ""
+                );
+
+                if (customerInfo.Success && customerInfo.Response is not null)
+                {
+                    HttpContext.Session.SetString("UserName", customerInfo.Response.Name);
+                    HttpContext.Session.SetString("UserEmail", customerInfo.Response.Email);
+                    HttpContext.Session.SetString("UserId", customerInfo.Response.Id.ToString());
+                }
+                else
+                {
+                    InvalidRegistration = customerInfo.Error ?? "Invalid registration request";
+                    return Page();
+                }
             }
             else
             {
-                ValidRegistration = false;
+                InvalidRegistration = customerTokenResult.Error ?? "Invalid registration request";
                 return Page();
             }
         }

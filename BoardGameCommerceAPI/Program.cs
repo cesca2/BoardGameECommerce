@@ -32,7 +32,13 @@ builder.Services.AddSwaggerGen(options =>
         [new OpenApiSecuritySchemeReference("Bearer", document)] = [],
     });
 });
-builder.Services.AddControllers();
+builder
+    .Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
+
 builder.Services.AddLogging(builder => builder.AddConsole());
 
 // Register configuration-based services

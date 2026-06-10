@@ -12,6 +12,7 @@
 
 
 @{
+
     if (Model.Products.Count > 0)
     {
 
@@ -49,6 +50,13 @@
                 </tbody>
             </table>
         </div>
+    }
+    else if (!string.IsNullOrEmpty(@Model.InvalidPage))
+    {
+        <div class="d-flex justify-content-center mt-5 invalid_input">
+            <h3>Could not connect to server, please try again later.</h3>
+        </div>
+
     }
     else
     {

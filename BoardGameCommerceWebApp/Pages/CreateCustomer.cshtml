@@ -26,26 +26,19 @@
             if (!@Model.ValidModelEntry)
             {
                 <div class="d-flex justify-content-center mt-5">
-                    <p class="invalid_input">Invalid input</p>
+                    <p class="invalid_input">Invalid input to the required fields</p>
                 </div>
             }
         }
         @{
-            if (!@Model.ValidRegistration)
+            if (!string.IsNullOrEmpty(@Model.InvalidRegistration))
             {
                 <div class="d-flex justify-content-center mt-5">
-                    <p class="invalid_input">Invalid registration request, please try again</p>
+                    <p class="invalid_input">@Model.InvalidRegistration</p>
                 </div>
             }
         }
-        @{
-            if (@Model.CustomerExists)
-            {
-                <div class="d-flex justify-content-center mt-5">
-                    <p class="invalid_input">Customer already registered with entered email</p>
-                </div>
-            }
-        }
+
         <div class="d-flex justify-content-center mt-5">
             <button type="submit" class="icon-btn send material-icons">send</button>
         </div>
