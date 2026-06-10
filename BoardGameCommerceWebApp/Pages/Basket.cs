@@ -22,6 +22,7 @@ public class BasketModel : PageModel
         public required int quantity { get; set; }
     }
 
+    public string InvalidPage { get; set; }
     public List<Product> Products { get; set; } = [];
 
     public BasketModel(ProductsApiClient productsApi)
@@ -48,6 +49,10 @@ public class BasketModel : PageModel
                 product.Quantity = item.quantity;
                 Products.Add(product);
             }
+        }
+        if (BasketItems.Count > Products.Count)
+        {
+            InvalidPage = "Unable to load your basket, please try again later.";
         }
     }
 }

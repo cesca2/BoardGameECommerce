@@ -40,7 +40,13 @@
 </div>
 
 @{
-    if (Model.Products.Count > 0)
+    if (!string.IsNullOrEmpty(@Model.InvalidPage))
+    {
+        <div class="d-flex justify-content-center mt-5 invalid_input">
+            <h4>@Model.InvalidPage</h4>
+        </div>
+    }
+    else if (Model.Products.Count > 0)
     {
         <div class="d-flex justify-content-center mt-5">
             <table class="records" class="text-center">
@@ -84,7 +90,7 @@
                     </form>
                 </div>
             }
-else
+            else
             {
                 <div class="d-flex justify-content-center mt-5">
                     <h3>Your basket is empty!</h3>

@@ -17,6 +17,7 @@ public class LoginModel : PageModel
     [BindProperty]
     public string Password { get; set; } = "";
 
+    // use me
     public bool ValidModelEntry = true;
     public string InvalidLogin = "";
 
@@ -27,6 +28,11 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        if (!ModelState.IsValid)
+        {
+            ValidModelEntry = false;
+            return Page();
+        }
         InvalidLogin = "";
         var customerTokenResult = await _customersApi.Login(
             new CreateLoginRequest { Email = Email, Password = Password }
