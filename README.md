@@ -322,5 +322,5 @@ Original project inspiration from https://www.thecsharpacademy.com/project/18/ec
 
 ## To-Do
 
-* Improve error handling in front-end from API status codes and error messages
+* Add authorisation to pages like customersorders, admin dashboard
 * Check DateTime consistency from front-end

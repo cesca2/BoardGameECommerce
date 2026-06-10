@@ -18,6 +18,7 @@ public class LoginModel : PageModel
     public string Password { get; set; } = "";
 
     public bool ValidModelEntry = true;
+    public string InvalidLogin = "";
 
     public LoginModel(CustomersApiClient customersApi)
     {
@@ -26,29 +27,40 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        string customerToken = await _customersApi.Login(
+        InvalidLogin = "";
+        var customerTokenResult = await _customersApi.Login(
             new CreateLoginRequest { Email = Email, Password = Password }
         );
-        GetCustomerResponse? customerInfo = await _customersApi.GetCustomer(customerToken);
-
-        if (customerInfo is not null)
+        if (customerTokenResult.Success)
         {
-            HttpContext.Session.SetString("UserToken", customerToken);
-            HttpContext.Session.SetString("UserName", customerInfo.Name);
+            HttpContext.Session.SetString("UserToken", customerTokenResult.Response);
 
-            if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
+            var customerInfo = await _customersApi.GetCustomer(customerTokenResult.Response);
+
+            if (customerInfo.Success)
             {
-                return RedirectToPage("./Checkout");
+                HttpContext.Session.SetString("UserName", customerInfo.Response.Name);
+                HttpContext.Session.SetString("UserEmail", customerInfo.Response.Email);
+                HttpContext.Session.SetString("UserId", customerInfo.Response.Id.ToString());
+
+                if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
+                {
+                    return RedirectToPage("./Checkout");
+                }
+                else
+                {
+                    return RedirectToPage("./Index");
+                }
             }
             else
             {
-                return RedirectToPage("./Index");
+                InvalidLogin = customerInfo.Error;
+                return Page();
             }
         }
         else
         {
-            ValidModelEntry = false;
-
+            InvalidLogin = customerTokenResult.Error;
             return Page();
         }
     }

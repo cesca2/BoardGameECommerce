@@ -41,9 +41,9 @@ public class BasketModel : PageModel
 
         foreach (var item in BasketItems)
         {
-            // Should handle case this is null on frontend
-            var product = await _productsApi.GetProductAsync(item.productId);
-            if (product is not null)
+            var productresponse = await _productsApi.GetProductAsync(item.productId);
+            var product = productresponse.Response;
+            if (productresponse.Success && product is not null)
             {
                 product.Quantity = item.quantity;
                 Products.Add(product);

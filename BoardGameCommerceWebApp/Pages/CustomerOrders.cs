@@ -14,6 +14,7 @@ public class CustomerOrdersModel : PageModel
     public List<Product> Products { get; set; } = [];
     public List<GetSaleResponse> Sales { get; set; } = [];
     public GetSaleResponse? Sale { get; set; }
+    public string InvalidPage = "";
 
     public CustomerOrdersModel(SalesApiClient salesApi, ProductsApiClient productsApi)
     {
@@ -25,14 +26,24 @@ public class CustomerOrdersModel : PageModel
     {
         var token = HttpContext.Session.GetString("UserToken") ?? "";
 
-        Sales = await _salesApi.GetSales(token);
+        var sales = await _salesApi.GetSales(token);
+        if (sales.Success)
+        {
+            InvalidPage = "";
+            Sales = sales.Response ?? [];
+        }
+        else
+        {
+            InvalidPage = sales.Error ?? "Unidentified error";
+        }
         if (OrderId is not null)
         {
             Sale = Sales.Where(x => x.Id == OrderId).ToList()[0];
             foreach (var item in Sale.quantitiesByProductID)
             {
-                var product = await _productsApi.GetProductAsync(item.Key);
-                if (product is not null)
+                var productresponse = await _productsApi.GetProductAsync(item.Key);
+                var product = productresponse.Response;
+                if (productresponse.Success && product is not null)
                 {
                     product.Quantity = item.Value;
                     Products.Add(product);
