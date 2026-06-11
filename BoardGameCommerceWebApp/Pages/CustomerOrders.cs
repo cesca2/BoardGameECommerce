@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BoardGameCommerce.Pages;
 
+[Authorize]
 public class CustomerOrdersModel : PageModel
 {
     private readonly SalesApiClient _salesApi;
@@ -24,7 +27,7 @@ public class CustomerOrdersModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var token = HttpContext.Session.GetString("UserToken") ?? "";
+        var token = await HttpContext.GetTokenAsync("api_token") ?? "";
 
         var sales = await _salesApi.GetSales(token);
         if (sales.Success)

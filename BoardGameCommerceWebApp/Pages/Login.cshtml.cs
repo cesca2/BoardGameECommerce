@@ -1,6 +1,9 @@
-using System.Net;
+using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.InteropServices.Marshalling;
+using System.Security.Claims;
 using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,6 +19,9 @@ public class LoginModel : PageModel
 
     [BindProperty]
     public string Password { get; set; } = "";
+
+    [BindProperty(Name = "ReturnUrl", SupportsGet = true)]
+    public string ReturnUrl { get; set; }
 
     // use me
     public bool ValidModelEntry = true;
@@ -39,29 +45,43 @@ public class LoginModel : PageModel
         );
         if (customerTokenResult.Success)
         {
-            HttpContext.Session.SetString("UserToken", customerTokenResult.Response);
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(customerTokenResult.Response);
 
-            var customerInfo = await _customersApi.GetCustomer(customerTokenResult.Response);
+            var claims = jwt.Claims.ToList();
 
-            if (customerInfo.Success)
+            var identity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
+
+            var authProperties = new AuthenticationProperties();
+
+            authProperties.StoreTokens(
+                new[]
+                {
+                    new AuthenticationToken
+                    {
+                        Name = "api_token",
+                        Value = customerTokenResult.Response,
+                    },
+                }
+            );
+            // var token = await HttpContext.GetTokenAsync("api_token");
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity),
+                authProperties
+            );
+
+            if (ReturnUrl is not null)
             {
-                HttpContext.Session.SetString("UserName", customerInfo.Response.Name);
-                HttpContext.Session.SetString("UserEmail", customerInfo.Response.Email);
-                HttpContext.Session.SetString("UserId", customerInfo.Response.Id.ToString());
-
-                if (HttpContext.Session.GetInt32("CheckoutRequested") == 1)
-                {
-                    return RedirectToPage("./Checkout");
-                }
-                else
-                {
-                    return RedirectToPage("./Index");
-                }
+                return Redirect(ReturnUrl);
             }
             else
             {
-                InvalidLogin = customerInfo.Error;
-                return Page();
+                return RedirectToPage("./Index");
             }
         }
         else

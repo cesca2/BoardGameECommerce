@@ -1,10 +1,14 @@
+using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BoardGameCommerce.Pages;
 
+[Authorize]
 public class CheckoutModel : PageModel
 {
     private readonly SalesApiClient _salesApi;
@@ -32,22 +36,10 @@ public class CheckoutModel : PageModel
         _productsApi = productsApi;
     }
 
-    public IActionResult OnGet()
+    public void OnGet()
     {
         CheckoutPageVisitId = "j" + Guid.NewGuid().ToString();
         HttpContext.Session.SetString("CheckoutPageVisitId", CheckoutPageVisitId);
-
-        var username = HttpContext.Session.GetString("UserName");
-
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            HttpContext.Session.SetInt32("CheckoutRequested", 1);
-            return RedirectToPage("./Login");
-        }
-        else
-        {
-            return Page();
-        }
     }
 
     public async Task OnPostBasketAsync()
@@ -78,7 +70,7 @@ public class CheckoutModel : PageModel
             BasketQuantitiesByProductId[product.Id.ToString()] = product.Quantity;
         }
 
-        var token = HttpContext.Session.GetString("UserToken") ?? "";
+        var token = await HttpContext.GetTokenAsync("api_token") ?? "";
 
         var sale = new CreateSaleRequest
         {

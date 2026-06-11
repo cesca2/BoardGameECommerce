@@ -1,6 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Authentication;
+@using System.Security.Claims;
+
 @{
-    var username = Context.Session.GetString("UserName");
+    var username  = User.FindFirst(ClaimTypes.Name)?.Value;
+
     var greeting = "";
     if (!string.IsNullOrWhiteSpace(username))
     {
