@@ -34,11 +34,6 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid)
-        {
-            ValidModelEntry = false;
-            return Page();
-        }
         InvalidLogin = "";
         var customerTokenResult = await _customersApi.Login(
             new CreateLoginRequest { Email = Email, Password = Password }
