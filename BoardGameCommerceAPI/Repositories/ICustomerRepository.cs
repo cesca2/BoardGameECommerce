@@ -7,4 +7,5 @@ public interface ICustomerRepository
     public int CreateCustomer(Customer customer);
     public int DeleteCustomer(Guid id);
     public int UpdateCustomer(Guid id, Customer customer);
+    public int? CountCustomers();
 }

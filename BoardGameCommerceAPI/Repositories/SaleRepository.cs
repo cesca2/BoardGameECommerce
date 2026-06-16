@@ -11,6 +11,80 @@ public class SaleRepository : ISaleRepository
         _logger = logger;
     }
 
+    public int? CountSales()
+    {
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+                SELECT COUNT(*)
+                FROM sales
+            """;
+        try
+        {
+            var datacount = command.ExecuteScalar();
+            Console.WriteLine(datacount);
+            return Convert.ToInt32(datacount);
+        }
+        catch (SqliteException ex)
+        {
+            _logger.LogError(ex.Message);
+            throw new ApplicationException("Database operation failed");
+        }
+    }
+
+    public List<SalesProduct>? GetSalesProductsCount(int limit = -1)
+    {
+        List<SalesProduct> rows = new();
+
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT products.id, products.name, COUNT(*) AS total_items
+            FROM products JOIN sales_products
+            ON products.id = sales_products.product_id
+            GROUP BY  products.id, products.name
+            ORDER BY total_items DESC
+            LIMIT $Limit;
+            """;
+        command.Parameters.Add(new SqliteParameter("$Limit", limit));
+
+        try
+        {
+            using var datareader = command.ExecuteReader();
+
+            if (!datareader.HasRows)
+                return rows;
+            else
+            {
+                while (datareader.Read())
+                {
+                    Guid Id = datareader.GetGuid(0);
+                    var sale = rows.FirstOrDefault(i => i.Id == Id);
+                    if (sale == null)
+                    {
+                        sale = new SalesProduct
+                        {
+                            Id = datareader.GetGuid(0),
+                            Name = datareader.GetString(1),
+                            SalesItemsTotal = datareader.GetInt32(2),
+                        };
+                        rows.Add(sale);
+                    }
+                }
+            }
+        }
+        catch (SqliteException ex)
+        {
+            _logger.LogError(ex.Message);
+            throw new ApplicationException("Database operation failed");
+        }
+        return rows;
+    }
+
     public Sale? GetSale(Guid id)
     {
         using var connection = _dbContext.CreateConnection();

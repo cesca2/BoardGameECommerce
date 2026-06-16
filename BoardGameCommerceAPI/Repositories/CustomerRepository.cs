@@ -11,6 +11,30 @@ public class CustomerRepository : ICustomerRepository
         _logger = logger;
     }
 
+    public int? CountCustomers()
+    {
+        using var connection = _dbContext.CreateConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+                SELECT COUNT(*)
+                FROM users
+                WHERE role='customer';
+            """;
+        try
+        {
+            var datacount = command.ExecuteScalar();
+
+            return Convert.ToInt32(datacount);
+        }
+        catch (SqliteException ex)
+        {
+            _logger.LogError(ex.Message);
+            throw new ApplicationException("Database operation failed");
+        }
+    }
+
     public List<Customer>? GetAllCustomers()
     {
         List<Customer> rows = new();
