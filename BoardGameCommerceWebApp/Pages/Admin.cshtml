@@ -1,4 +1,64 @@
 @page
 @model AdminModel
 
-<h1>Secret Adminy Stuff</h1>
+@{
+    int count = 1;
+}
+
+@if (!string.IsNullOrEmpty(@Model.InvalidPage))
+{
+    <div class="d-flex justify-content-center mt-5 invalid_input">
+        <h4>@Model.InvalidPage</h4>
+    </div>
+}
+else
+{
+    <p class="subtitle">Board game sales summary</p>
+    <div class="stats-grid">
+        <div class="key-stat">
+            <div class="key-stat-label">Total Customers</div>
+            <div class="key-stat-value">@Model.Dashboard.NumCustomersTotal</div>
+        </div>
+        <div class="key-stat">
+            <div class="key-stat-label">Total Sales</div>
+            <div class="key-stat-value">@Model.Dashboard.NumSalesTotal</div>
+        </div>
+    </div>
+
+    @if (Model.Dashboard.Bestsellers.Count > 0)
+    {
+
+        <div class="table-card">
+            <div class="card-header">
+                <h2>Current Best Sellers</h2>
+            </div>
+            <div class="">
+                <table class="records" class="text-center">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Units sold</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        
+                        @foreach (var product in Model.Dashboard.Bestsellers)
+                        {
+
+                            <tr>
+                                <td>@count</td>
+                                <td>@product.Name</td>
+                                <td class="units-sold">@product.SalesItemsTotal</td>
+                            </tr>
+                            count++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+}

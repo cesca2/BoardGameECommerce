@@ -29,6 +29,10 @@ builder.Services.AddHttpClient<SalesApiClient>(client =>
     client.BaseAddress = new Uri("http://localhost:5214");
 });
 
+builder.Services.AddHttpClient<DashboardApiClient>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5214");
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

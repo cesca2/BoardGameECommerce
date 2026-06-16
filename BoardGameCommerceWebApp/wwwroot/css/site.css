@@ -8,7 +8,11 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -21,12 +25,14 @@ body {
   margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+.form-floating>.form-control-plaintext::placeholder,
+.form-floating>.form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+.form-floating>.form-control-plaintext:focus::placeholder,
+.form-floating>.form-control:focus::placeholder {
   text-align: start;
 }
 
@@ -34,61 +40,142 @@ body {
 
 
 button {
-    background-color: #009879;
-    color: white;
-    border-collapse: collapse;
-    font-size: 12pt;
-    font-family: sans-serif;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  background-color: #009879;
+  color: white;
+  border-collapse: collapse;
+  font-size: 12pt;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .records {
-    border-collapse: separate; 
-    border-spacing: 0 10px;   
-    margin: 25px 0;
-    font-size: 12pt;
-    font-family: sans-serif;
-    min-width: 400px;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  margin: 25px 0;
+  font-size: 12pt;
+  font-family: sans-serif;
+  min-width: 600px;
+  width: fit-content;
 }
 
 
 .records tbody tr {
-    background: #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-    transition: all 0.2s ease;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s ease;
 }
 
 
 .records tbody tr:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
 }
 
 
 .records th,
 .records td {
-    padding: 12px 15px;
-    font-size: 15px;
-    background: transparent;
+  padding: 12px 15px;
+  font-size: 15px;
+  background: transparent;
 }
 
 .records thead tr {
-    background-color: #009879;
-    color: white;
+  background-color: #009879;
+  color: white;
 }
 
 .records tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+  background-color: #f3f3f3;
+}
+
+.table-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  width: fit-content;
+  border-top: 4px solid #009879;
+  border-bottom: 4px solid #009879;
+  text-align: center;
+}
+
+.table-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
+}
+
+.card-header {
+  margin-bottom: 30px;
+  color: #009879;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #009879;
+  padding-left: 12px;
+}
+
+.records td.units-sold {
+  font-size: 20px;
+  font-weight: 700;
+  color: #009879;
+  text-align: center
 }
 
 
+.subtitle {
+  color: #777;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  font-size: 20px;
+  padding-top: 20px;
+}
+
+.stats-grid {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding-top: 5px;
+  padding-bottom: 20px;
+}
+
+.key-stat {
+  background: #fff;
+  border-top: 4px solid #009879;
+  padding: 24px;
+  min-width: 220px;
+  flex: 0 0 250px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.key-stat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
+}
+
+.key-stat-label {
+  font-size: 16px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.key-stat-value {
+  font-size: 35px;
+  font-weight: 700;
+  color: #009879;
+  margin-top: 8px;
+}
+
 a {
-    color: black;
-    text-decoration: none;      
+  color: black;
+  text-decoration: none;
 }
 
 a:hover {
-    color: blue
+  color: blue
 }
 
 .icon {
@@ -102,7 +189,7 @@ a:hover {
 }
 
 
-.navbar-brand{
+.navbar-brand {
   font-size: 30pt;
 }
 
@@ -115,15 +202,14 @@ a:hover {
 }
 
 button {
-    border-radius: 0.75rem;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-radius: 0.75rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
-

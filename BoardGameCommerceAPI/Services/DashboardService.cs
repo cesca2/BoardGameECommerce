@@ -17,7 +17,7 @@ public class DashboardService : IDashboardService
 
     public List<SalesProduct> GetBestsellers(int limit)
     {
-        return _saleRepository.GetSalesProductsCount(limit);
+        return _saleRepository.GetSalesProductsCount(limit) ?? [];
     }
 
     public int? GetTotalSales()
