@@ -6,10 +6,13 @@
 C# .NET eCommerce system incorporating an ASP.NET Core Web API designed to be an eCommerce engine to support a mock board game retail business. The user interface is serviced by a Razor Pages web application. 
 
 ## Demo
-![Demo Web Application](./demo/demo_app.gif?raw=true)
+### User experience
+![Demo Web Application](./demo/demo_app.gif?raw=true )
+### Admin dashboard
+<img src="./demo/demo_admin_app.png" alt="Demo Web Application Admin" width="1480px"/>
 
 ## System Structure
-![Demo Web Application](./demo/BoardGameCommerceSystem.png)
+![Demo Web Application](./demo/BoardGameCommerceSystem.png )
 
 ## Features
 
@@ -17,12 +20,14 @@ C# .NET eCommerce system incorporating an ASP.NET Core Web API designed to be an
     * Products
     * Sales
     * Customers
+* Role-based authorisation for resource access in API see [Authorisation structure](#authorisation) 
 * Provide User-Interface with Razor Pages ASP.NET Core, including:
     * User Registration & Login with POST/GET
     * Basket & Checkout to complete a sale with POST request
     * Complete product catalogue display with search capability (GET)
     * Past order catalogue available for logged in user
-* Role-based authorisation for resource access in API see [Authorisation structure](#authorisation) 
+    * Admin dashboard for key sales statistics 
+    * Authenticated via secure Cookie - read claims from API JWT
 
 ## Pre-requisites 
 
@@ -244,6 +249,60 @@ Authorisation structure:
 | `date` | `DateOnly` | Date of transaction. |
 | `time` | `TimeOnly` | Time of transaction. |
 
+
+### Get dashboard for sales information summary
+
+```http
+  GET /api/dashboard
+```
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `bestSellerLimit`      | `int` | **optional**. Number of items to include in list of bestselling products|
+
+**EXAMPLE OUTPUT:**
+```json
+{
+  "numSalesTotal": 46,
+  "numCustomersTotal": 20,
+  "bestsellers": [
+    {
+      "id": "d1fcd1f1-ae60-47e6-a30d-33dc4a30839e",
+      "name": "Brass: Birmingham",
+      "salesItemsTotal": 29
+    },
+    {
+      "id": "f26b2346-93bc-4538-aec6-3a4a11a5a790",
+      "name": "Ark Nova",
+      "salesItemsTotal": 24
+    },
+    {
+      "id": "3cc9f543-11e0-47fc-975e-46bc9cf46677",
+      "name": "The Lord of the Rings: Duel for Middle-earth",
+      "salesItemsTotal": 19
+    },
+    {
+      "id": "808a85fb-d6a9-4c60-b0b4-5c52c117a116",
+      "name": "7 Wonders Duel",
+      "salesItemsTotal": 10
+    },
+    {
+      "id": "0f606895-56d9-467e-ba2f-5271234362a0",
+      "name": "Root",
+      "salesItemsTotal": 1
+    },
+  ]
+}
+
+```
+| Field      | Type   |  Description                           |
+| ---------- | ------- | ----------------------------------    |
+| `numSalesTotal`    | `int` | Total number of recorded sales |
+| `numCustomersTotal`    | `int` | Total number of registered customers  |
+| `bestsellers`    | `List` | List of bestselling products (products which have sold most units) |
+| `id`    | `Guid` |  Product ID |
+| `name` | `string`  | Product name. |
+| `salesItemTotals` | `int`  | Number of units of that product sold. |
+
 ### Retrieve Customer Details Associated to all Customers
 
 ```http
@@ -322,5 +381,4 @@ Original project inspiration from https://www.thecsharpacademy.com/project/18/ec
 
 ## To-Do
 
-* Add authorisation to pages like customersorders, admin dashboard
 * Check DateTime consistency from front-end
