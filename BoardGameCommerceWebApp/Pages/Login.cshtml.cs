@@ -21,7 +21,7 @@ public class LoginModel : PageModel
     public string Password { get; set; } = "";
 
     [BindProperty(Name = "ReturnUrl", SupportsGet = true)]
-    public string ReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 
     // use me
     public bool ValidModelEntry = true;
@@ -58,7 +58,7 @@ public class LoginModel : PageModel
                     new AuthenticationToken
                     {
                         Name = "api_token",
-                        Value = customerTokenResult.Response,
+                        Value = customerTokenResult.Response ?? "",
                     },
                 }
             );
@@ -81,7 +81,7 @@ public class LoginModel : PageModel
         }
         else
         {
-            InvalidLogin = customerTokenResult.Error;
+            InvalidLogin = customerTokenResult.Error ?? "Unidentified error";
             return Page();
         }
     }

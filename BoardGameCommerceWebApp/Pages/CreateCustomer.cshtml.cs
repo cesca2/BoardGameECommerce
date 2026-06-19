@@ -69,7 +69,7 @@ public class CreateCustomerModel : PageModel
                         new AuthenticationToken
                         {
                             Name = "api_token",
-                            Value = customerTokenResult.Response,
+                            Value = customerTokenResult.Response ?? "",
                         },
                     }
                 );
