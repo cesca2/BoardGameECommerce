@@ -24,7 +24,6 @@ public class SaleRepository : ISaleRepository
         try
         {
             var datacount = command.ExecuteScalar();
-            Console.WriteLine(datacount);
             return Convert.ToInt32(datacount);
         }
         catch (SqliteException ex)

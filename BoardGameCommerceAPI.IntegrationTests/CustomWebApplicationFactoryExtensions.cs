@@ -4,13 +4,16 @@ using AutoFixture;
 
 public static class CustomWebApplicationFactoryExtensions
 {
-    public static SaleDTO SeedSaleDTO(this CustomWebApplicationFactory<Program> factory)
+    public static SaleDTO SeedSaleDTO(
+        this CustomWebApplicationFactory<Program> factory,
+        int quantity = 1
+    )
     {
         Product TestProduct = SeedProduct(factory);
 
         // create sale DTO to use in tests using mock product's id
         Dictionary<Guid, int> BasketQuantitiesByProductId = [];
-        BasketQuantitiesByProductId[TestProduct.Id] = 1;
+        BasketQuantitiesByProductId[TestProduct.Id] = quantity;
 
         var fixture = new Fixture();
 
@@ -20,6 +23,26 @@ public static class CustomWebApplicationFactoryExtensions
                 .With(dto => dto.Date, DateOnly.FromDateTime(DateTime.Now))
         );
         return fixture.Create<SaleDTO>();
+    }
+
+    public static Sale SeedSale(this CustomWebApplicationFactory<Program> factory, Guid customer_id)
+    {
+        using (var scope = factory.Services.CreateScope())
+        {
+            var saleService = scope.ServiceProvider.GetRequiredService<ISaleRepository>();
+
+            var saleDTO = SeedSaleDTO(factory);
+            var sale = new Sale
+            {
+                Customer_Id = customer_id,
+                QuantitiesByProductID = saleDTO.QuantitiesByProductID,
+                Date = saleDTO.Date,
+                Time = saleDTO.Time,
+            };
+            saleService.CreateSale(sale);
+
+            return sale;
+        }
     }
 
     public static Product SeedProduct(this CustomWebApplicationFactory<Program> factory)
