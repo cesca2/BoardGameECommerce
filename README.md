@@ -87,6 +87,8 @@ Testing breakdown:
      * ProductsControllerTests: Tests `/products` endpoints
      * SalesControllerTests: Tests `/sales` endpoints, includes authorisation tests
      * CustomersControllerTests: Tests `/customers` endpoints, includes authorisation tests
+     * DashboardControllerTests: Tests `/customers` endpoints, includes authorisation tests
+
 
 
 ## API Reference

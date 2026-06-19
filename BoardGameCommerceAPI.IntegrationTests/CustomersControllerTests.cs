@@ -2,7 +2,7 @@
 using System.Net;
 using Microsoft.Data.Sqlite;
 
-namespace SessionAPI.IntegrationTests;
+namespace BoardGameCommerceAPI.IntegrationTests;
 
 public class CustomersControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {

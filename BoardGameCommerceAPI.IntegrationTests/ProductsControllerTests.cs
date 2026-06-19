@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace SessionAPI.IntegrationTests;
+namespace BoardGameCommerceAPI.IntegrationTests;
 
 public class ProductsControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {

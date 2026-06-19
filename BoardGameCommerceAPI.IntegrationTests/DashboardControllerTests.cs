@@ -3,7 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Data.Sqlite;
 
-namespace SessionAPI.IntegrationTests;
+namespace BoardGameCommerceAPI.IntegrationTests;
 
 public class DashboardControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
