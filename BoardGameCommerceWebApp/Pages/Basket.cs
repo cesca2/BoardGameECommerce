@@ -22,7 +22,7 @@ public class BasketModel : PageModel
         public required int quantity { get; set; }
     }
 
-    public string InvalidPage { get; set; }
+    public string InvalidPage { get; set; } = "";
     public List<Product> Products { get; set; } = [];
 
     public BasketModel(ProductsApiClient productsApi)

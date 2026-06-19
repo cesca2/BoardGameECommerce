@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -51,6 +52,7 @@ builder.Services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>(
 builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddScoped<IPasswordHasher<Customer>, PasswordHasher<Customer>>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();

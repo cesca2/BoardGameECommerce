@@ -1,58 +1,56 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
+using AutoFixture;
 
 public static class CustomWebApplicationFactoryExtensions
 {
-    public static SaleDTO SeedSaleDTO(this CustomWebApplicationFactory<Program> factory)
+    public static SaleDTO SeedSaleDTO(
+        this CustomWebApplicationFactory<Program> factory,
+        int quantity = 1
+    )
     {
-        // Create mock product which is needed to be pre-inserted into products table
-        Product TestProduct = new Product
-        {
-            Name = "TestProduct",
-            Price = 25,
-            YearPublished = 2015,
-        };
-        var _dbContext = factory.Services.GetRequiredService<IDbConnectionFactory>();
-        using var connection = _dbContext.CreateConnection();
-        connection.Open();
-        var command = connection.CreateCommand();
-
-        command.CommandText = """
-            INSERT INTO products(id, name, yearpublished, price)
-            VALUES
-            ( $Id,
-              $Name,
-              $Year,
-              $Price)
-            ;
-            """;
-        command.Parameters.AddWithValue("$Id", TestProduct.Id.ToString());
-        command.Parameters.AddWithValue("$Name", TestProduct.Name);
-        command.Parameters.AddWithValue("$Year", TestProduct.YearPublished);
-        command.Parameters.AddWithValue("$Price", TestProduct.Price);
-        command.ExecuteNonQuery();
+        Product TestProduct = SeedProduct(factory);
 
         // create sale DTO to use in tests using mock product's id
         Dictionary<Guid, int> BasketQuantitiesByProductId = [];
-        BasketQuantitiesByProductId[TestProduct.Id] = 1;
+        BasketQuantitiesByProductId[TestProduct.Id] = quantity;
 
-        return new SaleDTO
+        var fixture = new Fixture();
+
+        fixture.Customize<SaleDTO>(transform =>
+            transform
+                .With(dto => dto.QuantitiesByProductID, BasketQuantitiesByProductId)
+                .With(dto => dto.Date, DateOnly.FromDateTime(DateTime.Now))
+        );
+        return fixture.Create<SaleDTO>();
+    }
+
+    public static Sale SeedSale(this CustomWebApplicationFactory<Program> factory, Guid customer_id)
+    {
+        using (var scope = factory.Services.CreateScope())
         {
-            QuantitiesByProductID = BasketQuantitiesByProductId,
-            Date = DateOnly.FromDateTime(DateTime.Now),
-            Time = TimeOnly.FromDateTime(DateTime.Now),
-        };
+            var saleService = scope.ServiceProvider.GetRequiredService<ISaleRepository>();
+
+            var saleDTO = SeedSaleDTO(factory);
+            var sale = new Sale
+            {
+                Customer_Id = customer_id,
+                QuantitiesByProductID = saleDTO.QuantitiesByProductID,
+                Date = saleDTO.Date,
+                Time = saleDTO.Time,
+            };
+            saleService.CreateSale(sale);
+
+            return sale;
+        }
     }
 
     public static Product SeedProduct(this CustomWebApplicationFactory<Program> factory)
     {
         // Create mock product which is needed to be pre-inserted into products table
-        Product TestProduct = new Product
-        {
-            Name = "TestProduct",
-            Price = 25,
-            YearPublished = 2015,
-        };
+        var fixture = new Fixture();
+        Product TestProduct = fixture.Create<Product>();
+
         var _dbContext = factory.Services.GetRequiredService<IDbConnectionFactory>();
         using var connection = _dbContext.CreateConnection();
         connection.Open();
@@ -87,12 +85,18 @@ public static class CustomWebApplicationFactoryExtensions
 
         var config = factory.Services.GetRequiredService<IConfiguration>();
 
-        var customer = new Customer
-        {
-            Id = customer_id ?? Guid.NewGuid(),
-            Name = "example",
-            Email = email ?? "example@email" + Guid.NewGuid().ToString() + ".com",
-        };
+        var fixture = new Fixture();
+
+        fixture.Customize<Customer>(transform =>
+            transform
+                .With(dto => dto.Id, customer_id ?? Guid.NewGuid())
+                .With(
+                    dto => dto.Email,
+                    email ?? "example@email" + Guid.NewGuid().ToString() + ".com"
+                )
+        );
+
+        var customer = fixture.Create<Customer>();
 
         // needs to go in to sql database for foreign key constraints
         string token = JWTTokenFactory.GenerateUserJWT(config, customer, role);
@@ -117,7 +121,7 @@ public static class CustomWebApplicationFactoryExtensions
         customer_command.Parameters.AddWithValue("$Name", customer.Name);
         customer_command.Parameters.AddWithValue("$Email", customer.Email);
         customer_command.Parameters.AddWithValue("$Role", role.ToLower());
-        customer_command.Parameters.AddWithValue("$PasswordHash", "testpasswordhash");
+        customer_command.Parameters.AddWithValue("$PasswordHash", customer.PasswordHash);
 
         customer_command.ExecuteNonQuery();
 

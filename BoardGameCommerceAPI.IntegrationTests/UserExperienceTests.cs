@@ -3,7 +3,7 @@ using System.Text.Json;
 
 // cross controller tests designed to test user-journey through application
 
-namespace SessionAPI.IntegrationTests;
+namespace BoardGameCommerceAPI.IntegrationTests;
 
 public class UserExperienceTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {

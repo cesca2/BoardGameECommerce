@@ -1,4 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Principal;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -47,23 +51,35 @@ public class CreateCustomerModel : PageModel
             var customerTokenResult = await _customersApi.CreateCustomer(customer);
             if (customerTokenResult.Success)
             {
-                HttpContext.Session.SetString("UserToken", customerTokenResult.Response ?? "");
+                var handler = new JwtSecurityTokenHandler();
+                var jwt = handler.ReadJwtToken(customerTokenResult.Response);
 
-                var customerInfo = await _customersApi.GetCustomer(
-                    customerTokenResult.Response ?? ""
+                var claims = jwt.Claims.ToList();
+
+                var identity = new ClaimsIdentity(
+                    claims,
+                    CookieAuthenticationDefaults.AuthenticationScheme
                 );
 
-                if (customerInfo.Success && customerInfo.Response is not null)
-                {
-                    HttpContext.Session.SetString("UserName", customerInfo.Response.Name);
-                    HttpContext.Session.SetString("UserEmail", customerInfo.Response.Email);
-                    HttpContext.Session.SetString("UserId", customerInfo.Response.Id.ToString());
-                }
-                else
-                {
-                    InvalidRegistration = customerInfo.Error ?? "Invalid registration request";
-                    return Page();
-                }
+                var authProperties = new AuthenticationProperties();
+
+                authProperties.StoreTokens(
+                    new[]
+                    {
+                        new AuthenticationToken
+                        {
+                            Name = "api_token",
+                            Value = customerTokenResult.Response ?? "",
+                        },
+                    }
+                );
+                // var token = await HttpContext.GetTokenAsync("api_token");
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity),
+                    authProperties
+                );
             }
             else
             {

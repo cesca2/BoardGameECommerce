@@ -1,10 +1,19 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-
+builder
+    .Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login";
+        options.AccessDeniedPath = "/AccessDenied";
+    });
+builder.Services.AddAuthorization();
 builder.Services.AddHttpClient<ProductsApiClient>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5214");
@@ -20,6 +29,10 @@ builder.Services.AddHttpClient<SalesApiClient>(client =>
     client.BaseAddress = new Uri("http://localhost:5214");
 });
 
+builder.Services.AddHttpClient<DashboardApiClient>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5214");
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,7 +46,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
